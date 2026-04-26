@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#1A1A1A">
+<title>Hamsun · Breakfast</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+    --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+    --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+    --moss: #2D8F4E; --ember: #C62828;
+    --f-display: 'Fraunces', Georgia, serif;
+    --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-xl: 22px; --r-pill: 999px;
+    --shadow-1: 0 1px 2px rgba(26,26,26,0.04), 0 1px 1px rgba(26,26,26,0.03);
+    --shadow-2: 0 6px 20px rgba(26,26,26,0.06), 0 2px 6px rgba(26,26,26,0.04);
+    --shadow-3: 0 18px 40px rgba(26,26,26,0.14), 0 4px 12px rgba(26,26,26,0.08);
+    --spring-soft: cubic-bezier(0.32, 0.72, 0, 1);
+    --spring-firm: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+  body {
+    font-family: var(--f-text); font-size: 15px; line-height: 1.5;
+    color: var(--ink); background: #E8E4DC;
+    min-height: 100vh; overflow-x: hidden;
+  }
+  @media (min-width: 520px) {
+    body {
+      display: flex; align-items: center; justify-content: center;
+      padding: 32px 20px;
+      background: radial-gradient(circle at 50% 0%, #EDE9E1 0%, #DDD8CE 100%);
+    }
+    .frame {
+      width: 390px; height: 844px; max-height: 92vh;
+      border-radius: 52px; overflow: hidden;
+      box-shadow: 0 40px 80px -20px rgba(26,26,26,0.25), 0 10px 24px rgba(26,26,26,0.08);
+      border: 10px solid #1A1A1A; background: var(--cream);
+    }
+    .app { height: 100%; overflow-y: auto; }
+  }
+  @media (max-width: 519px) {
+    .frame { min-height: 100vh; background: var(--cream); }
+    .app { min-height: 100vh; }
+  }
+  .app {
+    background: var(--cream);
+    padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch; position: relative;
+  }
+  .hidden { display: none !important; }
+
+  /* Header */
+  .header {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(250,248,244,0.92); backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    padding: calc(14px + env(safe-area-inset-top)) 18px 12px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid var(--edge);
+  }
+  .back-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1px solid var(--edge); background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; line-height: 1; cursor: pointer; color: var(--ink);
+    transition: transform 0.2s var(--spring-soft);
+  }
+  .back-btn:active { transform: scale(0.92); }
+  .header-title {
+    flex: 1; text-align: center;
+    font-family: var(--f-display); font-weight: 400; font-size: 17px;
+    letter-spacing: -0.005em;
+  }
+  .header-title em { font-style: italic; color: var(--gold-dark); }
+  .header-stub { width: 32px; }
+
+  /* Greeting */
+  .greeting { padding: 18px 20px 8px; }
+  .greeting-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px;
+  }
+  .greeting-tag::before { content: ''; width: 14px; height: 1px; background: var(--gold-dark); }
+  .greeting h1 {
+    font-family: var(--f-display); font-size: 32px; font-weight: 300;
+    font-variation-settings: "opsz" 144;
+    letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 6px;
+  }
+  .greeting h1 em { font-style: italic; color: var(--gold-dark); }
+  .greeting-meta { font-size: 13px; color: var(--ink-3); font-weight: 400; }
+  .allowance-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 12px; padding: 6px 12px; border-radius: var(--r-pill);
+    background: var(--gold-mist); color: var(--gold-dark);
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  }
+  .allowance-pill::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dark); }
+
+  /* Step header */
+  .step-header { padding: 22px 20px 8px; display: flex; align-items: center; gap: 10px; }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--ink); color: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+  }
+  .step-title {
+    font-family: var(--f-display); font-size: 18px;
+    font-weight: 500; letter-spacing: -0.01em;
+  }
+
+  /* Chip rail */
+  .chip-rail {
+    display: flex; gap: 8px; overflow-x: auto;
+    padding: 6px 20px 14px; scrollbar-width: none;
+  }
+  .chip-rail::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0;
+    padding: 10px 16px; border-radius: var(--r-pill);
+    border: 1.5px solid var(--edge); background: var(--paper);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s var(--spring-soft); white-space: nowrap;
+  }
+  .chip:active { transform: scale(0.96); }
+  .chip.active { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+  .chip-sub {
+    display: block; font-size: 10px; color: var(--ink-4);
+    font-weight: 400; margin-top: 1px; letter-spacing: 0.02em;
+  }
+  .chip.active .chip-sub { color: rgba(255,255,255,0.6); }
+
+  /* Cover counter */
+  .covers {
+    margin: 0 20px 4px; padding: 14px 16px;
+    background: var(--paper); border-radius: var(--r-md); border: 1px solid var(--edge);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .covers-info { font-size: 13px; }
+  .covers-info b { font-size: 14px; }
+  .covers-info span { color: var(--ink-4); font-size: 11.5px; display: block; margin-top: 1px; }
+  .covers-controls { display: flex; align-items: center; gap: 12px; }
+  .cover-btn {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 1.5px solid var(--edge); background: var(--paper);
+    font-size: 18px; cursor: pointer; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); transition: all 0.2s var(--spring-soft);
+  }
+  .cover-btn:active { transform: scale(0.92); background: var(--gold-mist); }
+  .cover-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .cover-count {
+    font-family: var(--f-display); font-size: 22px; font-weight: 500;
+    min-width: 22px; text-align: center;
+  }
+  .extras-banner {
+    margin: 8px 20px 4px; padding: 10px 14px;
+    background: #FFF5E6; border: 1px solid #F5C97A;
+    border-radius: var(--r-md);
+    font-size: 12px; color: #87600F;
+  }
+  .extras-banner b { color: #6B4A00; }
+
+  /* Person tabs */
+  .person-tabs {
+    margin: 6px 0 0; padding: 0 16px;
+    display: flex; gap: 4px; overflow-x: auto;
+    border-bottom: 1px solid var(--edge); scrollbar-width: none;
+  }
+  .person-tabs::-webkit-scrollbar { display: none; }
+  .person-tab {
+    padding: 12px 14px; font-size: 13px; font-weight: 500;
+    color: var(--ink-3); cursor: pointer; flex-shrink: 0;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s var(--spring-soft);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .person-tab.active { color: var(--ink); border-bottom-color: var(--gold); font-weight: 600; }
+  .person-tab.done { color: var(--moss); }
+  .person-tab.done.active { border-bottom-color: var(--moss); }
+  .person-tab-check {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--moss); color: white;
+    font-size: 9px; line-height: 14px; text-align: center; display: none;
+  }
+  .person-tab.done .person-tab-check { display: inline-block; }
+
+  /* Dish grid */
+  .dish-grid {
+    padding: 18px 16px 4px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  }
+  .dish-card {
+    background: var(--paper); border-radius: var(--r-lg);
+    overflow: hidden; cursor: pointer;
+    border: 1.5px solid transparent; box-shadow: var(--shadow-1);
+    transition: all 0.24s var(--spring-soft); position: relative;
+  }
+  .dish-card:active { transform: scale(0.97); }
+  .dish-card.selected {
+    border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-mist), var(--shadow-2);
+  }
+  .dish-card .img-wrap {
+    width: 100%; aspect-ratio: 4/3; overflow: hidden;
+    position: relative; background: var(--edge-soft);
+  }
+  .dish-card .img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .dish-card .body { padding: 10px 12px 12px; }
+  .dish-card h4 {
+    font-family: var(--f-display); font-size: 14px; font-weight: 500;
+    line-height: 1.2; letter-spacing: -0.005em; margin-bottom: 3px;
+  }
+  .dish-card p {
+    font-size: 11px; color: var(--ink-4); line-height: 1.3;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .badge-popular {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(26,26,26,0.85); color: white; backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    font-size: 9px; font-weight: 600; letter-spacing: 0.08em;
+    padding: 4px 8px; border-radius: var(--r-pill); text-transform: uppercase;
+  }
+  .check-mark {
+    position: absolute; top: 8px; left: 8px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--gold); color: white;
+    display: none; align-items: center; justify-content: center;
+    font-size: 14px; box-shadow: var(--shadow-2);
+  }
+  .dish-card.selected .check-mark { display: flex; }
+
+  /* Modal sheet */
+  .sheet-overlay {
+    position: fixed; inset: 0; background: rgba(26,26,26,0.5);
+    z-index: 100; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .sheet-overlay.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--cream); border-radius: 24px 24px 0 0;
+    z-index: 101; max-height: 92vh; overflow-y: auto;
+    transform: translateY(100%);
+    transition: transform 0.4s var(--spring-soft);
+    -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+  }
+  .sheet.open { transform: translateY(0); }
+  @media (min-width: 520px) {
+    .sheet, .sheet-overlay {
+      position: absolute; max-width: 370px; margin: 0 auto;
+      left: 0; right: 0;
+    }
+    .sheet { max-height: 84%; }
+  }
+  .sheet-handle {
+    width: 36px; height: 4px; background: var(--edge);
+    border-radius: 2px; margin: 10px auto 0;
+  }
+  .sheet-hero { width: 100%; height: 200px; position: relative; overflow: hidden; }
+  .sheet-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .sheet-hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, rgba(26,26,26,0) 40%, rgba(26,26,26,0.85) 100%);
+    display: flex; align-items: flex-end;
+    padding: 18px 20px;
+  }
+  .sheet-hero-content { color: white; }
+  .sheet-hero-content h2 {
+    font-family: var(--f-display); font-size: 26px; font-weight: 500;
+    letter-spacing: -0.015em; line-height: 1.1;
+  }
+  .sheet-hero-content p {
+    font-size: 12.5px; color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+  }
+  .sheet-body { padding: 18px 20px 24px; }
+  .sheet-section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-3); margin: 18px 0 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sheet-section-title::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+  }
+  .sheet-section-title:first-child { margin-top: 0; }
+  .sheet-section-title .req {
+    color: var(--ember); font-weight: 700; letter-spacing: 0;
+    font-size: 9px; padding: 2px 5px; border-radius: 4px; background: rgba(198,40,40,0.06);
+  }
+  .sheet-section-title .opt {
+    color: var(--ink-4); font-weight: 500; letter-spacing: 0;
+    font-size: 9px; padding: 2px 5px; border-radius: 4px; background: var(--edge-soft);
+  }
+
+  .opt-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .opt-chip {
+    padding: 8px 14px; border-radius: var(--r-pill);
+    border: 1.5px solid var(--edge); background: var(--paper);
+    font-size: 12.5px; cursor: pointer;
+    transition: all 0.2s var(--spring-soft);
+  }
+  .opt-chip:active { transform: scale(0.95); }
+  .opt-chip.active {
+    border-color: var(--gold-dark); background: var(--gold-mist); color: var(--gold-dark);
+    font-weight: 600;
+  }
+
+  .sides-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .side-card {
+    padding: 11px 12px; border-radius: var(--r-md);
+    border: 1.5px solid var(--edge); background: var(--paper);
+    cursor: pointer; transition: all 0.2s var(--spring-soft);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .side-card:active { transform: scale(0.97); }
+  .side-card.active { border-color: var(--gold-dark); background: var(--gold-mist); }
+  .side-card.disabled {
+    opacity: 0.4; cursor: not-allowed; pointer-events: none; background: var(--edge-soft);
+  }
+  .side-card h5 {
+    font-family: var(--f-display); font-size: 13px; font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+  .side-card p { font-size: 10.5px; color: var(--ink-4); line-height: 1.3; }
+  .side-counter { font-size: 11px; color: var(--ink-3); margin-bottom: 8px; margin-top: -4px; }
+  .side-counter b { color: var(--gold-dark); }
+
+  .all-included {
+    padding: 12px 14px; border-radius: var(--r-md);
+    background: var(--gold-mist); color: var(--gold-dark);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .all-included::before { content: '✓'; font-size: 14px; }
+  .no-sides { font-size: 12px; color: var(--ink-4); font-style: italic; }
+
+  .sheet-cta {
+    position: sticky; bottom: 0; left: 0; right: 0;
+    background: var(--cream); padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--edge);
+    margin: 16px -20px -24px;
+  }
+  .add-btn {
+    width: 100%; padding: 14px; border-radius: var(--r-md); border: none;
+    background: var(--ink); color: var(--paper);
+    font-family: var(--f-text); font-size: 15px; font-weight: 600;
+    letter-spacing: 0.005em; cursor: pointer;
+    transition: all 0.2s var(--spring-soft);
+  }
+  .add-btn:active:not(:disabled) { transform: scale(0.98); }
+  .add-btn:disabled { background: var(--edge); color: var(--ink-4); cursor: not-allowed; }
+
+  /* Footer / confirm */
+  .footer {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 20;
+    width: calc(100% - 32px); max-width: 358px;
+    background: var(--ink); border-radius: var(--r-md);
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--shadow-3);
+    transition: transform 0.3s var(--spring-soft);
+  }
+  @media (min-width: 520px) {
+    .footer { position: absolute; max-width: 332px; bottom: 22px; }
+  }
+  .footer.hidden-bar { transform: translate(-50%, 200%); }
+  .footer-text {
+    flex: 1; color: white; font-size: 12px;
+    line-height: 1.3; letter-spacing: -0.005em;
+  }
+  .footer-text small { color: rgba(255,255,255,0.55); font-size: 10px; }
+  .confirm-btn {
+    background: var(--gold); color: var(--ink); border: none;
+    padding: 10px 16px; border-radius: var(--r-pill);
+    font-family: var(--f-text); font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.005em; cursor: pointer; white-space: nowrap;
+    transition: transform 0.2s var(--spring-soft);
+  }
+  .confirm-btn:active { transform: scale(0.95); }
+  .confirm-btn:disabled { background: rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); cursor: not-allowed; }
+
+  /* Review */
+  .review-card {
+    margin: 12px 16px; padding: 16px 18px;
+    background: var(--paper); border-radius: var(--r-lg);
+    border: 1px solid var(--edge); box-shadow: var(--shadow-1);
+  }
+  .review-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--edge);
+  }
+  .review-header h3 {
+    font-family: var(--f-display); font-size: 17px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .edit-btn {
+    background: transparent; border: 1px solid var(--edge);
+    padding: 5px 12px; border-radius: var(--r-pill);
+    font-size: 11px; font-weight: 500; color: var(--ink-2);
+    cursor: pointer; transition: all 0.2s var(--spring-soft);
+  }
+  .edit-btn:active { transform: scale(0.95); background: var(--gold-mist); }
+  .review-line {
+    display: flex; gap: 10px;
+    font-size: 13px; line-height: 1.4; padding: 4px 0;
+  }
+  .review-label {
+    color: var(--ink-4); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    width: 70px; flex-shrink: 0; padding-top: 2px;
+  }
+  .review-value { flex: 1; color: var(--ink); }
+  .review-value em { color: var(--ink-4); font-style: normal; font-size: 11.5px; }
+
+  .schedule-banner {
+    margin: 12px 16px; padding: 14px 18px;
+    background: var(--ink); color: var(--paper); border-radius: var(--r-md);
+    display: flex; gap: 14px; align-items: center;
+  }
+  .schedule-banner .sb-time {
+    font-family: var(--f-display); font-size: 18px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .schedule-banner .sb-loc {
+    font-size: 11px; color: rgba(255,255,255,0.6);
+    margin-top: 2px; text-transform: uppercase; letter-spacing: 0.16em;
+  }
+  .schedule-banner .sb-divider {
+    width: 1px; height: 28px; background: rgba(255,255,255,0.2);
+  }
+
+  /* Success */
+  .success { padding: 60px 24px 40px; text-align: center; }
+  .success-check {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: var(--moss); color: white;
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+    box-shadow: 0 12px 40px rgba(45,143,78,0.25);
+    animation: pop 0.6s var(--spring-firm);
+  }
+  @keyframes pop {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .success h2 {
+    font-family: var(--f-display); font-size: 28px; font-weight: 400;
+    letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 8px;
+  }
+  .success h2 em { font-style: italic; color: var(--gold-dark); }
+  .success-sub {
+    font-size: 14px; color: var(--ink-3); margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  .success-summary {
+    text-align: left; margin: 20px 4px;
+    padding: 16px 18px;
+    background: var(--paper); border-radius: var(--r-md);
+    border: 1px solid var(--edge);
+  }
+  .success-summary h4 {
+    font-family: var(--f-display); font-weight: 500; font-size: 14px;
+    color: var(--ink-2); margin-bottom: 8px;
+  }
+  .success-line {
+    font-size: 12.5px; color: var(--ink-2); padding: 3px 0;
+    line-height: 1.4;
+  }
+  .spacer { height: 8px; }
+</style>
+</head>
+<body>
+<div class="frame">
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="back-btn" onclick="goBack()">‹</div>
+    <div class="header-title" id="header-title"><em>Hamsun</em> · Breakfast</div>
+    <div class="header-stub"></div>
+  </header>
+
+  <!-- ORDER SCREEN -->
+  <div id="screen-order">
+    <section class="greeting">
+      <div class="greeting-tag">Tomorrow morning</div>
+      <h1>Good evening,<br><em>Hassan</em></h1>
+      <div class="greeting-meta">Room 301 · Hamsun Shahr-e-Faisal</div>
+      <div class="allowance-pill">2 complimentary breakfasts</div>
+    </section>
+
+    <!-- Step 1: Time -->
+    <div class="step-header">
+      <span class="step-num">1</span>
+      <span class="step-title">Pick a time</span>
+    </div>
+    <div class="chip-rail" id="slot-rail"></div>
+
+    <!-- Step 2: Location -->
+    <div class="step-header">
+      <span class="step-num">2</span>
+      <span class="step-title">Where?</span>
+    </div>
+    <div class="chip-rail" id="loc-rail"></div>
+
+    <!-- Step 3: Covers -->
+    <div class="step-header">
+      <span class="step-num">3</span>
+      <span class="step-title">How many people?</span>
+    </div>
+    <div class="covers">
+      <div class="covers-info">
+        <b id="covers-title">1 person</b>
+        <span id="covers-sub">Allowance covers 2 people</span>
+      </div>
+      <div class="covers-controls">
+        <button class="cover-btn" id="cover-minus" onclick="changeCover(-1)">−</button>
+        <span class="cover-count" id="cover-count">1</span>
+        <button class="cover-btn" id="cover-plus" onclick="changeCover(1)">+</button>
+      </div>
+    </div>
+    <div class="extras-banner hidden" id="extras-banner"></div>
+
+    <!-- Person tabs (only when > 1 cover) -->
+    <div class="person-tabs hidden" id="person-tabs"></div>
+
+    <!-- Step 4: Choose meal -->
+    <div class="step-header">
+      <span class="step-num">4</span>
+      <span class="step-title" id="meal-title">Choose your meal</span>
+    </div>
+    <div class="dish-grid" id="dish-grid"></div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- REVIEW SCREEN -->
+  <div id="screen-review" class="hidden">
+    <section class="greeting">
+      <div class="greeting-tag">Review your order</div>
+      <h1>Almost done,<br><em>Hassan</em></h1>
+      <div class="greeting-meta" id="review-meta"></div>
+    </section>
+    <div class="schedule-banner" id="schedule-banner"></div>
+    <div id="review-cards"></div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div id="screen-success" class="hidden">
+    <div class="success">
+      <div class="success-check">✓</div>
+      <h2>Breakfast <em>confirmed</em></h2>
+      <p class="success-sub" id="success-sub"></p>
+      <div class="success-summary" id="success-summary"></div>
+      <p class="success-sub" style="margin-top: 16px; font-size: 12px;">
+        We've sent you a confirmation on WhatsApp.<br>
+        See you tomorrow morning.
+      </p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- DISH MODAL -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-hero" id="sheet-hero"></div>
+  <div class="sheet-body" id="sheet-body"></div>
+  <div class="sheet-cta">
+    <button class="add-btn" id="add-btn" onclick="addToOrder()" disabled>Add to my order</button>
+  </div>
+</div>
+
+<!-- BOTTOM CONFIRM BAR -->
+<div class="footer hidden-bar" id="footer">
+  <div class="footer-text">
+    <div id="footer-title">Continue</div>
+    <small id="footer-sub">Tap to review</small>
+  </div>
+  <button class="confirm-btn" id="confirm-btn" onclick="onConfirm()">Continue →</button>
+</div>
+
+<script>
+// ─── DATA ───
+const TIME_SLOTS = [
+  { id: 's1', label: '7:30 – 8:00 AM', start: '07:30' },
+  { id: 's2', label: '8:00 – 8:30 AM', start: '08:00' },
+  { id: 's3', label: '8:30 – 9:00 AM', start: '08:30' },
+];
+
+const LOCATIONS = [
+  { id: 'room', label: 'In-room', sub: 'Delivered to your room' },
+  { id: 'cafe', label: 'Café',    sub: 'Pick up at Hamsun Café' },
+];
+
+const SIDES = [
+  { id: 'chola',    name: 'Chola',           desc: 'Lahori-style spiced chickpeas' },
+  { id: 'qeema',    name: 'BBQ Qeema',       desc: 'In-house, charcoal finished' },
+  { id: 'sausage',  name: 'Sausages',        desc: 'Premium beef, lightly spiced' },
+  { id: 'beans',    name: 'Baked Beans',     desc: 'Slow-simmered, classic' },
+  { id: 'mushroom', name: 'Sautéed Mushroom',desc: 'Garlic butter, fresh thyme' },
+  { id: 'fruit',    name: 'Fruit Bowl',      desc: 'Fresh seasonal cuts' },
+];
+
+const STARTING_DRINKS = [
+  { id: 'oj',     name: 'Orange Juice' },
+  { id: 'mango',  name: 'Mango Juice' },
+  { id: 'lassi_s',name: 'Lassi (Sweet)' },
+  { id: 'lassi_n',name: 'Lassi (Salted)' },
+  { id: 'water',  name: 'Just Water' },
+];
+
+const ENDING_DRINKS = [
+  { id: 'chai',   name: 'Chai Doodh Patti' },
+  { id: 'cofb',   name: 'Coffee · Black' },
+  { id: 'cofm',   name: 'Coffee · Milk' },
+  { id: 'green',  name: 'Green Tea' },
+  { id: 'mint',   name: 'Mint Tea' },
+];
+
+const MAINS = [
+  {
+    id: 'aloo_paratha', name: 'Aloo Paratha',
+    short: 'Handmade · housemade chutney · fresh piyaz',
+    long: 'Hand-rolled paratha stuffed with seasoned spiced potato, served with our housemade green chutney and freshly cut onions.',
+    img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=900&q=85',
+    popular: true,
+    addons: [{ group: 'oil', label: 'Cooking oil', required: true,
+      options: [{ v: 'Desi ghee', emoji: '🫙' }, { v: 'Butter', emoji: '🧈' }, { v: 'Olive oil', emoji: '🫒' }] }],
+    sides: { allowed: ['chola','qeema','sausage','mushroom','fruit'], pickMax: 2, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'keema_paratha', name: 'Keema Paratha',
+    short: 'In-house BBQ qeema · slow-cooked overnight',
+    long: 'Spiced beef qeema folded into a flaky paratha and finished on the tawa.',
+    img: 'https://images.unsplash.com/photo-1626777553635-21bcad8a0f56?w=900&q=85',
+    addons: [{ group: 'oil', label: 'Cooking oil', required: true,
+      options: [{ v: 'Desi ghee', emoji: '🫙' }, { v: 'Butter', emoji: '🧈' }, { v: 'Olive oil', emoji: '🫒' }] }],
+    sides: { allowed: ['chola','qeema','mushroom'], pickMax: 1, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'scrambled_omelette', name: 'Scrambled Mushroom Omelette',
+    short: 'Soft curds · mushrooms · aged cheddar · herbs',
+    long: 'Three-egg omelette folded with sautéed mushroom, aged cheddar, parsley and chives.',
+    img: 'https://images.unsplash.com/photo-1598866594230-a7c12756260f?w=900&q=85',
+    popular: true,
+    addons: [{ group: 'bread', label: 'Bread', required: true,
+      options: [{ v: 'Brown toast', emoji: '🍞' }, { v: 'White toast', emoji: '🍞' }, { v: 'Sourdough', emoji: '🥖' }] }],
+    sides: { allowed: ['chola','sausage','beans','mushroom','fruit'], pickMax: 2, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'poached_omelette', name: 'Poached Mushroom Omelette',
+    short: 'Silky whites · runny yolk · cheddar',
+    long: 'Twin poached eggs over mushroom and cheddar.',
+    img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=900&q=85',
+    addons: [{ group: 'bread', label: 'Bread', required: true,
+      options: [{ v: 'Brown toast', emoji: '🍞' }, { v: 'Sourdough', emoji: '🥖' }] }],
+    sides: { allowed: ['sausage','beans','mushroom','fruit'], pickMax: 2, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'khageena', name: 'Khageena Masala',
+    short: 'Spicy scrambled · tomatoes · chilli · coriander',
+    long: 'Pakistani-style spiced scrambled eggs with green chilli, tomato and coriander, served with paratha.',
+    img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=900&q=85',
+    addons: [],
+    sides: { allowed: ['chola','qeema'], pickMax: 1, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'french_toast', name: 'French Toast',
+    short: 'Brioche · vanilla custard · berries',
+    long: 'Egg-soaked brioche pan-fried golden, dusted with cinnamon sugar, served with seasonal berries and maple syrup.',
+    img: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=900&q=85',
+    addons: [],
+    sides: { allowed: ['fruit'], pickMax: 1, pickMin: 0, mode: 'pick' },
+  },
+  {
+    id: 'light_bowl', name: 'The Light Bowl',
+    short: 'Greek yoghurt · house granola · Sidr honey · fruit',
+    long: 'Strained Greek yoghurt layered with our housemade granola, Sidr honey and seasonal fruit.',
+    img: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=900&q=85',
+    addons: [],
+    sides: { allowed: [], pickMax: 0, pickMin: 0, mode: 'none' },
+  },
+  {
+    id: 'full_monty', name: 'The Full Monty',
+    short: 'Sausages · beans · mushrooms · half fry · toast',
+    long: 'The whole works — sausage, baked beans, sautéed mushroom, two half fry eggs and your choice of toast.',
+    img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=900&q=85',
+    popular: true,
+    addons: [{ group: 'bread', label: 'Bread', required: true,
+      options: [{ v: 'Brown toast', emoji: '🍞' }, { v: 'White toast', emoji: '🍞' }, { v: 'Sourdough', emoji: '🥖' }] }],
+    sides: { allowed: ['chola','qeema','sausage','beans','mushroom','fruit'], pickMax: 0, pickMin: 0, mode: 'all_included' },
+  },
+];
+
+// ─── STATE ───
+// Simple model: one slot, one location, multiple covers each picking own meal.
+const ALLOWANCE = 2;
+const EXTRA_PRICE = 2000;
+
+let state = {
+  slot: null,
+  loc: null,
+  covers: 1,
+  currentPerson: 1,
+  selections: { 1: {} }, // person -> { main, addons, sides[], startDrink, endDrink }
+};
+
+let modalMain = null;
+let modalSel = { addons: {}, sides: [], startDrink: null, endDrink: null };
+
+// ─── INIT ───
+function init() {
+  renderSlots();
+  renderLocations();
+  renderDishGrid();
+  renderPersonTabs();
+  updateExtrasBanner();
+  updateFooter();
+}
+
+// ─── SLOT / LOCATION ───
+function renderSlots() {
+  const c = document.getElementById('slot-rail');
+  c.innerHTML = '';
+  TIME_SLOTS.forEach(s => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (state.slot?.id === s.id ? ' active' : '');
+    chip.innerHTML = s.label;
+    chip.onclick = () => { state.slot = s; renderSlots(); updateFooter(); };
+    c.appendChild(chip);
+  });
+}
+function renderLocations() {
+  const c = document.getElementById('loc-rail');
+  c.innerHTML = '';
+  LOCATIONS.forEach(l => {
+    const chip = document.createElement('div');
+    chip.className = 'chip' + (state.loc?.id === l.id ? ' active' : '');
+    chip.innerHTML = `${l.label}<span class="chip-sub">${l.sub}</span>`;
+    chip.onclick = () => { state.loc = l; renderLocations(); updateFooter(); };
+    c.appendChild(chip);
+  });
+}
+
+// ─── COVERS ───
+function changeCover(d) {
+  const max = 4;
+  state.covers = Math.max(1, Math.min(max, state.covers + d));
+  document.getElementById('cover-count').textContent = state.covers;
+  document.getElementById('covers-title').textContent = state.covers === 1 ? '1 person' : `${state.covers} people`;
+  document.getElementById('cover-minus').disabled = state.covers <= 1;
+  document.getElementById('cover-plus').disabled = state.covers >= max;
+  for (let i = 1; i <= state.covers; i++) if (!state.selections[i]) state.selections[i] = {};
+  Object.keys(state.selections).forEach(k => { if (parseInt(k) > state.covers) delete state.selections[k]; });
+  if (state.currentPerson > state.covers) state.currentPerson = state.covers;
+  updateExtrasBanner();
+  renderPersonTabs();
+  renderDishGrid();
+  updateFooter();
+}
+function updateExtrasBanner() {
+  const extras = Math.max(0, state.covers - ALLOWANCE);
+  const b = document.getElementById('extras-banner');
+  if (extras > 0) {
+    const cost = extras * EXTRA_PRICE;
+    b.innerHTML = `${ALLOWANCE} complimentary · ${extras} extra = <b>PKR ${cost.toLocaleString()}</b> added to your folio`;
+    b.classList.remove('hidden');
+  } else { b.classList.add('hidden'); }
+}
+
+// ─── PERSON TABS ───
+function renderPersonTabs() {
+  const c = document.getElementById('person-tabs');
+  if (state.covers <= 1) { c.classList.add('hidden'); document.getElementById('meal-title').textContent = 'Choose your meal'; return; }
+  c.classList.remove('hidden');
+  c.innerHTML = '';
+  for (let i = 1; i <= state.covers; i++) {
+    const tab = document.createElement('div');
+    const done = isPersonDone(i);
+    tab.className = 'person-tab' + (state.currentPerson === i ? ' active' : '') + (done ? ' done' : '');
+    tab.innerHTML = `<span class="person-tab-check">✓</span> Person ${i}`;
+    tab.onclick = () => {
+      state.currentPerson = i; renderPersonTabs(); renderDishGrid(); updateFooter();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    c.appendChild(tab);
+  }
+  document.getElementById('meal-title').textContent = `Person ${state.currentPerson} · their meal`;
+}
+
+// ─── DISH GRID ───
+function renderDishGrid() {
+  const grid = document.getElementById('dish-grid');
+  grid.innerHTML = '';
+  const sel = state.selections[state.currentPerson] || {};
+  MAINS.forEach(m => {
+    const card = document.createElement('div');
+    const isSel = sel.main && sel.main.id === m.id;
+    card.className = 'dish-card' + (isSel ? ' selected' : '');
+    card.innerHTML = `
+      <div class="check-mark">✓</div>
+      ${m.popular ? '<div class="badge-popular">Popular</div>' : ''}
+      <div class="img-wrap"><img src="${m.img}" alt="${m.name}" loading="lazy"></div>
+      <div class="body"><h4>${m.name}</h4><p>${m.short}</p></div>`;
+    card.onclick = () => openSheet(m);
+    grid.appendChild(card);
+  });
+}
+
+// ─── DISH MODAL ───
+function openSheet(main) {
+  modalMain = main;
+  const existing = state.selections[state.currentPerson]?.main?.id === main.id ? state.selections[state.currentPerson] : null;
+  modalSel = {
+    addons: existing ? { ...existing.addons } : {},
+    sides:  existing ? [...existing.sides]    : [],
+    startDrink: existing ? existing.startDrink : null,
+    endDrink:   existing ? existing.endDrink   : null,
+  };
+  if (main.sides.mode === 'all_included') {
+    modalSel.sides = main.sides.allowed.map(id => SIDES.find(s => s.id === id));
+  }
+  renderSheetContent();
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  validateSheet();
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('sheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderSheetContent() {
+  const m = modalMain;
+  document.getElementById('sheet-hero').innerHTML = `
+    <img src="${m.img}" alt="${m.name}">
+    <div class="sheet-hero-overlay">
+      <div class="sheet-hero-content">
+        <h2>${m.name}</h2>
+        <p>${state.covers > 1 ? `Person ${state.currentPerson} · ` : ''}${m.short}</p>
+      </div>
+    </div>`;
+
+  let html = `<p style="font-size:13px; color:var(--ink-3); line-height:1.55; margin-bottom:8px;">${m.long}</p>`;
+
+  if (m.addons && m.addons.length > 0) {
+    m.addons.forEach(g => {
+      html += `<div class="sheet-section-title">${g.label} ${g.required ? '<span class="req">Required</span>' : ''}</div>`;
+      html += `<div class="opt-row">`;
+      g.options.forEach(o => {
+        const active = modalSel.addons[g.group] === o.v;
+        html += `<div class="opt-chip${active ? ' active' : ''}" onclick="pickAddon('${g.group}','${o.v}')">${o.emoji ? o.emoji+' ' : ''}${o.v}</div>`;
+      });
+      html += `</div>`;
+    });
+  }
+
+  html += `<div class="sheet-section-title">Starting drink <span class="req">Required</span></div>`;
+  html += `<div class="opt-row">`;
+  STARTING_DRINKS.forEach(d => {
+    const active = modalSel.startDrink && modalSel.startDrink.id === d.id;
+    html += `<div class="opt-chip${active ? ' active' : ''}" onclick="pickDrink('start','${d.id}')">${d.name}</div>`;
+  });
+  html += `</div>`;
+
+  const sideRule = m.sides;
+  if (sideRule.mode === 'all_included') {
+    html += `<div class="sheet-section-title">Sides <span class="opt">Included</span></div>`;
+    html += `<div class="all-included">All ${sideRule.allowed.length} sides included with The Full Monty</div>`;
+  } else if (sideRule.allowed.length === 0) {
+    html += `<div class="sheet-section-title">Sides</div>`;
+    html += `<div class="no-sides">This dish doesn't take sides — it's complete on its own.</div>`;
+  } else {
+    const max = sideRule.pickMax;
+    html += `<div class="sheet-section-title">Sides <span class="opt">Optional</span></div>`;
+    html += `<div class="side-counter">Pick up to <b>${max}</b> · ${modalSel.sides.length}/${max} selected</div>`;
+    html += `<div class="sides-grid">`;
+    sideRule.allowed.forEach(id => {
+      const s = SIDES.find(x => x.id === id);
+      const active = modalSel.sides.some(x => x.id === id);
+      const atMax = !active && modalSel.sides.length >= max;
+      html += `<div class="side-card${active ? ' active' : ''}${atMax ? ' disabled' : ''}" onclick="toggleSide('${id}')">
+        <h5>${s.name}</h5><p>${s.desc}</p></div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `<div class="sheet-section-title">Ending drink <span class="req">Required</span></div>`;
+  html += `<div class="opt-row">`;
+  ENDING_DRINKS.forEach(d => {
+    const active = modalSel.endDrink && modalSel.endDrink.id === d.id;
+    html += `<div class="opt-chip${active ? ' active' : ''}" onclick="pickDrink('end','${d.id}')">${d.name}</div>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('sheet-body').innerHTML = html;
+}
+
+function pickAddon(group, value) { modalSel.addons[group] = value; renderSheetContent(); validateSheet(); }
+function pickDrink(type, id) {
+  const list = type === 'start' ? STARTING_DRINKS : ENDING_DRINKS;
+  const d = list.find(x => x.id === id);
+  if (type === 'start') modalSel.startDrink = d; else modalSel.endDrink = d;
+  renderSheetContent(); validateSheet();
+}
+function toggleSide(id) {
+  const max = modalMain.sides.pickMax;
+  const i = modalSel.sides.findIndex(s => s.id === id);
+  if (i >= 0) modalSel.sides.splice(i, 1);
+  else if (modalSel.sides.length < max) modalSel.sides.push(SIDES.find(s => s.id === id));
+  renderSheetContent(); validateSheet();
+}
+function validateSheet() {
+  const m = modalMain;
+  const requiredAddonsOk = (m.addons || []).every(g => !g.required || modalSel.addons[g.group]);
+  const drinksOk = modalSel.startDrink && modalSel.endDrink;
+  document.getElementById('add-btn').disabled = !(requiredAddonsOk && drinksOk);
+}
+
+function addToOrder() {
+  const sel = state.selections[state.currentPerson] || {};
+  sel.main = { id: modalMain.id, name: modalMain.name, img: modalMain.img };
+  sel.addons = { ...modalSel.addons };
+  sel.sides = [...modalSel.sides];
+  sel.startDrink = modalSel.startDrink;
+  sel.endDrink = modalSel.endDrink;
+  state.selections[state.currentPerson] = sel;
+  closeSheet();
+
+  // Auto-advance
+  let next = null;
+  for (let i = 1; i <= state.covers; i++) if (!isPersonDone(i)) { next = i; break; }
+  if (next && state.covers > 1) state.currentPerson = next;
+
+  renderPersonTabs();
+  renderDishGrid();
+  updateFooter();
+  document.getElementById('screen-order').scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── VALIDATION ───
+function isPersonDone(i) {
+  const s = state.selections[i];
+  return !!(s && s.main && s.startDrink && s.endDrink);
+}
+function isAllDone() {
+  if (!state.slot || !state.loc) return false;
+  for (let i = 1; i <= state.covers; i++) if (!isPersonDone(i)) return false;
+  return true;
+}
+
+// ─── FOOTER ───
+function updateFooter() {
+  const f = document.getElementById('footer');
+  const t = document.getElementById('footer-title');
+  const s = document.getElementById('footer-sub');
+  const b = document.getElementById('confirm-btn');
+
+  const anyMain = Object.values(state.selections).some(x => x.main);
+  if (!state.slot && !state.loc && !anyMain) { f.classList.add('hidden-bar'); return; }
+  f.classList.remove('hidden-bar');
+
+  if (!state.slot) { t.textContent = 'Pick a time'; s.textContent = 'Step 1'; b.disabled = true; b.textContent = 'Continue →'; return; }
+  if (!state.loc)  { t.textContent = 'Pick a location'; s.textContent = 'Step 2'; b.disabled = true; b.textContent = 'Continue →'; return; }
+
+  let done = 0; for (let i = 1; i <= state.covers; i++) if (isPersonDone(i)) done++;
+  if (done < state.covers) {
+    t.textContent = `${done} of ${state.covers} ${state.covers === 1 ? 'person' : 'people'} done`;
+    s.textContent = state.covers === 1 ? 'Tap a dish to start' : `Person ${state.currentPerson} next`;
+    b.disabled = true; b.textContent = 'Continue →';
+    return;
+  }
+
+  t.textContent = `Ready — ${state.covers === 1 ? 'your meal' : state.covers + ' meals'}`;
+  s.textContent = `${state.slot.label} · ${state.loc.label}`;
+  b.disabled = false; b.textContent = 'Review →';
+}
+
+function onConfirm() {
+  if (currentScreen() === 'order' && isAllDone()) showReview();
+  else if (currentScreen() === 'review') showSuccess();
+}
+function currentScreen() {
+  if (!document.getElementById('screen-success').classList.contains('hidden')) return 'success';
+  if (!document.getElementById('screen-review').classList.contains('hidden')) return 'review';
+  return 'order';
+}
+
+function showReview() {
+  document.getElementById('screen-order').classList.add('hidden');
+  document.getElementById('screen-review').classList.remove('hidden');
+  document.getElementById('header-title').innerHTML = '<em>Hamsun</em> · Review';
+  document.getElementById('review-meta').innerHTML = `Room 301`;
+
+  // Schedule banner — single time + location for everyone
+  document.getElementById('schedule-banner').innerHTML = `
+    <div>
+      <div class="sb-loc">When</div>
+      <div class="sb-time">${state.slot.label}</div>
+    </div>
+    <div class="sb-divider"></div>
+    <div>
+      <div class="sb-loc">Where</div>
+      <div class="sb-time">${state.loc.label}</div>
+    </div>`;
+
+  const c = document.getElementById('review-cards');
+  c.innerHTML = '';
+  for (let i = 1; i <= state.covers; i++) {
+    const s = state.selections[i];
+    if (!s || !s.main) continue;
+    const sidesText = s.sides.length ? s.sides.map(x => x.name).join(', ') : '—';
+    const addonsText = Object.values(s.addons || {}).join(', ');
+    const card = document.createElement('div');
+    card.className = 'review-card';
+    card.innerHTML = `
+      <div class="review-header">
+        <h3>${state.covers === 1 ? 'Your meal' : 'Person ' + i}</h3>
+        <button class="edit-btn" onclick="editPerson(${i})">Edit</button>
+      </div>
+      <div class="review-line">
+        <div class="review-label">Main</div>
+        <div class="review-value">${s.main.name}${addonsText ? ` <em>· ${addonsText}</em>` : ''}</div>
+      </div>
+      <div class="review-line">
+        <div class="review-label">Sides</div>
+        <div class="review-value">${sidesText}</div>
+      </div>
+      <div class="review-line">
+        <div class="review-label">Drinks</div>
+        <div class="review-value">${s.startDrink.name} <em>·</em> ${s.endDrink.name}</div>
+      </div>`;
+    c.appendChild(card);
+  }
+  const extras = Math.max(0, state.covers - ALLOWANCE);
+  if (extras > 0) {
+    const bn = document.createElement('div');
+    bn.className = 'extras-banner';
+    bn.style.margin = '4px 16px 12px';
+    bn.innerHTML = `${ALLOWANCE} complimentary · ${extras} extra = <b>PKR ${(extras * EXTRA_PRICE).toLocaleString()}</b> added to your folio`;
+    c.appendChild(bn);
+  }
+  document.getElementById('confirm-btn').textContent = 'Confirm breakfast →';
+  document.getElementById('confirm-btn').disabled = false;
+  document.getElementById('footer-title').textContent = 'Looks good?';
+  document.getElementById('footer-sub').textContent = 'Tap confirm to send to kitchen';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function editPerson(i) {
+  state.currentPerson = i;
+  document.getElementById('screen-review').classList.add('hidden');
+  document.getElementById('screen-order').classList.remove('hidden');
+  document.getElementById('header-title').innerHTML = '<em>Hamsun</em> · Breakfast';
+  renderPersonTabs();
+  renderDishGrid();
+  updateFooter();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showSuccess() {
+  document.getElementById('screen-review').classList.add('hidden');
+  document.getElementById('screen-success').classList.remove('hidden');
+  document.getElementById('footer').classList.add('hidden-bar');
+  document.getElementById('header-title').innerHTML = '<em>Hamsun</em> · Confirmed';
+  document.getElementById('success-sub').innerHTML = `${state.slot.label} · ${state.loc.label}<br>Room 301`;
+
+  let html = '';
+  for (let i = 1; i <= state.covers; i++) {
+    const s = state.selections[i];
+    if (!s || !s.main) continue;
+    if (state.covers > 1) html += `<h4>Person ${i}</h4>`;
+    const addons = Object.values(s.addons || {}).join(', ');
+    html += `<div class="success-line"><b>Main:</b> ${s.main.name}${addons ? ' (' + addons + ')' : ''}</div>`;
+    if (s.sides.length) html += `<div class="success-line"><b>Sides:</b> ${s.sides.map(x => x.name).join(', ')}</div>`;
+    html += `<div class="success-line"><b>Drinks:</b> ${s.startDrink.name} · ${s.endDrink.name}</div>`;
+    if (i < state.covers) html += `<div style="height:8px;"></div>`;
+  }
+  document.getElementById('success-summary').innerHTML = html;
+}
+
+function goBack() {
+  if (currentScreen() === 'success') location.reload();
+  else if (currentScreen() === 'review') {
+    document.getElementById('screen-review').classList.add('hidden');
+    document.getElementById('screen-order').classList.remove('hidden');
+    document.getElementById('header-title').innerHTML = '<em>Hamsun</em> · Breakfast';
+    updateFooter();
+  } else {
+    if (confirm('Leave breakfast? Your selections will be saved as a draft.')) location.href = '/';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

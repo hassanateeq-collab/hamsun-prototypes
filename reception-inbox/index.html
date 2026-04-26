@@ -1,0 +1,1665 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Reception Inbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(26,26,26,0.04);
+  --spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 14px; line-height: 1.5;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+}
+button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
+em { font-style: italic; color: var(--gold-dark); }
+
+/* ════ TOPBAR ════ */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--edge);
+  padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px;
+}
+.brand {
+  font-family: var(--f-display); font-size: 17px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.brand-sub {
+  font-family: var(--f-text); font-size: 10.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-4);
+  margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--edge);
+}
+.topbar-spacer { flex: 1; }
+.topbar-prop {
+  padding: 6px 12px; border-radius: var(--r-pill); border: 1px solid var(--edge);
+  background: var(--paper); font-size: 12px; font-weight: 500; cursor: pointer;
+}
+.topbar-icon-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--edge); background: var(--paper);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; cursor: pointer; transition: transform 0.2s var(--spring);
+}
+.topbar-icon-btn:active { transform: scale(0.92); }
+
+/* ════ TAB BAR ════ */
+.tab-bar {
+  background: var(--paper); border-bottom: 1px solid var(--edge);
+  padding: 0 22px;
+  display: flex; gap: 4px; overflow-x: auto;
+  scrollbar-width: none; -ms-overflow-style: none;
+  position: sticky; top: 53px; z-index: 25;
+}
+.tab-bar::-webkit-scrollbar { display: none; }
+.tab {
+  position: relative;
+  padding: 12px 16px 12px 14px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink-3);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s var(--spring);
+  white-space: nowrap; cursor: pointer;
+  flex-shrink: 0;
+}
+.tab:hover { color: var(--ink); }
+.tab.active {
+  color: var(--ink); font-weight: 600;
+  border-bottom-color: var(--gold-dark);
+}
+.tab-icon { font-size: 14px; }
+.tab-count {
+  background: var(--edge); color: var(--ink-3);
+  font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: var(--r-pill);
+  letter-spacing: 0.04em; margin-left: 2px;
+}
+.tab.active .tab-count { background: var(--gold-mist); color: var(--gold-dark); }
+.tab.has-urgent .tab-count {
+  background: var(--ember); color: white;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* ════ MAIN CONTAINER ════ */
+.dashboard {
+  max-width: 1320px; margin: 0 auto; padding: 16px 22px 80px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ════ VIEW SWITCHING ════ */
+.view { display: none; flex-direction: column; gap: 14px; }
+.view.active { display: flex; }
+
+/* ════ VIEW HEADER (for sub-views) ════ */
+.view-head {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 4px;
+}
+.view-head h2 {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.015em;
+}
+.view-head h2 em { color: var(--gold-dark); }
+.view-head .meta { font-size: 12px; color: var(--ink-3); margin-left: 6px; padding-left: 6px; border-left: 1px solid var(--edge); }
+.view-head-spacer { flex: 1; }
+.view-head .btn { padding: 7px 12px; font-size: 12px; }
+
+/* ════ OVERDUE STRIP (cross-team alerts) ════ */
+.overdue-strip {
+  background: var(--paper); border: 1px solid var(--ember);
+  border-radius: var(--r-md); overflow: hidden;
+  box-shadow: 0 2px 8px rgba(198,40,40,0.10);
+}
+.overdue-strip-head {
+  padding: 9px 14px; background: var(--ember); color: white;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; font-weight: 600; letter-spacing: 0.005em;
+}
+.overdue-strip-head .warn-icon { font-size: 14px; }
+.overdue-strip-head .desc { flex: 1; }
+.overdue-strip-head em { color: white; font-weight: 700; font-style: normal; padding: 0 4px; }
+.overdue-row {
+  padding: 10px 14px; display: grid;
+  grid-template-columns: 110px 60px 1fr auto auto;
+  gap: 12px; align-items: center;
+  border-top: 1px solid var(--ember-mist);
+  font-size: 12.5px;
+}
+.overdue-row:hover { background: var(--ember-mist); }
+.overdue-row .team-chip {
+  font-size: 10.5px; font-weight: 700; padding: 4px 9px;
+  border-radius: var(--r-pill); background: var(--ember-mist); color: var(--ember);
+  letter-spacing: 0.06em; display: inline-flex; align-items: center; gap: 5px;
+  text-transform: uppercase;
+}
+.overdue-row .room-cell {
+  font-family: var(--f-display); font-size: 15px; font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.overdue-row .info-cell { font-size: 12.5px; color: var(--ink-2); min-width: 0; }
+.overdue-row .info-cell b { font-weight: 600; }
+.overdue-row .info-cell .guest { color: var(--ink-3); font-size: 11.5px; display: block; }
+.overdue-row .since-cell {
+  font-family: var(--f-text); font-size: 11.5px; font-weight: 700;
+  color: var(--ember); letter-spacing: 0.02em;
+}
+.overdue-row .go-btn {
+  padding: 7px 11px; border-radius: var(--r-sm);
+  background: var(--ember); color: white; font-size: 12px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: all 0.15s var(--spring);
+}
+.overdue-row .go-btn:hover { background: #a02020; }
+.overdue-row .go-btn:active { transform: scale(0.96); }
+
+/* ════ NEEDS-NOW PANEL ════ */
+.needs-block {
+  background: var(--paper); border: 1px solid var(--ember);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.needs-head {
+  padding: 8px 14px; background: linear-gradient(to right, rgba(198,40,40,0.06), transparent);
+  border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 8px;
+}
+.needs-head .pulse {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ember);
+  position: relative; flex-shrink: 0;
+}
+.needs-head .pulse::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: var(--ember); opacity: 0.4; animation: pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.6); opacity: 0; }
+}
+.needs-head .title {
+  font-family: var(--f-display); font-size: 14px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.needs-head .title em { color: var(--ember); }
+.needs-head .count {
+  margin-left: auto; font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-4);
+}
+
+/* ════ RECEPTION GRID (2 columns) ════ */
+.recep-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  .recep-grid { grid-template-columns: 1fr; }
+}
+
+.recep-left { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.team-peek-stack {
+  display: flex; flex-direction: column; gap: 14px;
+  position: sticky; top: 110px;
+}
+@media (max-width: 1100px) {
+  .team-peek-stack { position: static; }
+}
+
+/* ════ TEAM PEEK CARD ════ */
+.peek-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.peek-card.has-overdue { border-color: var(--ember); }
+.peek-head {
+  padding: 11px 14px; background: var(--cream);
+  border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 9px;
+}
+.peek-card.has-overdue .peek-head { background: var(--ember-mist); border-bottom-color: var(--ember); }
+.peek-head .icon { font-size: 16px; }
+.peek-head .label {
+  font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.peek-head .summary {
+  margin-left: auto; font-size: 11px; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.peek-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--edge-soft);
+}
+.peek-stats .stat {
+  padding: 10px 12px; text-align: center;
+  border-right: 1px solid var(--edge-soft);
+}
+.peek-stats .stat:last-child { border-right: 0; }
+.peek-stats .stat .num {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.015em; color: var(--ink); line-height: 1;
+}
+.peek-stats .stat.alert .num { color: var(--ember); }
+.peek-stats .stat.warn .num { color: var(--amber); }
+.peek-stats .stat .lbl {
+  font-size: 10px; font-weight: 600; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
+}
+
+.peek-row {
+  padding: 9px 14px;
+  display: grid; grid-template-columns: 50px minmax(0,1fr) auto;
+  gap: 8px; align-items: center;
+  font-size: 12.5px;
+  border-top: 1px solid var(--edge-soft);
+  transition: background 0.15s;
+}
+.peek-row:hover { background: var(--edge-soft); }
+.peek-row.overdue { background: rgba(198,40,40,0.04); }
+.peek-row.overdue:hover { background: rgba(198,40,40,0.08); }
+.peek-row .room {
+  font-family: var(--f-display); font-size: 14px; font-weight: 600;
+  letter-spacing: -0.005em;
+}
+.peek-row .text {
+  color: var(--ink-2); min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.peek-row .text .sub { color: var(--ink-4); font-size: 11px; display: block; }
+.peek-row .timer {
+  font-size: 10.5px; font-weight: 700; color: var(--ink-4);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.peek-row.overdue .timer { color: var(--ember); }
+
+.peek-empty {
+  padding: 18px 14px; text-align: center;
+  color: var(--moss); font-size: 12px;
+  background: var(--moss-mist);
+}
+.peek-empty .check {
+  display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--moss); color: white; font-size: 12px;
+  line-height: 22px; margin-right: 6px;
+}
+
+.peek-foot {
+  padding: 8px 10px; display: flex; gap: 6px;
+  border-top: 1px solid var(--edge-soft);
+  background: var(--cream);
+}
+.peek-foot .btn { flex: 1; justify-content: center; padding: 7px 8px; font-size: 11.5px; }
+
+/* ════ LIST ════ */
+.list-block {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.list-head {
+  padding: 10px 14px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--edge);
+  background: var(--cream); cursor: pointer; user-select: none;
+}
+.list-head:hover { background: var(--edge-soft); }
+.list-head h3 {
+  font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.list-head .count-badge {
+  font-size: 10.5px; font-weight: 600;
+  background: var(--edge); color: var(--ink-3);
+  padding: 2px 7px; border-radius: var(--r-pill);
+  letter-spacing: 0.04em;
+}
+.list-head .toggle {
+  margin-left: auto; font-size: 11px; color: var(--ink-4);
+  transition: transform 0.2s var(--spring);
+}
+.list-block.collapsed .toggle { transform: rotate(-90deg); }
+.list-block.collapsed .list-body { display: none; }
+
+/* ════ THE LIST ROW ════ */
+.list-row {
+  display: grid;
+  grid-template-columns: 50px 70px minmax(0, 1fr) 110px auto;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--edge-soft);
+  align-items: center;
+  position: relative;
+  transition: background 0.15s, opacity 0.4s var(--spring), transform 0.4s var(--spring);
+}
+.list-row:last-child { border-bottom: 0; }
+.list-row:hover { background: var(--edge-soft); }
+.list-row.removing { opacity: 0; transform: translateX(40px); }
+.list-row.urgent { background: rgba(216,89,0,0.04); }
+.list-row.urgent:hover { background: rgba(216,89,0,0.08); }
+.list-row.overdue { background: rgba(198,40,40,0.04); }
+.list-row.overdue:hover { background: rgba(198,40,40,0.08); }
+.list-row.done { opacity: 0.6; }
+.list-row.recently-changed {
+  background: var(--moss-mist);
+  animation: flash-success 1.2s ease-out;
+}
+@keyframes flash-success {
+  0% { background: var(--moss-mist); }
+  100% { background: transparent; }
+}
+
+.col-time { font-size: 11px; color: var(--ink-4); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.col-room {
+  font-family: var(--f-display); font-size: 16px; font-weight: 600;
+  letter-spacing: -0.01em; color: var(--ink);
+}
+.col-main { min-width: 0; }
+.col-main .req-line { font-size: 13px; line-height: 1.35; margin-bottom: 1px; }
+.col-main .req-line .emoji { font-size: 13px; margin-right: 4px; }
+.col-main .req-line .req-text { color: var(--ink); font-weight: 500; }
+.col-main .req-line .price { color: var(--gold-dark); font-weight: 600; margin-left: 4px; }
+.col-main .req-meta {
+  font-size: 11.5px; color: var(--ink-4); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.col-main .req-meta b { color: var(--ink-3); font-weight: 500; }
+.col-main .req-meta .urgent-flag { color: var(--ember); font-weight: 700; }
+
+.col-status { display: flex; align-items: center; }
+.pill {
+  display: inline-block; padding: 3px 9px; border-radius: var(--r-pill);
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; line-height: 1.2;
+}
+.pill-new       { background: var(--amber-mist); color: var(--amber); }
+.pill-pending   { background: var(--amber-mist); color: var(--amber); }
+.pill-confirmed { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-scheduled { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-progress  { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-overdue   { background: var(--ember-mist); color: var(--ember); }
+.pill-immediate { background: var(--orange-mist); color: var(--orange); }
+.pill-approval  { background: var(--amber-mist); color: var(--amber); }
+.pill-delivered { background: var(--moss-mist); color: var(--moss); }
+.pill-done      { background: var(--moss-mist); color: var(--moss); }
+.pill-resolved  { background: var(--moss-mist); color: var(--moss); }
+.pill-approved  { background: var(--moss-mist); color: var(--moss); }
+.pill-rejected  { background: var(--ember-mist); color: var(--ember); }
+.pill-ordered   { background: var(--moss-mist); color: var(--moss); }
+.pill-reminded  { background: var(--amber-mist); color: var(--amber); }
+.pill-no_order  { background: var(--edge-soft); color: var(--ink-4); }
+
+.col-actions { display: flex; gap: 5px; flex-shrink: 0; }
+.btn {
+  padding: 7px 11px; border-radius: var(--r-sm);
+  font-size: 12px; font-weight: 500; line-height: 1.2;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: all 0.15s var(--spring); white-space: nowrap;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--ink-2); }
+.btn-secondary {
+  background: var(--paper); color: var(--ink); border: 1px solid var(--edge);
+}
+.btn-secondary:hover { background: var(--edge-soft); border-color: var(--ink-4); }
+.btn-danger {
+  background: var(--paper); color: var(--ember); border: 1px solid var(--ember-mist);
+}
+.btn-danger:hover { background: var(--ember-mist); }
+.btn-more {
+  background: transparent; color: var(--ink-3); padding: 7px 9px;
+  font-size: 14px; line-height: 1; border-radius: var(--r-sm);
+}
+.btn-more:hover { background: var(--edge-soft); }
+
+/* ════ TWO-TAP CONFIRM PATTERN (for destructive actions) ════ */
+.btn.confirming {
+  background: var(--ember) !important; color: white !important;
+  border-color: var(--ember) !important;
+  animation: shake 0.4s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* ════ KITCHEN view: stat row + per-slot grouping ════ */
+.stat-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+}
+.stat-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 12px 14px;
+}
+.stat-card .num {
+  font-family: var(--f-display); font-size: 24px; font-weight: 500;
+  letter-spacing: -0.015em; line-height: 1; margin-bottom: 4px;
+}
+.stat-card .num em { color: var(--gold-dark); }
+.stat-card .lbl {
+  font-size: 10.5px; font-weight: 600; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+
+.slot-block {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.slot-head {
+  padding: 9px 14px; background: var(--cream); border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 10px;
+}
+.slot-head .time-label {
+  font-family: var(--f-display); font-size: 14px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.slot-head .meta { font-size: 11.5px; color: var(--ink-4); }
+
+/* ════ EMPTY STATE ════ */
+.empty {
+  padding: 28px 16px; text-align: center;
+  color: var(--ink-4); font-size: 13px;
+}
+.empty .check {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--moss-mist);
+  color: var(--moss); display: inline-flex; align-items: center; justify-content: center;
+  font-size: 16px; margin-bottom: 6px;
+}
+
+/* ════ UNDO TOAST ════ */
+.toast-area {
+  position: fixed; bottom: 22px; right: 22px; z-index: 200;
+  display: flex; flex-direction: column-reverse; gap: 10px;
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .toast-area { left: 14px; right: 14px; bottom: 14px; }
+}
+.toast {
+  position: relative;
+  background: var(--ink); color: var(--paper);
+  border-radius: var(--r-md); padding: 12px 14px 14px;
+  display: flex; align-items: center; gap: 14px;
+  font-size: 13px; min-width: 320px; max-width: 480px;
+  pointer-events: auto;
+  box-shadow: 0 14px 36px rgba(0,0,0,0.28), 0 4px 12px rgba(0,0,0,0.18);
+  transform: translateY(20px); opacity: 0;
+  transition: all 0.32s var(--spring);
+  overflow: hidden;
+}
+.toast.shown { transform: translateY(0); opacity: 1; }
+.toast.hiding { transform: translateY(20px); opacity: 0; }
+.toast.danger { background: var(--ember); }
+.toast.success { background: #1d4d2c; }
+.toast .icon-circle {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255,255,255,0.16);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.toast .body { flex: 1; min-width: 0; line-height: 1.35; }
+.toast .body b { font-weight: 600; }
+.toast .body .sub { font-size: 11px; opacity: 0.7; display: block; margin-top: 1px; }
+.toast .undo-btn {
+  background: rgba(255,255,255,0.16); color: var(--paper);
+  padding: 7px 14px; border-radius: var(--r-sm); font-size: 12px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.22);
+  flex-shrink: 0; cursor: pointer;
+  transition: all 0.15s var(--spring);
+}
+.toast .undo-btn:hover { background: rgba(255,255,255,0.3); }
+.toast .undo-btn:active { transform: scale(0.95); }
+.toast .timer-bar {
+  position: absolute; bottom: 0; left: 0; height: 3px;
+  background: rgba(255,255,255,0.45);
+  width: 100%;
+  transform-origin: left;
+  animation: timer-shrink 7s linear forwards;
+}
+@keyframes timer-shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+/* ════ MOBILE ════ */
+@media (max-width: 760px) {
+  .dashboard { padding: 12px 14px 80px; gap: 10px; }
+  .topbar { padding: 8px 14px; gap: 10px; }
+  .brand-sub { display: none; }
+  .tab-bar { padding: 0 14px; }
+  .tab { padding: 10px 12px; font-size: 12.5px; }
+  .list-row { grid-template-columns: 60px 1fr; gap: 8px; }
+  .col-time { display: none; }
+  .col-status { grid-column: 2; justify-self: end; margin-top: -22px; }
+  .col-actions { grid-column: 1 / -1; flex-wrap: wrap; }
+  .col-actions .btn { flex: 1; justify-content: center; }
+  .view-head h2 { font-size: 18px; }
+  .view-head .meta { display: none; }
+  .overdue-row {
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+  }
+  .overdue-row .since-cell { grid-column: 2; justify-self: end; }
+  .overdue-row .go-btn { grid-column: 1 / -1; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════ TOPBAR ════ -->
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub" id="brand-sub">Reception</span>
+  <span class="topbar-spacer"></span>
+  <button class="topbar-prop">🏨 Hamsun FSL ▾</button>
+  <button class="topbar-icon-btn" title="Search">🔍</button>
+  <button class="topbar-icon-btn" title="Settings">⚙</button>
+</header>
+
+<!-- ════ TAB BAR ════ -->
+<nav class="tab-bar" id="tab-bar"></nav>
+
+<main class="dashboard">
+
+  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: RECEPTION (command center)    -->
+  <!-- ════════════════════════════════════ -->
+  <div class="view active" data-view="reception">
+
+    <!-- Cross-team overdue alert (only renders when there's anything overdue) -->
+    <div id="overdue-strip-host"></div>
+
+    <!-- Reception's own urgent items -->
+    <div class="needs-block">
+      <div class="needs-head">
+        <span class="pulse"></span>
+        <span class="title"><em>Needs your attention</em> now</span>
+        <span class="count" id="needs-count">3 items</span>
+      </div>
+      <div id="needs-list"></div>
+    </div>
+
+    <!-- 2-column command center: left = reception's queue, right = team peek -->
+    <div class="recep-grid">
+
+      <div class="recep-left">
+        <div class="list-block" id="active-block">
+          <div class="list-head" onclick="toggleSection('active-block')">
+            <h3>Today's reception requests</h3>
+            <span class="count-badge" id="active-count">5 active</span>
+            <span class="toggle">▾</span>
+          </div>
+          <div class="list-body" id="active-list"></div>
+        </div>
+
+        <div class="list-block collapsed" id="done-block">
+          <div class="list-head" onclick="toggleSection('done-block')">
+            <h3>Done today</h3>
+            <span class="count-badge" id="done-count">8</span>
+            <span class="toggle">▾</span>
+          </div>
+          <div class="list-body" id="done-list"></div>
+        </div>
+      </div>
+
+      <aside class="team-peek-stack">
+        <!-- Kitchen peek -->
+        <div class="peek-card" id="peek-kitchen-card">
+          <div class="peek-head">
+            <span class="icon">🍳</span>
+            <span class="label">Kitchen · Tomorrow's breakfast</span>
+            <span class="summary" id="peek-kitchen-summary">—</span>
+          </div>
+          <div id="peek-kitchen-body"></div>
+          <div class="peek-foot">
+            <button class="btn btn-secondary" onclick="bulkRemind()">📨 Remind 12</button>
+            <button class="btn btn-secondary" onclick="switchView('kitchen')">Open kitchen →</button>
+          </div>
+        </div>
+
+        <!-- Housekeeping peek -->
+        <div class="peek-card" id="peek-hk-card">
+          <div class="peek-head">
+            <span class="icon">🧺</span>
+            <span class="label">Housekeeping</span>
+            <span class="summary" id="peek-hk-summary">—</span>
+          </div>
+          <div id="peek-hk-body"></div>
+          <div class="peek-foot">
+            <button class="btn btn-secondary" onclick="nudgeTeam('hk')">📞 Nudge HK lead</button>
+            <button class="btn btn-secondary" onclick="switchView('housekeeping')">Open HK →</button>
+          </div>
+        </div>
+
+        <!-- Cleaning peek -->
+        <div class="peek-card" id="peek-cl-card">
+          <div class="peek-head">
+            <span class="icon">🧹</span>
+            <span class="label">Cleaning</span>
+            <span class="summary" id="peek-cl-summary">—</span>
+          </div>
+          <div id="peek-cl-body"></div>
+          <div class="peek-foot">
+            <button class="btn btn-secondary" onclick="nudgeTeam('cl')">📞 Nudge cleaning</button>
+            <button class="btn btn-secondary" onclick="switchView('cleaning')">Open cleaning →</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: KITCHEN / BREAKFAST -->
+  <!-- ════════════════════════════════════ -->
+  <div class="view" data-view="kitchen">
+    <div class="view-head">
+      <h2><em>Kitchen</em> · Tomorrow's breakfast</h2>
+      <span class="meta">Sat 27 Apr · 7:30 – 9:00 AM service</span>
+      <span class="view-head-spacer"></span>
+      <button class="btn btn-secondary" onclick="alert('Print kitchen sheet (mock)')">🖨 Print kitchen sheet</button>
+      <button class="btn btn-primary" onclick="bulkRemind()">📨 Remind 12 outstanding rooms</button>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat-card"><div class="num"><em>6</em>/18</div><div class="lbl">Rooms ordered</div></div>
+      <div class="stat-card"><div class="num">14</div><div class="lbl">Covers expected</div></div>
+      <div class="stat-card"><div class="num">12</div><div class="lbl">Outstanding</div></div>
+      <div class="stat-card"><div class="num">PKR <em>2,850</em></div><div class="lbl">Extras revenue</div></div>
+    </div>
+
+    <div id="kitchen-slots"></div>
+  </div>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: HOUSEKEEPING -->
+  <!-- ════════════════════════════════════ -->
+  <div class="view" data-view="housekeeping">
+    <div class="view-head">
+      <h2><em>Housekeeping</em> queue</h2>
+      <span class="meta">Towels, linen, amenities, laundry pickup · managed by HK team</span>
+      <span class="view-head-spacer"></span>
+      <button class="btn btn-secondary">+ New manual entry</button>
+    </div>
+
+    <div class="list-block">
+      <div class="list-head" style="cursor: default;">
+        <h3>New <span class="count-badge" id="hk-new-count">3</span></h3>
+      </div>
+      <div id="hk-new-list"></div>
+    </div>
+
+    <div class="list-block">
+      <div class="list-head" style="cursor: default;">
+        <h3>In progress <span class="count-badge" id="hk-progress-count">0</span></h3>
+      </div>
+      <div id="hk-progress-list"></div>
+    </div>
+
+    <div class="list-block collapsed" id="hk-done-block">
+      <div class="list-head" onclick="toggleSection('hk-done-block')">
+        <h3>Done today</h3>
+        <span class="count-badge" id="hk-done-count">6</span>
+        <span class="toggle">▾</span>
+      </div>
+      <div class="list-body" id="hk-done-list"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════ -->
+  <!-- VIEW: CLEANING -->
+  <!-- ════════════════════════════════════ -->
+  <div class="view" data-view="cleaning">
+    <div class="view-head">
+      <h2><em>Cleaning</em> queue</h2>
+      <span class="meta">Daily, deep, turndown · managed by cleaning team</span>
+      <span class="view-head-spacer"></span>
+      <button class="btn btn-secondary">+ Schedule clean</button>
+    </div>
+
+    <div class="list-block">
+      <div class="list-head" style="cursor: default;">
+        <h3>New <span class="count-badge" id="cl-new-count">1</span></h3>
+      </div>
+      <div id="cl-new-list"></div>
+    </div>
+
+    <div class="list-block">
+      <div class="list-head" style="cursor: default;">
+        <h3>In progress <span class="count-badge" id="cl-progress-count">1</span></h3>
+      </div>
+      <div id="cl-progress-list"></div>
+    </div>
+
+    <div class="list-block collapsed" id="cl-done-block">
+      <div class="list-head" onclick="toggleSection('cl-done-block')">
+        <h3>Done today</h3>
+        <span class="count-badge" id="cl-done-count">5</span>
+        <span class="toggle">▾</span>
+      </div>
+      <div class="list-body" id="cl-done-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════ Toast area for undo notifications ════ -->
+<div class="toast-area" id="toast-area"></div>
+
+<script>
+// ════════════ DATA ════════════════════════════════════════════════════
+
+const TABS = [
+  { id: 'reception', icon: '📋', label: 'Reception', countId: 'tab-count-reception' },
+  { id: 'kitchen', icon: '🍳', label: 'Kitchen', countId: 'tab-count-kitchen' },
+  { id: 'housekeeping', icon: '🧺', label: 'Housekeeping', countId: 'tab-count-housekeeping' },
+  { id: 'cleaning', icon: '🧹', label: 'Cleaning', countId: 'tab-count-cleaning' },
+];
+
+let currentView = 'reception';
+
+// ─── Reception data ───
+let NEEDS_ACTION = [
+  {
+    id: 'na1', urgency: 'overdue', emoji: '🔧', time: '11:48', room: '503', guest: 'Ali Hasnain',
+    request: 'AC not cooling',
+    meta: '"Not blowing cold air" · via phone <span class="urgent-flag">overdue 12m</span>',
+    actions: [
+      { label: '✓ Triage', kind: 'primary', action: 'triage' },
+      { label: '→ Tech', kind: 'secondary', action: 'assign-tech' },
+      { label: '📞', kind: 'secondary', action: 'call' },
+    ],
+    overdueMin: 12,
+  },
+  {
+    id: 'na2', urgency: 'immediate', emoji: '🔧', time: '12:02', room: '208', guest: 'Rubina Nasir',
+    request: 'TV remote not working',
+    meta: 'Submitted 4m ago · via Guest portal',
+    actions: [
+      { label: '✓ Triage', kind: 'primary', action: 'triage' },
+      { label: '→ Tech', kind: 'secondary', action: 'assign-tech' },
+    ],
+  },
+  {
+    id: 'na3', urgency: 'approval', emoji: '📅', time: '11:55', room: 'G09', guest: 'Khurram Hassan',
+    request: 'Late checkout — 6pm',
+    meta: '50% × PKR 12,000 = <b>PKR 6,000</b> · waiting approval',
+    actions: [
+      { label: '✓ Approve PKR 6,000', kind: 'primary', action: 'approve' },
+      { label: '✕ Reject', kind: 'danger', action: 'reject' },
+    ],
+  },
+];
+
+let REQUESTS = [
+  { id: 'r1', time: '12:25', room: '110', guest: 'Muhammad Mohsin', emoji: '🍳',
+    request: 'In-room dining: 2× Biryani', price: 'PKR 1,700',
+    meta: 'via Guest portal · ad-hoc kitchen order',
+    status: 'pending', state: 'active',
+    actions: [{ label: '✓ Confirm', kind: 'primary', action: 'confirm' }, { label: '✕ Reject', kind: 'danger', action: 'reject' }],
+  },
+  { id: 'r2', time: '12:08', room: 'G06', guest: 'Marutani Katsuhisa', emoji: '🛒',
+    request: 'Mini-shop: ENO + Panadol', price: 'PKR 1,200',
+    meta: 'via Reception · pending pickup from drawer',
+    status: 'pending', state: 'active',
+    actions: [{ label: '✓ Delivered', kind: 'primary', action: 'mark-delivered' }, { label: '✕ Cancel', kind: 'danger', action: 'reject' }],
+  },
+  { id: 'r3', time: '11:30', room: '208', guest: 'Rubina Nasir', emoji: '🍳',
+    request: 'Coke + chips', price: 'PKR 350',
+    meta: 'Posted to folio',
+    status: 'delivered', state: 'active',
+    actions: [{ label: '⋯', kind: 'more', action: 'more' }],
+  },
+  { id: 'r4', time: '11:08', room: '208', guest: 'Rubina Nasir', emoji: '🚗',
+    request: 'Airport pickup',
+    meta: 'Tomorrow 2pm · driver Imran (+92 300...) · Toyota Corolla',
+    status: 'scheduled', state: 'active',
+    actions: [{ label: '⋯', kind: 'more', action: 'more' }],
+  },
+  { id: 'r5', time: '10:54', room: '107', guest: 'Bilal Habib', emoji: '🛎',
+    request: 'Wake-up call',
+    meta: 'Tomorrow 6:30am · WhatsApp confirmed to guest',
+    status: 'confirmed', state: 'active',
+    actions: [{ label: '⋯', kind: 'more', action: 'more' }],
+  },
+  // Done today
+  { id: 'r6', time: '10:31', room: 'G06', guest: 'Marutani', emoji: '🛒', request: 'Mini-shop: USB cable', price: 'PKR 850', meta: 'Delivered · folio +850', status: 'delivered', state: 'done' },
+  { id: 'r7', time: '10:15', room: '211', guest: 'Memon', emoji: '🔧', request: 'Wifi slow', meta: 'Resolved · router rebooted', status: 'resolved', state: 'done' },
+  { id: 'r8', time: '09:48', room: 'G10', guest: 'Steve Rhee', emoji: '📅', request: 'Extend stay +2 nights', price: 'PKR 18,000', meta: 'Approved · charges posted', status: 'approved', state: 'done' },
+  { id: 'r9', time: '09:30', room: '102', guest: 'Ibrahim Ahmed', emoji: '🛎', request: 'Restaurant info', meta: 'Recommended Kolachi & Bundu Khan', status: 'done', state: 'done' },
+  { id: 'r10', time: '09:15', room: 'G06', guest: 'Marutani', emoji: '🍳', request: 'Tea & juice', price: 'PKR 650', meta: 'Delivered · folio +650', status: 'delivered', state: 'done' },
+  { id: 'r11', time: '09:02', room: '110', guest: 'Mohsin', emoji: '🛎', request: 'Recommend laundromat', meta: 'Done · sent address via WhatsApp', status: 'done', state: 'done' },
+  { id: 'r12', time: '08:45', room: '105', guest: 'Nakano', emoji: '🔧', request: 'Bath drain slow', meta: 'Fixed · plunger', status: 'resolved', state: 'done' },
+  { id: 'r13', time: '08:14', room: 'G04', guest: 'Tariq', emoji: '🚗', request: 'Airport drop arranged', meta: 'Tomorrow 4am · driver assigned', status: 'scheduled', state: 'done' },
+];
+
+// ─── Kitchen / Breakfast data ───
+const BREAKFAST_SLOTS = [
+  {
+    id: 's1', label: '7:30 AM', time: '7:30 – 8:00',
+    rooms: [
+      { num: '102', guest: 'Ibrahim Ahmed', covers: 2, items: '1× Aloo Paratha · 1× Omelette', where: 'in-room' },
+      { num: '110', guest: 'Mohsin', covers: 2, items: '2× Pakistani breakfast', where: 'café' },
+      { num: 'G06', guest: 'Marutani', covers: 1, items: '1× Light Bowl', where: 'in-room' },
+    ],
+  },
+  {
+    id: 's2', label: '8:00 AM', time: '8:00 – 8:30',
+    rooms: [
+      { num: '105', guest: 'Wataru Nakano', covers: 2, items: '1× Continental · 1× Avocado Toast +850', where: 'in-room', extras: 850 },
+      { num: '209', guest: 'Abdul Basit', covers: 0, items: 'Reminder sent 19m ago — no reply', where: '—', reminded: true },
+    ],
+  },
+  {
+    id: 's3', label: '8:30 AM', time: '8:30 – 9:00',
+    rooms: [
+      { num: 'G09', guest: 'Khurram Hassan', covers: 1, items: '1× Full Monty', where: 'café' },
+    ],
+  },
+];
+
+const BREAKFAST_NOT_ORDERED = [
+  { num: '103', guest: 'Azeem Ahmed' },
+  { num: '107', guest: 'Bilal Habib' },
+  { num: '108', guest: 'Ali Hasnain' },
+  { num: '109', guest: 'Ren Kudo' },
+  { num: '111', guest: 'Mohsin (2nd room)' },
+  { num: '208', guest: 'Rubina Nasir' },
+  { num: '210', guest: 'Ali Raza' },
+  { num: '211', guest: 'Memon' },
+  { num: '212', guest: '— vacant' },
+  { num: 'G04', guest: 'Umar Tariq' },
+  { num: 'G07', guest: 'Early checkin' },
+  { num: 'G10', guest: 'Steve Rhee' },
+];
+
+// ─── Housekeeping data (items only) ───
+let HK_NEW = [
+  { id: 'hk1', time: '12:25', room: '208', guest: 'Rubina Nasir', emoji: '🧺', request: 'Toiletries refill', meta: 'via Guest portal · 10m ago', status: 'new', state: 'active', minAgo: 10,
+    actions: [{ label: '✓ Done', kind: 'primary', action: 'hk-done' }, { label: '→ Assign', kind: 'secondary', action: 'hk-assign' }, { label: '✕ Cancel', kind: 'danger', action: 'reject' }],
+  },
+  { id: 'hk2', time: '12:08', room: 'G06', guest: 'Marutani', emoji: '🧺', request: 'Linen change', meta: 'via Reception · <span class="urgent-flag">⏱ 32m</span>', status: 'new', state: 'active', minAgo: 32, isOverdue: true,
+    actions: [{ label: '✓ Done', kind: 'primary', action: 'hk-done' }, { label: '→ Assign', kind: 'secondary', action: 'hk-assign' }, { label: '✕ Cancel', kind: 'danger', action: 'reject' }],
+  },
+  { id: 'hk3', time: '11:50', room: '110', guest: 'Mohsin', emoji: '🧺', request: 'Extra towels (4 bath)', meta: 'via Guest portal · 50m ago', status: 'new', state: 'active', minAgo: 50, isOverdue: true,
+    actions: [{ label: '✓ Done', kind: 'primary', action: 'hk-done' }, { label: '→ Assign', kind: 'secondary', action: 'hk-assign' }, { label: '✕ Cancel', kind: 'danger', action: 'reject' }],
+  },
+];
+let HK_PROGRESS = [];
+let HK_DONE = [
+  { id: 'hkd1', time: '11:20', room: '105', guest: 'Nakano', emoji: '🧺', request: 'Slippers (2 pairs)', meta: 'Delivered · Asst. Salman', status: 'done', state: 'done' },
+  { id: 'hkd2', time: '11:02', room: 'G04', guest: 'Tariq', emoji: '🧺', request: 'Toiletries refill', meta: 'Delivered · Asst. Salman', status: 'done', state: 'done' },
+  { id: 'hkd3', time: '10:45', room: '210', guest: 'Ali Raza', emoji: '🧺', request: 'Bed linen change', meta: 'Done · Asst. Bilal', status: 'done', state: 'done' },
+  { id: 'hkd4', time: '10:18', room: '102', guest: 'Ibrahim', emoji: '🧺', request: 'Extra towels (3 bath, 2 hand)', meta: 'Delivered', status: 'done', state: 'done' },
+  { id: 'hkd5', time: '09:40', room: '107', guest: 'Habib', emoji: '🧺', request: 'Laundry pickup', meta: 'Picked up · 4 items · same day', status: 'done', state: 'done' },
+  { id: 'hkd6', time: '08:50', room: 'G06', guest: 'Marutani', emoji: '🧺', request: 'Amenities refill', meta: 'Done', status: 'done', state: 'done' },
+];
+
+// ─── Cleaning data ───
+let CL_NEW = [
+  { id: 'cl1', time: '12:15', room: '211', guest: 'Memon', emoji: '🧹', request: 'Deep clean request', meta: '"Past time we cleaned, looks tired" · via Guest portal · 6m ago', status: 'new', state: 'active', minAgo: 6,
+    actions: [{ label: '✓ Schedule', kind: 'primary', action: 'cl-schedule' }, { label: '→ Assign team', kind: 'secondary', action: 'cl-assign' }, { label: '✕ Decline', kind: 'danger', action: 'reject' }],
+  },
+];
+let CL_PROGRESS = [
+  { id: 'cl2', time: '11:50', room: '105', guest: 'Wataru Nakano', emoji: '🧹', request: 'Daily cleaning', meta: 'Asst. Ahmed · started 12m ago', status: 'progress', state: 'progress', minAgo: 12,
+    actions: [{ label: '✓ Done', kind: 'primary', action: 'cl-done' }, { label: '⋯', kind: 'more', action: 'more' }],
+  },
+];
+let CL_DONE = [
+  { id: 'cld1', time: '11:30', room: '102', guest: 'Ibrahim', emoji: '🧹', request: 'Daily cleaning', meta: 'Done · Asst. Sara', status: 'done', state: 'done' },
+  { id: 'cld2', time: '10:50', room: '110', guest: 'Mohsin', emoji: '🧹', request: 'Quick refresh', meta: 'Done · Asst. Sara', status: 'done', state: 'done' },
+  { id: 'cld3', time: '10:00', room: '208', guest: 'Nasir', emoji: '🧹', request: 'Daily cleaning', meta: 'Done · Asst. Bilal', status: 'done', state: 'done' },
+  { id: 'cld4', time: '09:20', room: 'G09', guest: 'Hassan', emoji: '🧹', request: 'Turndown evening', meta: 'Done last night · scheduled today', status: 'done', state: 'done' },
+  { id: 'cld5', time: '08:45', room: '107', guest: 'Habib', emoji: '🧹', request: 'Daily cleaning', meta: 'Done · Asst. Sara', status: 'done', state: 'done' },
+];
+
+// ════════════ TAB BAR ════════════════════════════════════════════════════
+
+function renderTabBar() {
+  const c = document.getElementById('tab-bar');
+  c.innerHTML = TABS.map(t => `
+    <button class="tab ${currentView === t.id ? 'active' : ''}" data-view="${t.id}" onclick="switchView('${t.id}')">
+      <span class="tab-icon">${t.icon}</span>
+      <span>${t.label}</span>
+      <span class="tab-count" id="${t.countId}">—</span>
+    </button>
+  `).join('');
+  updateTabCounts();
+}
+
+function updateTabCounts() {
+  document.getElementById('tab-count-reception').textContent =
+    NEEDS_ACTION.length + REQUESTS.filter(r => r.state === 'active').length;
+  const recTab = document.querySelector('.tab[data-view="reception"]');
+  if (recTab) recTab.classList.toggle('has-urgent', NEEDS_ACTION.length > 0);
+
+  document.getElementById('tab-count-kitchen').textContent =
+    BREAKFAST_SLOTS.reduce((sum, s) => sum + s.rooms.filter(r => !r.reminded).length, 0) + '/18';
+
+  document.getElementById('tab-count-housekeeping').textContent = HK_NEW.length + HK_PROGRESS.length;
+  document.getElementById('tab-count-cleaning').textContent = CL_NEW.length + CL_PROGRESS.length;
+}
+
+function switchView(viewId) {
+  currentView = viewId;
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === viewId));
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.view === viewId));
+
+  const subLabels = { reception: 'Reception', kitchen: 'Kitchen', housekeeping: 'Housekeeping', cleaning: 'Cleaning' };
+  document.getElementById('brand-sub').textContent = subLabels[viewId] || '';
+
+  if (viewId === 'kitchen') renderKitchen();
+  if (viewId === 'housekeeping') renderHousekeeping();
+  if (viewId === 'cleaning') renderCleaning();
+  if (viewId === 'reception') renderReception();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════ RECEPTION VIEW ════════════════════════════════════════════
+
+function renderReception() {
+  renderOverdueStrip();
+  renderNeeds();
+  renderRequests();
+  renderPeekKitchen();
+  renderPeekHousekeeping();
+  renderPeekCleaning();
+}
+
+// ─── Cross-team overdue strip ───
+function getOverdueItems() {
+  const items = [];
+
+  // Reception NEEDS_ACTION urgency='overdue'
+  NEEDS_ACTION.filter(n => n.urgency === 'overdue').forEach(n => {
+    items.push({
+      team: 'Reception', emoji: '📋', room: n.room, guest: n.guest,
+      request: n.request, since: (n.overdueMin || 0) + 'm overdue', viewId: 'reception',
+    });
+  });
+
+  // Housekeeping items > 30m
+  HK_NEW.filter(h => h.isOverdue).forEach(h => {
+    items.push({
+      team: 'Housekeeping', emoji: '🧺', room: h.room, guest: h.guest,
+      request: h.request, since: h.minAgo + 'm waiting', viewId: 'housekeeping',
+    });
+  });
+
+  // Kitchen reminded breakfast no-reply
+  BREAKFAST_SLOTS.forEach(slot => {
+    slot.rooms.filter(r => r.reminded).forEach(r => {
+      items.push({
+        team: 'Kitchen', emoji: '🍳', room: r.num, guest: r.guest,
+        request: 'Breakfast reminder no reply', since: '19m no reply', viewId: 'kitchen',
+      });
+    });
+  });
+
+  return items;
+}
+
+function renderOverdueStrip() {
+  const host = document.getElementById('overdue-strip-host');
+  const items = getOverdueItems();
+  if (items.length === 0) { host.innerHTML = ''; return; }
+
+  host.innerHTML = `
+    <div class="overdue-strip">
+      <div class="overdue-strip-head">
+        <span class="warn-icon">⚠</span>
+        <span class="desc"><em>${items.length}</em> overdue across teams — needs immediate action</span>
+      </div>
+      ${items.map(o => `
+        <div class="overdue-row">
+          <span class="team-chip">${o.emoji} ${o.team}</span>
+          <span class="room-cell">R${o.room}</span>
+          <span class="info-cell">
+            <b>${o.request}</b>
+            <span class="guest">${o.guest}</span>
+          </span>
+          <span class="since-cell">⏱ ${o.since}</span>
+          <button class="go-btn" onclick="switchView('${o.viewId}')">Go to ${o.team} →</button>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ─── Needs-now panel ───
+function renderNeeds() {
+  const c = document.getElementById('needs-list');
+  if (NEEDS_ACTION.length === 0) {
+    c.innerHTML = '<div class="empty"><div class="check">✓</div>All caught up — nothing urgent.</div>';
+    document.getElementById('needs-count').textContent = '0 items';
+    return;
+  }
+  document.getElementById('needs-count').textContent = NEEDS_ACTION.length + ' item' + (NEEDS_ACTION.length === 1 ? '' : 's');
+  c.innerHTML = NEEDS_ACTION.map(item => rowHtml(item, true)).join('');
+  c.querySelectorAll('.list-row').forEach(row => bindRow(row, NEEDS_ACTION, handleNeedsAction));
+}
+
+// ─── Today's requests + Done ───
+function renderRequests() {
+  const active = REQUESTS.filter(r => r.state === 'active');
+  const done = REQUESTS.filter(r => r.state === 'done');
+  document.getElementById('active-count').textContent = active.length + ' active';
+  document.getElementById('done-count').textContent = done.length;
+  document.getElementById('active-list').innerHTML = active.length ? active.map(r => rowHtml(r)).join('') : '<div class="empty">No items</div>';
+  document.getElementById('done-list').innerHTML = done.length ? done.map(r => rowHtml(r)).join('') : '<div class="empty">No items</div>';
+  document.querySelectorAll('#active-list .list-row, #done-list .list-row').forEach(row =>
+    bindRow(row, REQUESTS, handleRequestAction)
+  );
+}
+
+// ─── Team peek: KITCHEN ───
+function renderPeekKitchen() {
+  const orderedCount = BREAKFAST_SLOTS.reduce((s, slot) => s + slot.rooms.filter(r => !r.reminded).length, 0);
+  const noReply = BREAKFAST_SLOTS.flatMap(s => s.rooms.filter(r => r.reminded));
+  const total = orderedCount + BREAKFAST_NOT_ORDERED.length + noReply.length;
+
+  document.getElementById('peek-kitchen-summary').textContent = `${orderedCount}/${total} ordered`;
+  document.getElementById('peek-kitchen-card').classList.toggle('has-overdue', noReply.length > 0);
+
+  let html = `
+    <div class="peek-stats">
+      <div class="stat"><div class="num">${orderedCount}</div><div class="lbl">ordered</div></div>
+      <div class="stat ${BREAKFAST_NOT_ORDERED.length > 5 ? 'warn' : ''}"><div class="num">${BREAKFAST_NOT_ORDERED.length}</div><div class="lbl">no order</div></div>
+      <div class="stat ${noReply.length > 0 ? 'alert' : ''}"><div class="num">${noReply.length}</div><div class="lbl">no reply</div></div>
+    </div>
+  `;
+
+  // Per-slot summary lines
+  BREAKFAST_SLOTS.forEach(slot => {
+    const ordered = slot.rooms.filter(r => !r.reminded);
+    const reminded = slot.rooms.filter(r => r.reminded);
+    if (ordered.length === 0 && reminded.length === 0) return;
+    const overdueRow = reminded.length > 0;
+    html += `
+      <div class="peek-row ${overdueRow ? 'overdue' : ''}">
+        <div class="room">${slot.label}</div>
+        <div class="text">
+          ${ordered.length} ordered${reminded.length ? ' · <b>' + reminded.length + ' no reply</b>' : ''}
+          <span class="sub">${ordered.map(r => r.num).join(' · ') || '—'}</span>
+        </div>
+        <div class="timer">${overdueRow ? '⚠' : '✓'}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById('peek-kitchen-body').innerHTML = html;
+}
+
+// ─── Team peek: HOUSEKEEPING ───
+function renderPeekHousekeeping() {
+  const overdueCount = HK_NEW.filter(h => h.isOverdue).length;
+  document.getElementById('peek-hk-summary').textContent = `${HK_NEW.length} new · ${HK_PROGRESS.length} in progress`;
+  document.getElementById('peek-hk-card').classList.toggle('has-overdue', overdueCount > 0);
+
+  let html = `
+    <div class="peek-stats">
+      <div class="stat ${HK_NEW.length > 0 ? 'warn' : ''}"><div class="num">${HK_NEW.length}</div><div class="lbl">new</div></div>
+      <div class="stat"><div class="num">${HK_PROGRESS.length}</div><div class="lbl">in progress</div></div>
+      <div class="stat"><div class="num">${HK_DONE.length}</div><div class="lbl">done</div></div>
+    </div>
+  `;
+
+  // Top 3 oldest items
+  const items = [...HK_NEW.sort((a, b) => (b.minAgo || 0) - (a.minAgo || 0)), ...HK_PROGRESS].slice(0, 3);
+  if (items.length === 0) {
+    html += `<div class="peek-empty"><span class="check">✓</span>All caught up</div>`;
+  } else {
+    items.forEach(item => {
+      html += `
+        <div class="peek-row ${item.isOverdue ? 'overdue' : ''}">
+          <div class="room">R${item.room}</div>
+          <div class="text">${item.request}<span class="sub">${item.guest}</span></div>
+          <div class="timer">${item.minAgo ? '⏱ ' + item.minAgo + 'm' : ''}</div>
+        </div>
+      `;
+    });
+  }
+
+  document.getElementById('peek-hk-body').innerHTML = html;
+}
+
+// ─── Team peek: CLEANING ───
+function renderPeekCleaning() {
+  document.getElementById('peek-cl-summary').textContent = `${CL_NEW.length} new · ${CL_PROGRESS.length} in progress`;
+  document.getElementById('peek-cl-card').classList.remove('has-overdue');
+
+  let html = `
+    <div class="peek-stats">
+      <div class="stat ${CL_NEW.length > 0 ? 'warn' : ''}"><div class="num">${CL_NEW.length}</div><div class="lbl">new</div></div>
+      <div class="stat"><div class="num">${CL_PROGRESS.length}</div><div class="lbl">in progress</div></div>
+      <div class="stat"><div class="num">${CL_DONE.length}</div><div class="lbl">done</div></div>
+    </div>
+  `;
+
+  const items = [...CL_NEW, ...CL_PROGRESS].slice(0, 3);
+  if (items.length === 0) {
+    html += `<div class="peek-empty"><span class="check">✓</span>All caught up</div>`;
+  } else {
+    items.forEach(item => {
+      const stateLabel = item.state === 'progress' ? 'in progress' : 'queued';
+      html += `
+        <div class="peek-row">
+          <div class="room">R${item.room}</div>
+          <div class="text">${item.request} · ${stateLabel}<span class="sub">${item.guest}</span></div>
+          <div class="timer">${item.minAgo ? item.minAgo + 'm' : ''}</div>
+        </div>
+      `;
+    });
+  }
+
+  document.getElementById('peek-cl-body').innerHTML = html;
+}
+
+// ════════════ KITCHEN VIEW (full) ════════════════════════════════════════
+
+function renderKitchen() {
+  const c = document.getElementById('kitchen-slots');
+  const slotsHtml = BREAKFAST_SLOTS.map(slot => {
+    const totalCovers = slot.rooms.reduce((s, r) => s + (r.covers || 0), 0);
+    const rowsHtml = slot.rooms.map(room => `
+      <div class="list-row">
+        <div class="col-time">${slot.label}</div>
+        <div class="col-room">R${room.num}</div>
+        <div class="col-main">
+          <div class="req-line">
+            <span class="req-text">${room.items}</span>
+          </div>
+          <div class="req-meta"><b>${room.guest}</b> · ${room.where}${room.extras ? ' · extras +PKR ' + room.extras.toLocaleString() : ''}</div>
+        </div>
+        <div class="col-status">
+          <span class="pill pill-${room.reminded ? 'reminded' : 'ordered'}">${room.reminded ? 'Reminded' : 'Ordered'}</span>
+        </div>
+        <div class="col-actions">
+          <button class="btn btn-more" onclick="alert('More options (mock)')">⋯</button>
+        </div>
+      </div>
+    `).join('');
+    return `
+      <div class="list-block">
+        <div class="list-head" style="cursor: default;">
+          <h3>${slot.label}</h3>
+          <span class="count-badge">${slot.rooms.length} rooms · ${totalCovers} covers</span>
+        </div>
+        ${rowsHtml}
+      </div>
+    `;
+  }).join('');
+
+  const notYetHtml = `
+    <div class="list-block">
+      <div class="list-head" style="cursor: default;">
+        <h3>Not ordered yet</h3>
+        <span class="count-badge">${BREAKFAST_NOT_ORDERED.length} rooms</span>
+      </div>
+      ${BREAKFAST_NOT_ORDERED.map(r => `
+        <div class="list-row">
+          <div class="col-time">—</div>
+          <div class="col-room">R${r.num}</div>
+          <div class="col-main">
+            <div class="req-line"><span class="req-text" style="color: var(--ink-4);">No order yet</span></div>
+            <div class="req-meta"><b>${r.guest}</b></div>
+          </div>
+          <div class="col-status"><span class="pill pill-no_order">No order</span></div>
+          <div class="col-actions">
+            <button class="btn btn-secondary" onclick="alert('Sent reminder to ${r.num}')">📨 Remind</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  c.innerHTML = slotsHtml + notYetHtml;
+}
+
+function bulkRemind() {
+  showUndoToast(
+    `Sent WhatsApp reminders to <b>${BREAKFAST_NOT_ORDERED.length} rooms</b>`,
+    () => {},
+    { icon: '📨' }
+  );
+}
+
+function nudgeTeam(team) {
+  const labels = { hk: 'Housekeeping lead Salman', cl: 'Cleaning lead Sara' };
+  showUndoToast(
+    `Nudge sent to <b>${labels[team]}</b>`,
+    () => {},
+    { icon: '📞' }
+  );
+}
+
+// ════════════ HOUSEKEEPING + CLEANING VIEWS ═══════════════════════════════
+
+function renderHousekeeping() {
+  document.getElementById('hk-new-count').textContent = HK_NEW.length;
+  document.getElementById('hk-progress-count').textContent = HK_PROGRESS.length;
+  document.getElementById('hk-done-count').textContent = HK_DONE.length;
+
+  document.getElementById('hk-new-list').innerHTML = HK_NEW.length ? HK_NEW.map(r => rowHtml(r)).join('') : '<div class="empty">No new requests</div>';
+  document.getElementById('hk-progress-list').innerHTML = HK_PROGRESS.length ? HK_PROGRESS.map(r => rowHtml(r)).join('') : '<div class="empty">Nothing in progress</div>';
+  document.getElementById('hk-done-list').innerHTML = HK_DONE.length ? HK_DONE.map(r => rowHtml(r)).join('') : '<div class="empty">Nothing done yet</div>';
+
+  document.querySelectorAll('#hk-new-list .list-row, #hk-progress-list .list-row').forEach(row =>
+    bindRow(row, [...HK_NEW, ...HK_PROGRESS], handleHkAction)
+  );
+}
+
+function renderCleaning() {
+  document.getElementById('cl-new-count').textContent = CL_NEW.length;
+  document.getElementById('cl-progress-count').textContent = CL_PROGRESS.length;
+  document.getElementById('cl-done-count').textContent = CL_DONE.length;
+
+  document.getElementById('cl-new-list').innerHTML = CL_NEW.length ? CL_NEW.map(r => rowHtml(r)).join('') : '<div class="empty">No new requests</div>';
+  document.getElementById('cl-progress-list').innerHTML = CL_PROGRESS.length ? CL_PROGRESS.map(r => rowHtml(r)).join('') : '<div class="empty">Nothing in progress</div>';
+  document.getElementById('cl-done-list').innerHTML = CL_DONE.length ? CL_DONE.map(r => rowHtml(r)).join('') : '<div class="empty">Nothing done yet</div>';
+
+  document.querySelectorAll('#cl-new-list .list-row, #cl-progress-list .list-row').forEach(row =>
+    bindRow(row, [...CL_NEW, ...CL_PROGRESS], handleCleaningAction)
+  );
+}
+
+// ════════════ ROW HTML + BINDING ═════════════════════════════════════════
+
+function rowHtml(item, isUrgency = false) {
+  const rowClass = isUrgency
+    ? `list-row ${item.urgency === 'overdue' ? 'overdue' : item.urgency === 'immediate' ? 'urgent' : ''}`
+    : `list-row ${item.state === 'done' ? 'done' : ''}`;
+  const statusLabel = isUrgency ? item.urgency : item.status;
+  const statusPill = isUrgency ? `pill-${item.urgency}` : `pill-${item.status}`;
+  const actionsHtml = (item.actions || []).map(a => a.kind === 'more'
+    ? `<button class="btn btn-more" data-action="more">${a.label}</button>`
+    : `<button class="btn btn-${a.kind}" data-action="${a.action}">${a.label}</button>`).join('');
+  return `
+    <div class="${rowClass}" data-id="${item.id}">
+      <div class="col-time">${item.time}</div>
+      <div class="col-room">R${item.room}</div>
+      <div class="col-main">
+        <div class="req-line">
+          <span class="emoji">${item.emoji}</span>
+          <span class="req-text">${item.request}</span>
+          ${item.price ? `<span class="price">${item.price}</span>` : ''}
+        </div>
+        <div class="req-meta"><b>${item.guest}</b> · ${item.meta}</div>
+      </div>
+      <div class="col-status"><span class="pill ${statusPill}">${prettyStatus(statusLabel)}</span></div>
+      <div class="col-actions">${actionsHtml}</div>
+    </div>
+  `;
+}
+
+function bindRow(row, items, handler) {
+  const item = items.find(i => i.id === row.dataset.id);
+  if (!item) return;
+  row.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      handler(item, btn.dataset.action, btn);
+    });
+  });
+}
+
+function prettyStatus(s) {
+  return ({
+    pending: 'pending', new: 'new', confirmed: 'confirmed', scheduled: 'scheduled',
+    progress: 'in progress', delivered: 'delivered', done: 'done', resolved: 'resolved',
+    approved: 'approved', rejected: 'rejected', overdue: 'overdue', immediate: 'immediate',
+    approval: 'approval', ordered: 'ordered', reminded: 'reminded', no_order: 'no order',
+  })[s] || s;
+}
+
+// ════════════ TWO-TAP CONFIRM (for destructive actions) ═══════════════════
+
+function twoTapConfirm(btn, originalLabel, confirmLabel, onConfirm) {
+  // Already in confirming state? second tap commits
+  if (btn.dataset.confirming === 'true') {
+    delete btn.dataset.confirming;
+    btn.classList.remove('confirming');
+    if (btn._resetTimer) clearTimeout(btn._resetTimer);
+    onConfirm();
+    return;
+  }
+  // First tap: arm
+  btn.dataset.confirming = 'true';
+  btn.classList.add('confirming');
+  btn._origText = originalLabel;
+  btn.innerHTML = confirmLabel;
+  btn._resetTimer = setTimeout(() => {
+    delete btn.dataset.confirming;
+    btn.classList.remove('confirming');
+    btn.innerHTML = originalLabel;
+  }, 3000);
+}
+
+// ════════════ UNDO TOAST SYSTEM ══════════════════════════════════════════
+
+let activeToast = null;
+let activeToastTimer = null;
+
+function showUndoToast(message, undoFn, options = {}) {
+  // Clear existing toast
+  if (activeToast) {
+    activeToast.classList.add('hiding');
+    setTimeout(() => activeToast?.remove(), 300);
+    if (activeToastTimer) clearTimeout(activeToastTimer);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (options.danger ? ' danger' : (options.success ? ' success' : ''));
+  toast.innerHTML = `
+    <span class="icon-circle">${options.icon || '✓'}</span>
+    <div class="body">${message}</div>
+    ${undoFn ? `<button class="undo-btn">↶ Undo</button>` : ''}
+    <div class="timer-bar"></div>
+  `;
+  document.getElementById('toast-area').appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('shown'));
+
+  activeToast = toast;
+
+  if (undoFn) {
+    toast.querySelector('.undo-btn').addEventListener('click', () => {
+      undoFn();
+      hideToast();
+    });
+  }
+
+  activeToastTimer = setTimeout(() => hideToast(), 7000);
+}
+
+function hideToast() {
+  if (!activeToast) return;
+  activeToast.classList.add('hiding');
+  const t = activeToast;
+  setTimeout(() => t.remove(), 320);
+  activeToast = null;
+  if (activeToastTimer) { clearTimeout(activeToastTimer); activeToastTimer = null; }
+}
+
+// ════════════ ACTIONS ════════════════════════════════════════════════════
+
+function snapshot(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+// ─── Reception "needs now" actions ───
+function handleNeedsAction(item, action, btn) {
+  const idx = NEEDS_ACTION.findIndex(x => x.id === item.id);
+  const itemSnap = snapshot(item);
+
+  if (action === 'reject') {
+    twoTapConfirm(btn, '✕ Reject', '⚠ Tap again to reject', () => {
+      NEEDS_ACTION.splice(idx, 1);
+      const newDone = { id: 'rej-' + Date.now(), time: nowTime(), room: itemSnap.room, guest: itemSnap.guest, emoji: itemSnap.emoji, request: itemSnap.request, meta: 'Rejected · WhatsApp explanation sent', status: 'rejected', state: 'done' };
+      REQUESTS.unshift(newDone);
+      renderReception();
+      showUndoToast(
+        `Rejected · <b>R${itemSnap.room}</b> "${itemSnap.request}"<span class="sub">WhatsApp explanation queued</span>`,
+        () => {
+          NEEDS_ACTION.splice(idx, 0, itemSnap);
+          const ridx = REQUESTS.findIndex(r => r.id === newDone.id);
+          if (ridx >= 0) REQUESTS.splice(ridx, 1);
+          renderReception();
+        },
+        { danger: true, icon: '✕' }
+      );
+    });
+  } else if (action === 'approve') {
+    NEEDS_ACTION.splice(idx, 1);
+    const newDone = { id: 'app-' + Date.now(), time: nowTime(), room: itemSnap.room, guest: itemSnap.guest, emoji: itemSnap.emoji, request: itemSnap.request, price: 'PKR 6,000', meta: 'Approved · folio +6,000 · WhatsApp sent', status: 'approved', state: 'done' };
+    REQUESTS.unshift(newDone);
+    renderReception();
+    showUndoToast(
+      `Approved · <b>R${itemSnap.room}</b> late checkout — folio +PKR 6,000<span class="sub">Charge posted, guest notified</span>`,
+      () => {
+        NEEDS_ACTION.splice(idx, 0, itemSnap);
+        const ridx = REQUESTS.findIndex(r => r.id === newDone.id);
+        if (ridx >= 0) REQUESTS.splice(ridx, 1);
+        renderReception();
+      },
+      { icon: '✓' }
+    );
+  } else if (action === 'triage') {
+    NEEDS_ACTION.splice(idx, 1);
+    const triaged = { id: 'trg-' + Date.now(), time: nowTime(), room: itemSnap.room, guest: itemSnap.guest, emoji: itemSnap.emoji, request: itemSnap.request, meta: 'Triaged · technician notified · ETA 15m', status: 'progress', state: 'active', actions: [{ label: '✓ Done', kind: 'primary', action: 'mark-done' }, { label: '⋯', kind: 'more', action: 'more' }] };
+    REQUESTS.unshift(triaged);
+    renderReception();
+    showUndoToast(
+      `Triaged · <b>R${itemSnap.room}</b> "${itemSnap.request}"<span class="sub">Moved to active queue</span>`,
+      () => {
+        NEEDS_ACTION.splice(idx, 0, itemSnap);
+        const ridx = REQUESTS.findIndex(r => r.id === triaged.id);
+        if (ridx >= 0) REQUESTS.splice(ridx, 1);
+        renderReception();
+      },
+      { icon: '✓' }
+    );
+  } else if (action === 'assign-tech') {
+    showUndoToast(
+      `Technician notified · <b>Asif</b> (+92 333…) · ETA 15m<span class="sub">R${itemSnap.room} — ${itemSnap.request}</span>`,
+      () => {},
+      { icon: '🔧' }
+    );
+  } else if (action === 'call') {
+    showUndoToast(`Calling <b>${itemSnap.guest}</b>…`, null, { icon: '📞' });
+  }
+}
+
+// ─── Today's-requests actions ───
+function handleRequestAction(item, action, btn) {
+  const itemSnap = snapshot(item);
+
+  if (action === 'reject') {
+    twoTapConfirm(btn, item.actions.find(a => a.action === 'reject')?.label || '✕ Reject', '⚠ Tap again to cancel', () => {
+      Object.assign(item, {
+        status: 'rejected', state: 'done',
+        actions: [], meta: 'Cancelled · WhatsApp explanation sent',
+      });
+      renderRequests();
+      updateTabCounts();
+      showUndoToast(
+        `Cancelled · <b>R${itemSnap.room}</b> "${itemSnap.request}"<span class="sub">Guest notified — folio not charged</span>`,
+        () => {
+          Object.assign(item, itemSnap);
+          renderRequests(); updateTabCounts();
+        },
+        { danger: true, icon: '✕' }
+      );
+    });
+  } else if (action === 'confirm') {
+    Object.assign(item, {
+      status: 'confirmed', state: 'active',
+      meta: 'Confirmed · order sent to vendor · WhatsApp to guest',
+      actions: [{ label: '✓ Mark delivered', kind: 'primary', action: 'mark-delivered' }, { label: '⋯', kind: 'more', action: 'more' }],
+    });
+    renderRequests(); updateTabCounts();
+    showUndoToast(
+      `Confirmed · <b>R${itemSnap.room}</b> "${itemSnap.request}"<span class="sub">Vendor notified, guest sent confirmation</span>`,
+      () => { Object.assign(item, itemSnap); renderRequests(); updateTabCounts(); },
+      { icon: '✓' }
+    );
+  } else if (action === 'mark-delivered') {
+    Object.assign(item, {
+      status: 'delivered', state: 'done',
+      meta: 'Delivered · folio +' + (item.price || 'charge posted'),
+      actions: [],
+    });
+    renderRequests(); updateTabCounts();
+    showUndoToast(
+      `Marked delivered · <b>R${itemSnap.room}</b> "${itemSnap.request}"<span class="sub">${itemSnap.price ? 'Folio +' + itemSnap.price + ' · ' : ''}Moved to Done</span>`,
+      () => { Object.assign(item, itemSnap); renderRequests(); updateTabCounts(); },
+      { icon: '✓' }
+    );
+  } else if (action === 'mark-done') {
+    Object.assign(item, { status: 'done', state: 'done', meta: 'Marked done · ' + nowTime(), actions: [] });
+    renderRequests(); updateTabCounts();
+    showUndoToast(
+      `Done · <b>R${itemSnap.room}</b> "${itemSnap.request}"`,
+      () => { Object.assign(item, itemSnap); renderRequests(); updateTabCounts(); },
+      { icon: '✓' }
+    );
+  } else if (action === 'more') {
+    alert('More options:\n• View detail\n• Reassign\n• Add note\n• Cancel & refund');
+  }
+}
+
+// ─── Housekeeping actions ───
+function handleHkAction(item, action, btn) {
+  const itemSnap = snapshot(item);
+  const fromList = HK_NEW.includes(item) ? HK_NEW : HK_PROGRESS;
+  const fromIdx = fromList.findIndex(x => x.id === item.id);
+
+  if (action === 'hk-done') {
+    fromList.splice(fromIdx, 1);
+    const doneItem = { ...itemSnap, time: nowTime(), state: 'done', status: 'done', meta: 'Done · ' + nowTime(), actions: [] };
+    HK_DONE.unshift(doneItem);
+    renderHousekeeping(); updateTabCounts();
+    if (currentView === 'reception') renderPeekHousekeeping();
+    showUndoToast(
+      `Done · <b>R${itemSnap.room}</b> ${itemSnap.request}<span class="sub">${itemSnap.guest} · housekeeping</span>`,
+      () => {
+        const didx = HK_DONE.findIndex(d => d.id === doneItem.id);
+        if (didx >= 0) HK_DONE.splice(didx, 1);
+        fromList.splice(fromIdx, 0, itemSnap);
+        renderHousekeeping(); updateTabCounts();
+        if (currentView === 'reception') renderPeekHousekeeping();
+      },
+      { icon: '✓' }
+    );
+  } else if (action === 'hk-assign') {
+    HK_NEW.splice(fromIdx, 1);
+    const progressing = { ...itemSnap, status: 'progress', state: 'progress', meta: 'Asst. Salman · started ' + nowTime(),
+      actions: [{ label: '✓ Done', kind: 'primary', action: 'hk-done' }, { label: '⋯', kind: 'more', action: 'more' }] };
+    HK_PROGRESS.push(progressing);
+    renderHousekeeping(); updateTabCounts();
+    if (currentView === 'reception') renderPeekHousekeeping();
+    showUndoToast(
+      `Assigned · <b>R${itemSnap.room}</b> ${itemSnap.request}<span class="sub">Asst. Salman · started ${nowTime()}</span>`,
+      () => {
+        const pidx = HK_PROGRESS.findIndex(p => p.id === progressing.id);
+        if (pidx >= 0) HK_PROGRESS.splice(pidx, 1);
+        HK_NEW.splice(fromIdx, 0, itemSnap);
+        renderHousekeeping(); updateTabCounts();
+        if (currentView === 'reception') renderPeekHousekeeping();
+      },
+      { icon: '→' }
+    );
+  } else if (action === 'reject') {
+    twoTapConfirm(btn, '✕ Cancel', '⚠ Tap again to cancel', () => {
+      fromList.splice(fromIdx, 1);
+      renderHousekeeping(); updateTabCounts();
+      if (currentView === 'reception') renderPeekHousekeeping();
+      showUndoToast(
+        `Cancelled · <b>R${itemSnap.room}</b> ${itemSnap.request}`,
+        () => {
+          fromList.splice(fromIdx, 0, itemSnap);
+          renderHousekeeping(); updateTabCounts();
+          if (currentView === 'reception') renderPeekHousekeeping();
+        },
+        { danger: true, icon: '✕' }
+      );
+    });
+  } else if (action === 'more') {
+    alert('More options for housekeeping item');
+  }
+}
+
+// ─── Cleaning actions ───
+function handleCleaningAction(item, action, btn) {
+  const itemSnap = snapshot(item);
+  const fromList = CL_NEW.includes(item) ? CL_NEW : CL_PROGRESS;
+  const fromIdx = fromList.findIndex(x => x.id === item.id);
+
+  if (action === 'cl-schedule' || action === 'cl-assign') {
+    CL_NEW.splice(fromIdx, 1);
+    const progressing = { ...itemSnap, status: 'progress', state: 'progress', meta: 'Cleaning lead Sara · scheduled now',
+      actions: [{ label: '✓ Done', kind: 'primary', action: 'cl-done' }, { label: '⋯', kind: 'more', action: 'more' }] };
+    CL_PROGRESS.push(progressing);
+    renderCleaning(); updateTabCounts();
+    if (currentView === 'reception') renderPeekCleaning();
+    showUndoToast(
+      `Scheduled · <b>R${itemSnap.room}</b> ${itemSnap.request}<span class="sub">Cleaning lead Sara · now</span>`,
+      () => {
+        const pidx = CL_PROGRESS.findIndex(p => p.id === progressing.id);
+        if (pidx >= 0) CL_PROGRESS.splice(pidx, 1);
+        CL_NEW.splice(fromIdx, 0, itemSnap);
+        renderCleaning(); updateTabCounts();
+        if (currentView === 'reception') renderPeekCleaning();
+      },
+      { icon: '→' }
+    );
+  } else if (action === 'cl-done') {
+    CL_PROGRESS.splice(fromIdx, 1);
+    const doneItem = { ...itemSnap, time: nowTime(), state: 'done', status: 'done', meta: 'Done · ' + nowTime(), actions: [] };
+    CL_DONE.unshift(doneItem);
+    renderCleaning(); updateTabCounts();
+    if (currentView === 'reception') renderPeekCleaning();
+    showUndoToast(
+      `Done · <b>R${itemSnap.room}</b> ${itemSnap.request}`,
+      () => {
+        const didx = CL_DONE.findIndex(d => d.id === doneItem.id);
+        if (didx >= 0) CL_DONE.splice(didx, 1);
+        CL_PROGRESS.splice(fromIdx, 0, itemSnap);
+        renderCleaning(); updateTabCounts();
+        if (currentView === 'reception') renderPeekCleaning();
+      },
+      { icon: '✓' }
+    );
+  } else if (action === 'reject') {
+    twoTapConfirm(btn, '✕ Decline', '⚠ Tap again to decline', () => {
+      fromList.splice(fromIdx, 1);
+      renderCleaning(); updateTabCounts();
+      if (currentView === 'reception') renderPeekCleaning();
+      showUndoToast(
+        `Declined · <b>R${itemSnap.room}</b> ${itemSnap.request}`,
+        () => {
+          fromList.splice(fromIdx, 0, itemSnap);
+          renderCleaning(); updateTabCounts();
+          if (currentView === 'reception') renderPeekCleaning();
+        },
+        { danger: true, icon: '✕' }
+      );
+    });
+  } else if (action === 'more') {
+    alert('More options for cleaning item');
+  }
+}
+
+// ════════════ UTILITIES ══════════════════════════════════════════════════
+
+function toggleSection(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+function nowTime() {
+  const d = new Date();
+  return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+}
+
+// ════════════ INIT ════════════════════════════════════════════════════════
+renderTabBar();
+renderReception();
+</script>
+</body>
+</html>

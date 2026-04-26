@@ -1,0 +1,1841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hamsun · Breakfast Menu Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+    --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+    --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+    --moss: #2D8F4E; --ember: #C62828; --sky: #1565C0;
+    --f-display: 'Fraunces', Georgia, serif;
+    --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --f-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --r-sm: 8px; --r-md: 12px; --r-lg: 16px; --r-pill: 999px;
+    --shadow-1: 0 1px 2px rgba(26,26,26,0.04);
+    --shadow-2: 0 4px 14px rgba(26,26,26,0.06);
+    --shadow-3: 0 18px 40px rgba(26,26,26,0.14);
+    --spring: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body {
+    font-family: var(--f-text); font-size: 14px; line-height: 1.5;
+    color: var(--ink); background: var(--cream);
+    min-height: 100vh;
+  }
+
+  /* ─── Layout ─── */
+  .topbar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(250,248,244,0.92); backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--edge);
+    padding: 14px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .brand {
+    font-family: var(--f-display); font-size: 18px; font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .brand em { font-style: italic; color: var(--gold-dark); }
+  .brand-sub {
+    font-size: 11px; color: var(--ink-4); margin-left: 6px;
+    font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .property-pick {
+    margin-left: auto;
+    padding: 6px 14px 6px 12px; border-radius: var(--r-pill);
+    background: var(--paper); border: 1px solid var(--edge);
+    font-size: 12.5px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .property-pick::after { content: '▾'; color: var(--ink-4); font-size: 9px; }
+  .preview-btn {
+    padding: 6px 14px; border-radius: var(--r-pill);
+    background: var(--ink); color: var(--paper);
+    font-size: 12px; font-weight: 600; cursor: pointer; border: none;
+    text-decoration: none;
+  }
+
+  .layout {
+    max-width: 1200px; margin: 0 auto;
+    padding: 24px;
+    display: grid; grid-template-columns: 220px 1fr; gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; padding: 16px; gap: 16px; }
+    .nav { position: sticky; top: 60px; z-index: 10; background: var(--cream); padding-top: 8px; }
+  }
+
+  /* Side nav */
+  .nav {
+    position: sticky; top: 80px; align-self: start;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  @media (max-width: 900px) {
+    .nav { flex-direction: row; flex-wrap: wrap; gap: 6px; }
+  }
+  .nav a {
+    text-decoration: none; color: var(--ink-3);
+    padding: 9px 12px; border-radius: var(--r-sm);
+    font-size: 13px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.18s var(--spring);
+  }
+  .nav a:hover { background: var(--edge-soft); color: var(--ink); }
+  .nav a.active {
+    background: var(--ink); color: var(--paper); font-weight: 600;
+  }
+  .nav-num {
+    font-family: var(--f-mono); font-size: 10px;
+    background: var(--paper); border: 1px solid var(--edge);
+    padding: 1px 6px; border-radius: 4px; margin-left: auto;
+    color: var(--ink-3);
+  }
+  .nav a.active .nav-num { background: rgba(255,255,255,0.12); border-color: transparent; color: rgba(255,255,255,0.7); }
+
+  /* Main column */
+  .main { min-width: 0; }
+  .panel {
+    background: var(--paper); border: 1px solid var(--edge);
+    border-radius: var(--r-lg); margin-bottom: 18px;
+    overflow: hidden;
+  }
+  .panel-head {
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; border-bottom: 1px solid var(--edge);
+    background: var(--paper);
+  }
+  .panel-title {
+    font-family: var(--f-display); font-size: 17px; font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+  .panel-title .meta {
+    font-family: var(--f-text); font-size: 11px;
+    color: var(--ink-4); font-weight: 500; margin-left: 8px;
+    letter-spacing: 0.02em;
+  }
+  .panel-body { padding: 18px 20px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: var(--r-sm);
+    font-family: var(--f-text); font-size: 12.5px; font-weight: 500;
+    cursor: pointer; transition: all 0.18s var(--spring);
+    border: 1px solid var(--edge); background: var(--paper); color: var(--ink-2);
+  }
+  .btn:hover { background: var(--edge-soft); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn-primary:hover { background: #2C2C2C; }
+  .btn-add { color: var(--gold-dark); border-color: var(--gold); }
+  .btn-add:hover { background: var(--gold-mist); }
+  .btn-icon { padding: 5px 8px; }
+  .btn-danger { color: var(--ember); }
+  .btn-danger:hover { background: rgba(198,40,40,0.06); }
+
+  /* Time slots */
+  .slot-chips {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .slot-chip {
+    padding: 7px 12px 7px 14px; border-radius: var(--r-pill);
+    background: var(--paper); border: 1px solid var(--edge);
+    font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .slot-chip .x {
+    color: var(--ink-4); cursor: pointer; font-size: 14px; line-height: 1;
+    padding: 0 2px;
+  }
+  .slot-chip .x:hover { color: var(--ember); }
+  .slot-add-input {
+    padding: 7px 12px; border-radius: var(--r-pill);
+    background: transparent; border: 1px dashed var(--edge);
+    font-family: var(--f-text); font-size: 12.5px;
+    width: 130px; outline: none;
+  }
+  .slot-add-input:focus { border-color: var(--gold); border-style: solid; }
+
+  /* Item table */
+  .item-grid {
+    display: grid; gap: 10px;
+  }
+  .item-row {
+    background: var(--paper); border: 1px solid var(--edge);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 56px 1fr auto auto auto auto;
+    gap: 14px; align-items: center;
+  }
+  .item-row.disabled { opacity: 0.55; }
+  .item-img {
+    width: 56px; height: 44px; border-radius: 8px;
+    background: var(--edge-soft);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .item-name {
+    font-family: var(--f-display); font-size: 14.5px; font-weight: 500;
+    line-height: 1.2;
+  }
+  .item-desc {
+    font-size: 11.5px; color: var(--ink-4); margin-top: 2px;
+    line-height: 1.4;
+  }
+  .item-tags {
+    display: flex; gap: 5px; flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .tag {
+    font-size: 10px; padding: 2px 7px; border-radius: 4px;
+    background: var(--edge-soft); color: var(--ink-3);
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .tag.tag-popular { background: var(--gold-mist); color: var(--gold-dark); }
+  .tag.tag-rule { background: rgba(45,143,78,0.08); color: var(--moss); }
+  .tag.tag-mod { background: rgba(21,101,192,0.08); color: var(--sky); }
+
+  /* Toggle */
+  .toggle {
+    width: 36px; height: 20px; border-radius: 12px;
+    background: var(--edge); position: relative; cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%; background: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+    transition: transform 0.2s var(--spring);
+  }
+  .toggle.on { background: var(--moss); }
+  .toggle.on::after { transform: translateX(16px); }
+
+  /* Compact pill row (sides, drinks) */
+  .pill-row {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    align-items: center;
+  }
+  .pill {
+    padding: 7px 10px 7px 12px; border-radius: var(--r-pill);
+    background: var(--paper); border: 1px solid var(--edge);
+    font-size: 13px; font-weight: 500;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: all 0.18s var(--spring);
+  }
+  .pill .x {
+    color: var(--ink-4); cursor: pointer; font-size: 14px; line-height: 1;
+    padding: 0 2px;
+  }
+  .pill .x:hover { color: var(--ember); }
+  .pill.disabled { opacity: 0.4; background: var(--edge-soft); }
+  .pill.disabled .x { display: none; }
+  .pill-tag {
+    font-size: 9.5px; color: var(--ink-4);
+    padding: 1px 5px; border-radius: 4px; background: var(--edge-soft);
+    margin-right: 2px; letter-spacing: 0.04em; text-transform: uppercase;
+    font-weight: 600;
+  }
+  .pill.seasonal .pill-tag { color: var(--gold-dark); background: var(--gold-mist); }
+  .pill-add-input {
+    padding: 7px 12px; border-radius: var(--r-pill);
+    background: transparent; border: 1px dashed var(--edge);
+    font-family: var(--f-text); font-size: 13px;
+    width: 160px; outline: none;
+  }
+  .pill-add-input:focus { border-color: var(--gold); border-style: solid; }
+
+  /* Settings rows */
+  .form-row {
+    display: grid; grid-template-columns: 220px 1fr; gap: 18px;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--edge-soft);
+  }
+  .form-row:last-child { border-bottom: none; }
+  .form-row label {
+    font-size: 13px; color: var(--ink-2); font-weight: 500;
+  }
+  .form-row .help {
+    font-size: 11px; color: var(--ink-4); margin-top: 2px;
+    line-height: 1.4;
+  }
+  .input {
+    padding: 8px 12px; border: 1px solid var(--edge);
+    border-radius: var(--r-sm); font-size: 13px;
+    background: var(--paper); font-family: var(--f-text);
+    color: var(--ink); width: 100%; max-width: 240px;
+    transition: border-color 0.2s;
+  }
+  .input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-mist); }
+  .input.input-sm { width: 80px; }
+  .input-prefix {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--edge); border-radius: var(--r-sm);
+    background: var(--paper); padding-left: 10px;
+  }
+  .input-prefix span {
+    font-size: 11px; color: var(--ink-4); font-weight: 500;
+    margin-right: 4px;
+  }
+  .input-prefix .input { border: none; padding-left: 4px; box-shadow: none; }
+  .input-prefix:focus-within { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-mist); }
+
+  /* Help / kitchen panel */
+  .info-card {
+    padding: 14px 16px;
+    background: var(--edge-soft); border-radius: var(--r-md);
+    margin-bottom: 12px;
+    font-size: 12.5px; line-height: 1.55;
+    color: var(--ink-2);
+  }
+  .info-card h4 {
+    font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
+    margin-bottom: 4px; letter-spacing: -0.005em;
+  }
+  .info-card .info-icon {
+    display: inline-block; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--gold); color: white; text-align: center;
+    line-height: 18px; font-size: 11px; font-weight: 700;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .info-list {
+    list-style: none; padding: 0; margin: 6px 0 0;
+  }
+  .info-list li {
+    padding: 4px 0 4px 18px; position: relative;
+    font-size: 12.5px;
+  }
+  .info-list li::before {
+    content: '→'; position: absolute; left: 0; color: var(--gold);
+    font-weight: 600;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,26,26,0.5);
+    z-index: 100; display: none;
+  }
+  .modal-overlay.open { display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal {
+    background: var(--cream); border-radius: var(--r-lg);
+    width: 100%; max-width: 580px; max-height: 90vh;
+    overflow-y: auto; box-shadow: var(--shadow-3);
+  }
+  .modal-head {
+    padding: 16px 20px; border-bottom: 1px solid var(--edge);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: var(--cream); z-index: 10;
+  }
+  .modal-title {
+    font-family: var(--f-display); font-size: 17px; font-weight: 500;
+  }
+  .modal-x {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--edge); background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: var(--ink-3);
+  }
+  .modal-body { padding: 18px 20px; }
+  .modal-foot {
+    padding: 14px 20px; border-top: 1px solid var(--edge);
+    display: flex; justify-content: flex-end; gap: 8px;
+    background: var(--paper);
+  }
+  .modal-section {
+    margin-bottom: 18px;
+  }
+  .modal-section h4 {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-3); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .modal-section h4::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--gold);
+  }
+  .checkbox-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+  }
+  .checkbox-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-radius: var(--r-sm);
+    background: var(--paper); border: 1px solid var(--edge);
+    font-size: 13px; cursor: pointer;
+    transition: all 0.18s var(--spring);
+  }
+  .checkbox-row:hover { background: var(--edge-soft); }
+  .checkbox-row.checked { background: var(--gold-mist); border-color: var(--gold); color: var(--gold-dark); }
+  .checkbox-box {
+    width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--ink-4);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: white;
+  }
+  .checkbox-row.checked .checkbox-box { background: var(--gold-dark); border-color: var(--gold-dark); }
+  .checkbox-row.checked .checkbox-box::after { content: '✓'; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translate(-50%, 120%);
+    padding: 10px 18px; border-radius: var(--r-pill);
+    background: var(--ink); color: var(--paper);
+    font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-3); z-index: 200;
+    transition: transform 0.4s var(--spring);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translate(-50%, 0); }
+  .toast::before {
+    content: '✓'; width: 18px; height: 18px; border-radius: 50%;
+    background: var(--moss); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700;
+  }
+
+  /* Scroll spy active state — set via JS */
+  .section-target { scroll-margin-top: 84px; }
+
+  hr.div { border: none; border-top: 1px solid var(--edge-soft); margin: 14px 0; }
+
+  /* Menu service tabs */
+  .menu-tabs {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 24px 0;
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .menu-tab {
+    padding: 8px 14px 8px 12px; border-radius: var(--r-pill);
+    border: 1px solid var(--edge); background: var(--paper);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 7px;
+    transition: all 0.18s var(--spring);
+    color: var(--ink-3);
+  }
+  .menu-tab:hover { background: var(--gold-mist); color: var(--gold-dark); border-color: var(--gold); }
+  .menu-tab.active {
+    background: var(--ink); color: var(--paper); border-color: var(--ink); font-weight: 600;
+  }
+  .menu-tab.dim {
+    opacity: 0.55;
+  }
+  .menu-tab .tab-sub {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-left: 4px; opacity: 0.7;
+  }
+  .menu-tab.active .tab-sub { opacity: 0.6; color: rgba(255,255,255,0.7); }
+  .menu-tab-add {
+    background: transparent; border: 1px dashed var(--edge); color: var(--ink-4);
+    padding: 8px 12px;
+  }
+  .menu-tab-add:hover { color: var(--gold-dark); border-color: var(--gold); }
+
+  /* Empty state for an unconfigured menu */
+  .empty-menu {
+    background: var(--paper); border: 1px dashed var(--edge);
+    border-radius: var(--r-lg); padding: 50px 24px; margin-bottom: 18px;
+    text-align: center;
+  }
+  .empty-menu .icon { font-size: 36px; margin-bottom: 10px; }
+  .empty-menu h3 { font-family: var(--f-display); font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .empty-menu p { font-size: 13px; color: var(--ink-3); margin-bottom: 18px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+
+  /* Pricing mode picker */
+  .pricing-modes {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .pricing-mode {
+    flex: 1; min-width: 180px;
+    padding: 12px 14px; border-radius: var(--r-md);
+    border: 1.5px solid var(--edge); background: var(--paper);
+    cursor: pointer; transition: all 0.18s var(--spring);
+  }
+  .pricing-mode:hover { background: var(--edge-soft); }
+  .pricing-mode.active {
+    border-color: var(--gold-dark); background: var(--gold-mist);
+  }
+  .pricing-mode h5 {
+    font-family: var(--f-display); font-size: 14px; font-weight: 500;
+    margin-bottom: 3px; letter-spacing: -0.005em;
+  }
+  .pricing-mode p { font-size: 11.5px; color: var(--ink-3); line-height: 1.4; }
+  .pricing-mode.active p { color: var(--ink-2); }
+
+  /* Price tag on items / options */
+  .price-tag {
+    font-family: var(--f-mono); font-size: 11px;
+    background: var(--ink); color: var(--paper);
+    padding: 2px 7px; border-radius: 4px;
+    font-weight: 500; letter-spacing: 0.02em;
+  }
+  .price-tag.free { background: var(--moss); }
+  .price-tag.add  { background: var(--gold-dark); }
+
+  /* Reorder mini-buttons */
+  .reorder {
+    display: inline-flex; flex-direction: column; gap: 1px;
+    margin-right: 4px;
+  }
+  .reorder button {
+    width: 22px; height: 14px; padding: 0; line-height: 1;
+    background: var(--paper); border: 1px solid var(--edge);
+    color: var(--ink-3); cursor: pointer; font-size: 9px;
+    border-radius: 3px;
+    transition: all 0.18s var(--spring);
+  }
+  .reorder button:not(:disabled):hover { background: var(--gold-mist); color: var(--gold-dark); border-color: var(--gold); }
+  .reorder button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .reorder button:active:not(:disabled) { transform: scale(0.92); }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div>
+    <span class="brand"><em>Hamsun</em></span>
+    <span class="brand-sub">Menu Admin · <span id="admin-title-suffix">Breakfast menu</span></span>
+  </div>
+  <div class="property-pick">FSL · Shahr-e-Faisal</div>
+  <a href="http://localhost:4322/" target="_blank" class="preview-btn">Preview as guest ↗</a>
+</header>
+
+<!-- Service menu tabs -->
+<div class="menu-tabs" id="menu-tabs"></div>
+
+<div class="layout">
+
+  <!-- SIDE NAV -->
+  <nav class="nav">
+    <a href="#sec-slots" class="active"><span>Time Slots</span><span class="nav-num">3</span></a>
+    <a href="#sec-mains"><span>Main Course</span><span class="nav-num" id="nav-num-mains">8</span></a>
+    <a href="#sec-sides"><span>Sides</span><span class="nav-num" id="nav-num-sides">6</span></a>
+    <a href="#sec-start"><span>Starting Drinks</span><span class="nav-num" id="nav-num-start">5</span></a>
+    <a href="#sec-end"><span>Ending Drinks</span><span class="nav-num" id="nav-num-end">5</span></a>
+    <a href="#sec-rules"><span>Section Rules</span></a>
+    <a href="#sec-pricing"><span>Allowance · Pricing</span></a>
+    <a href="#sec-kitchen"><span>Kitchen · Slack</span></a>
+    <a href="#sec-presentation"><span>Plating · Decoration</span></a>
+  </nav>
+
+  <main class="main">
+
+    <!-- ─── TIME SLOTS ─── -->
+    <section id="sec-slots" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Time slots</span>
+          <span class="panel-title meta">Available delivery windows</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="slot-chips" id="slot-chips"></div>
+        <div style="margin-top:14px; font-size:12px; color:var(--ink-4);">
+          Lock window: orders close <b>40 minutes</b> before slot start.
+          <a href="#sec-pricing" style="color:var(--gold-dark); text-decoration:none;">Change in Pricing →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── MAINS ─── -->
+    <section id="sec-mains" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Main course</span>
+          <span class="panel-title meta" id="mains-meta">8 items · 8 active</span>
+        </div>
+        <button class="btn btn-add" onclick="openItemModal('main', null)">⊕ Add main</button>
+      </div>
+      <div class="panel-body">
+        <div class="item-grid" id="mains-grid"></div>
+      </div>
+    </section>
+
+    <!-- ─── SIDES ─── -->
+    <section id="sec-sides" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Sides</span>
+          <span class="panel-title meta" id="sides-meta">6 items · 6 active</span>
+        </div>
+        <button class="btn btn-add" onclick="openItemModal('side', null)">⊕ Add side</button>
+      </div>
+      <div class="panel-body">
+        <div class="item-grid" id="sides-grid"></div>
+      </div>
+    </section>
+
+    <!-- ─── STARTING DRINKS ─── -->
+    <section id="sec-start" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Starting drinks</span>
+          <span class="panel-title meta" id="start-meta">5 options</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="pill-row" id="start-pills"></div>
+        <div class="info-card" style="margin-top:14px;">
+          <h4><span class="info-icon">i</span>Seasonal flavors</h4>
+          Today's "Fresh juice of the day": <b id="seasonal-label">Mango</b>
+          <input class="input input-sm" id="seasonal-input" value="Mango" oninput="onSeasonalChange()" style="margin-left:8px;width:120px;">
+          <div style="font-size:11px;color:var(--ink-4);margin-top:6px;">
+            This appears as the description for "Fresh juice" on the guest portal. Update daily.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ENDING DRINKS ─── -->
+    <section id="sec-end" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Ending drinks</span>
+          <span class="panel-title meta" id="end-meta">5 options</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="pill-row" id="end-pills"></div>
+      </div>
+    </section>
+
+    <!-- ─── SECTION RULES ─── -->
+    <section id="sec-rules" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Section rules per cover</span>
+          <span class="panel-title meta">Min/max picks each guest can make</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="form-row">
+          <div>
+            <label>Main course</label>
+            <div class="help">Each guest picks exactly one main.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>min</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="input-prefix" style="margin-left:8px;"><span>max</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="tag tag-rule" style="margin-left:8px;">Required</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Sides</label>
+            <div class="help">Side rules per main override the section default. See each main's edit page.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>min</span><input class="input input-sm" type="number" value="0"></span>
+            <span class="input-prefix" style="margin-left:8px;"><span>max</span><input class="input input-sm" type="number" value="2"></span>
+            <span class="tag" style="margin-left:8px;">Default</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Starting drink</label>
+            <div class="help">One per guest.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>min</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="input-prefix" style="margin-left:8px;"><span>max</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="tag tag-rule" style="margin-left:8px;">Required</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Ending drink</label>
+            <div class="help">One per guest.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>min</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="input-prefix" style="margin-left:8px;"><span>max</span><input class="input input-sm" type="number" value="1" disabled></span>
+            <span class="tag tag-rule" style="margin-left:8px;">Required</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ALLOWANCE / PRICING ─── -->
+    <section id="sec-pricing" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Allowance & pricing</span>
+          <span class="panel-title meta">Defaults — overridable per booking</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="form-row">
+          <div>
+            <label>Complimentary breakfasts per booking</label>
+            <div class="help">Number of guests covered free in any room booking. Extras are charged below.</div>
+          </div>
+          <div>
+            <input class="input input-sm" type="number" value="2" id="set-complimentary">
+            <span style="font-size:12px;color:var(--ink-4);margin-left:8px;">people</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Extra cover charge</label>
+            <div class="help">Posted as room_service charge on the booking folio.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>PKR</span><input class="input input-sm" type="number" value="2000" id="set-extra"></span>
+            <span style="font-size:12px;color:var(--ink-4);margin-left:8px;">per cover</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Lock window</label>
+            <div class="help">Minutes before slot start when ordering closes.</div>
+          </div>
+          <div>
+            <input class="input input-sm" type="number" value="40">
+            <span style="font-size:12px;color:var(--ink-4);margin-left:8px;">minutes</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>In-room delivery surcharge</label>
+            <div class="help">Optional — leave 0 if delivery is included.</div>
+          </div>
+          <div>
+            <span class="input-prefix"><span>PKR</span><input class="input input-sm" type="number" value="0"></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Form sent at</label>
+            <div class="help">Daily WhatsApp link to checked-in guests for next morning's order.</div>
+          </div>
+          <div>
+            <input class="input input-sm" type="time" value="19:00" style="width:120px;">
+            <span style="font-size:12px;color:var(--ink-4);margin-left:8px;">PKT</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Reminder at</label>
+            <div class="help">Sent to guests who haven't ordered yet.</div>
+          </div>
+          <div>
+            <input class="input input-sm" type="time" value="07:00" style="width:120px;">
+            <span style="font-size:12px;color:var(--ink-4);margin-left:8px;">PKT</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── KITCHEN / SLACK ─── -->
+    <section id="sec-kitchen" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Kitchen & Slack notifications</span>
+          <span class="panel-title meta">What happens when an order is placed</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="info-card">
+          <h4><span class="info-icon">→</span>When an order is confirmed by the guest</h4>
+          <ul class="info-list">
+            <li>Slack KOT fires immediately to <b>#kitchen-fsl</b> (per slot, one ticket: room, time, location, num covers, per-person items + modifiers + sides + drinks)</li>
+            <li>WhatsApp confirmation sent to the room's guest service group</li>
+            <li>Order locks 40 min before slot start — guest can edit until then</li>
+            <li>Charge for extras (if any) auto-posted to the folio via <code>post-charge</code></li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h4><span class="info-icon">→</span>Daily kitchen summary</h4>
+          <ul class="info-list">
+            <li>06:30 AM Slack message to <b>#kitchen-fsl</b> aggregating every order for the morning</li>
+            <li>Grouped by time slot — cooks see prep counts at a glance</li>
+            <li>Per-room breakdown: room, covers, location, items</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h4><span class="info-icon">→</span>Status updates (optional)</h4>
+          <ul class="info-list">
+            <li><b>Preparing:</b> Slack-button click → "Your breakfast is being prepared 👨‍🍳" goes to room group</li>
+            <li><b>Ready:</b> Slack-button click → "Your breakfast is ready and on its way 🛎️"</li>
+            <li><b>Delivered:</b> Slack-button click → "Enjoy your breakfast! 🌅"</li>
+            <li>Disable any of these if you don't want guests notified at every stage</li>
+          </ul>
+        </div>
+
+        <hr class="div">
+
+        <div class="form-row">
+          <div><label>Slack KOT channel</label><div class="help">Order tickets fire here.</div></div>
+          <div><input class="input" type="text" value="#kitchen-fsl" id="set-slack-channel"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Daily summary at</label><div class="help">Aggregated kitchen prep list.</div></div>
+          <div><input class="input input-sm" type="time" value="06:30"></div>
+        </div>
+        <div class="form-row">
+          <div><label>Status notifications</label><div class="help">Send guest-facing WA on each kitchen state change.</div></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <span class="checkbox-row checked" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Preparing</span>
+            <span class="checkbox-row checked" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Ready</span>
+            <span class="checkbox-row checked" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Delivered</span>
+            <span class="checkbox-row" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Late alert</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── PLATING / DECORATION ─── -->
+    <section id="sec-presentation" class="panel section-target">
+      <div class="panel-head">
+        <div>
+          <span class="panel-title">Plating & decoration</span>
+          <span class="panel-title meta">Per-dish presentation notes for kitchen</span>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="info-card">
+          <h4><span class="info-icon">→</span>How presentation flows</h4>
+          <ul class="info-list">
+            <li>Each main course can carry plating notes (added in its edit dialog)</li>
+            <li>Notes appear on the Slack KOT and the daily summary so the kitchen sees them at prep time</li>
+            <li>Two layers of notes:
+              <ul style="margin-top:4px;list-style:none;padding-left:14px;">
+                <li><b>Prep notes:</b> "Roll fresh, soft cook" — for the cook</li>
+                <li><b>Plating notes:</b> "Serve on warm plate, garnish with coriander" — for the line / steward</li>
+              </ul>
+            </li>
+            <li>In-room deliveries also get a "Tray setup" note (linen, condiment caddy, water carafe) — global default below, override per dish if needed</li>
+          </ul>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Default in-room tray setup</label>
+            <div class="help">Goes on every in-room KOT. Overridable per dish.</div>
+          </div>
+          <div>
+            <textarea class="input" rows="3" style="max-width:400px;font-family:var(--f-text);">Linen tray cloth · condiment caddy (salt, pepper, ketchup, hot sauce) · water carafe (chilled) · linen napkin · cutlery wrapped</textarea>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Default café table setup</label>
+            <div class="help">For café pickup orders.</div>
+          </div>
+          <div>
+            <textarea class="input" rows="2" style="max-width:400px;font-family:var(--f-text);">Pre-set table at café · placemat · water glass · welcome card with room number</textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div style="height:60px;"></div>
+
+  </main>
+</div>
+
+<!-- ─── ITEM EDIT MODAL ─── -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">Edit item</div>
+      <div class="modal-x" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-foot">
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveItemFromModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── MODEL ───
+// Multi-menu: Breakfast / Lunch / Dinner / Late-night. Each is independent.
+// Pricing modes: 'allowance' (N comp + extras like breakfast), 'a_la_carte' (every item priced),
+// 'hybrid' (allowance + some always-paid items).
+// Items and choice-group options each have a `price` (PKR). 0 = free / within allowance.
+
+let menus = [
+  {
+    id: 'breakfast', name: 'Breakfast', icon: '🥞', enabled: true,
+    pricing: { mode: 'allowance', complimentary: 2, extraCover: 2000 },
+    slots: ['7:30 – 8:00 AM', '8:00 – 8:30 AM', '8:30 – 9:00 AM'],
+    mains: [
+      { id:'aloo_paratha', name:'Aloo Paratha', short:'Handmade · housemade chutney · fresh piyaz', img:'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=300&q=85', popular:true, active:true, price:0,
+        modGroups:[{label:'Cooking oil', required:true, options:['Desi ghee','Butter','Olive oil']}],
+        sideRule:{ allowed:['chola','qeema','sausage','mushroom','fruit'], pickMax:2, pickMin:0, mode:'pick' },
+        prepNotes:'Roll fresh, dough rested 4hr, cook on tawa medium-high until golden brown both sides. Serve immediately.',
+        platingNotes:'Stack 2 paratha tucked under, chutney in small ramekin, sliced piyaz on side.'
+      },
+      { id:'keema_paratha', name:'Keema Paratha', short:'In-house BBQ qeema · slow-cooked overnight', img:'https://images.unsplash.com/photo-1626777553635-21bcad8a0f56?w=300&q=85', active:true, price:0,
+        modGroups:[{label:'Cooking oil', required:true, options:['Desi ghee','Butter','Olive oil']}],
+        sideRule:{ allowed:['chola','qeema','mushroom'], pickMax:1, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'scrambled_omelette', name:'Scrambled Mushroom Omelette', short:'Soft curds · mushrooms · aged cheddar · herbs', img:'https://images.unsplash.com/photo-1598866594230-a7c12756260f?w=300&q=85', popular:true, active:true, price:0,
+        modGroups:[{label:'Bread', required:true, options:['Brown toast','White toast','Sourdough']}],
+        sideRule:{ allowed:['chola','sausage','beans','mushroom','fruit'], pickMax:2, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'poached_omelette', name:'Poached Mushroom Omelette', short:'Silky whites · runny yolk · cheddar', img:'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=300&q=85', active:true, price:0,
+        modGroups:[{label:'Bread', required:true, options:['Brown toast','Sourdough']}],
+        sideRule:{ allowed:['sausage','beans','mushroom','fruit'], pickMax:2, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'khageena', name:'Khageena Masala', short:'Spicy scrambled · tomatoes · chilli · coriander', img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&q=85', active:true, price:0,
+        modGroups:[], sideRule:{ allowed:['chola','qeema'], pickMax:1, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'french_toast', name:'French Toast', short:'Brioche · vanilla custard · berries', img:'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=300&q=85', active:true, price:0,
+        modGroups:[], sideRule:{ allowed:['fruit'], pickMax:1, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'light_bowl', name:'The Light Bowl', short:'Greek yoghurt · house granola · Sidr honey · fruit', img:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=300&q=85', active:true, price:0,
+        modGroups:[], sideRule:{ allowed:[], pickMax:0, pickMin:0, mode:'none' },
+        prepNotes:'', platingNotes:''
+      },
+      { id:'full_monty', name:'The Full Monty', short:'Sausages · beans · mushrooms · half fry · toast', img:'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=300&q=85', popular:true, active:true, price:0,
+        modGroups:[{label:'Bread', required:true, options:['Brown toast','White toast','Sourdough']}],
+        sideRule:{ allowed:['chola','qeema','sausage','beans','mushroom','fruit'], pickMax:0, pickMin:0, mode:'all_included' },
+        prepNotes:'Cook all components in parallel, serve hot. Fry eggs over-easy unless guest specifies.',
+        platingNotes:'Half fry on top of beans, sausages on right, toast in toast rack on side.'
+      },
+      { id:'avocado_toast', name:'Avocado Toast (Premium)', short:'Sourdough · smashed avocado · poached egg · chilli flakes', img:'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?w=300&q=85', active:true, price:850,
+        modGroups:[], sideRule:{ allowed:['fruit'], pickMax:1, pickMin:0, mode:'pick' },
+        prepNotes:'', platingNotes:''
+      },
+    ],
+    sides: [
+      { id:'chola',    name:'Chola',           desc:'Lahori-style spiced chickpeas',   active:true, price:0 },
+      { id:'qeema',    name:'BBQ Qeema',       desc:'In-house, charcoal finished',      active:true, price:0 },
+      { id:'sausage',  name:'Sausages',        desc:'Premium beef, lightly spiced',     active:true, price:0 },
+      { id:'beans',    name:'Baked Beans',     desc:'Slow-simmered, classic',           active:true, price:0 },
+      { id:'mushroom', name:'Sautéed Mushroom',desc:'Garlic butter, fresh thyme',       active:true, price:0 },
+      { id:'fruit',    name:'Fruit Bowl',      desc:'Today: Mango, Watermelon, Apple',  active:true, seasonal:true, price:0 },
+      { id:'avocado',  name:'Avocado',         desc:'Half · ripe Hass',                 active:true, price:200 },
+      { id:'salmon',   name:'Smoked Salmon',   desc:'30g · cold-smoked',                active:true, price:500 },
+    ],
+    starting: ['Orange Juice', 'Mango Juice', 'Lassi (Sweet)', 'Lassi (Salted)', 'Just Water'],
+    ending:   ['Chai Doodh Patti', 'Coffee · Black', 'Coffee · Milk', 'Green Tea', 'Mint Tea'],
+  },
+  {
+    id: 'lunch', name: 'Lunch', icon: '🍝', enabled: false,
+    pricing: { mode: 'a_la_carte', complimentary: 0, extraCover: 0 },
+    slots: ['12:00 – 1:00 PM', '1:00 – 2:00 PM', '2:00 – 3:00 PM'],
+    mains: [], sides: [], starting: [], ending: [],
+  },
+  {
+    id: 'dinner', name: 'Dinner', icon: '🍽️', enabled: false,
+    pricing: { mode: 'a_la_carte', complimentary: 0, extraCover: 0 },
+    slots: ['7:00 – 8:00 PM', '8:00 – 9:00 PM', '9:00 – 10:00 PM', '10:00 – 11:00 PM'],
+    mains: [], sides: [], starting: [], ending: [],
+  },
+  {
+    id: 'snacks', name: 'Late-night', icon: '🌙', enabled: false,
+    pricing: { mode: 'a_la_carte', complimentary: 0, extraCover: 0 },
+    slots: ['11:00 PM – 1:00 AM', '1:00 – 3:00 AM'],
+    mains: [], sides: [], starting: [], ending: [],
+  },
+];
+
+// `menu` always points at the active service. Switching tabs reassigns this.
+let menu = menus[0];
+function switchMenu(id) {
+  const m = menus.find(x => x.id === id);
+  if (!m) return;
+  menu = m;
+  renderMenuTabs();
+  document.getElementById('admin-title-suffix').textContent = `${m.name} menu`;
+  render();
+  toast(`Switched to ${m.name}`);
+}
+
+// ─── MIGRATION: old modGroups + sideRule → unified choiceGroups ───
+// Choice group shape:
+// {
+//   label, description,
+//   source: 'custom' | 'master_sides' | 'master_starting' | 'master_ending',
+//   customOptions: [],          // when source = 'custom'
+//   allowedFromMaster: [],      // when source = 'master_*'
+//   pickMode: 'exact' | 'up_to' | 'range' | 'all_included',
+//   pickMin, pickMax,
+//   required: boolean,
+// }
+function migrateMains() {
+  menu.mains.forEach(m => {
+    if (m.choiceGroups) return;
+    const groups = [];
+    (m.modGroups || []).forEach(g => {
+      groups.push({
+        label: g.label,
+        description: '',
+        source: 'custom',
+        customOptions: [...g.options],
+        allowedFromMaster: [],
+        pickMode: 'exact',
+        pickMin: g.required ? 1 : 0,
+        pickMax: 1,
+        required: !!g.required,
+      });
+    });
+    if (m.sideRule && m.sideRule.mode !== 'none' && m.sideRule.allowed.length > 0) {
+      let pickMode, pickMin, pickMax;
+      if (m.sideRule.mode === 'all_included') {
+        pickMode = 'all_included';
+        pickMin = m.sideRule.allowed.length;
+        pickMax = m.sideRule.allowed.length;
+      } else if (m.sideRule.pickMin === m.sideRule.pickMax) {
+        pickMode = 'exact'; pickMin = m.sideRule.pickMin; pickMax = m.sideRule.pickMax;
+      } else {
+        pickMode = 'up_to'; pickMin = m.sideRule.pickMin; pickMax = m.sideRule.pickMax;
+      }
+      groups.push({
+        label: 'Sides',
+        description: pickMode === 'all_included' ? 'All sides come with this dish' : 'Pick a few classic sides',
+        source: 'master_sides',
+        customOptions: [],
+        allowedFromMaster: [...m.sideRule.allowed],
+        pickMode, pickMin, pickMax,
+        required: pickMin > 0,
+      });
+    }
+    m.choiceGroups = groups;
+  });
+}
+
+// Helper for displaying a group's summary on the item-row
+function summariseGroup(g) {
+  const count = g.source === 'custom' ? g.customOptions.length : g.allowedFromMaster.length;
+  if (g.pickMode === 'all_included') return `${g.label}: all ${count} included`;
+  if (g.pickMode === 'exact') return `${g.label}: pick ${g.pickMax} of ${count}`;
+  if (g.pickMode === 'up_to') return `${g.label}: up to ${g.pickMax} of ${count}`;
+  return `${g.label}: ${g.pickMin}–${g.pickMax} of ${count}`;
+}
+
+// ─── RENDER ───
+function render() {
+  migrateMains();
+  renderMenuTabs();
+  renderPricingModePicker();
+  renderEmptyStateOrPanels();
+  renderSlots();
+  renderMains();
+  renderSides();
+  renderDrinks('starting', 'start-pills');
+  renderDrinks('ending', 'end-pills');
+  updateCounts();
+}
+
+function renderMenuTabs() {
+  const c = document.getElementById('menu-tabs');
+  c.innerHTML = '';
+  menus.forEach(m => {
+    const t = document.createElement('div');
+    t.className = 'menu-tab' + (m.id === menu.id ? ' active' : '') + (!m.enabled ? ' dim' : '');
+    t.innerHTML = `${m.icon} ${m.name}${!m.enabled ? '<span class="tab-sub">Not set</span>' : ''}`;
+    t.onclick = () => switchMenu(m.id);
+    c.appendChild(t);
+  });
+  const add = document.createElement('div');
+  add.className = 'menu-tab menu-tab-add';
+  add.innerHTML = `+ Add menu`;
+  add.onclick = openAddMenuModal;
+  c.appendChild(add);
+}
+
+// ─── Add a custom service menu (e.g. Snacks, All-day Tea, High Tea) ───
+const ICON_PRESETS = ['🥞','🍝','🍽️','🌙','☕','🫖','🍰','🍪','🥗','🍔','🍕','🍜','🍱','🥪','🧁','🍦','🍩','🥐','🍶','🍷'];
+
+function openAddMenuModal() {
+  modalContext = { kind: 'add_menu', draft: { name: '', icon: '☕', pricingMode: 'a_la_carte' } };
+  document.getElementById('modal-title').textContent = 'Add a service menu';
+  document.getElementById('modal-body').innerHTML = renderAddMenuForm();
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('ms-name').focus(), 80);
+}
+
+function renderAddMenuForm() {
+  return `
+    <div class="modal-section">
+      <h4>Service name</h4>
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;line-height:1.5;">
+        What's this menu called? Examples: <i>Snacks · All-day Tea · High Tea · Late-night Bar · Kids Menu</i>
+      </div>
+      <input class="input" id="ms-name" placeholder="Snacks" style="font-size:15px;">
+    </div>
+
+    <div class="modal-section">
+      <h4>Icon</h4>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;">
+        ${ICON_PRESETS.map(i => `
+          <span class="emoji-pick" data-icon="${i}"
+                onclick="pickIcon('${i}', this)"
+                style="font-size:20px;padding:6px 9px;border:1.5px solid var(--edge);border-radius:var(--r-md);cursor:pointer;background:var(--paper);transition:all 0.18s var(--spring);">${i}</span>
+        `).join('')}
+      </div>
+      <div style="font-size:11px;color:var(--ink-4);margin-bottom:6px;">Or paste any emoji or character:</div>
+      <input class="input" id="ms-icon" value="${modalContext.draft.icon}" style="width:120px;text-align:center;font-size:20px;">
+    </div>
+
+    <div class="modal-section">
+      <h4>Pricing model</h4>
+      <div class="pricing-modes" id="add-pricing-modes">
+        <div class="pricing-mode active" data-mode="a_la_carte" onclick="pickAddPricing(this,'a_la_carte')">
+          <h5>À la carte</h5><p>Every item priced individually. Most snacks / lunch / dinner.</p>
+        </div>
+        <div class="pricing-mode" data-mode="allowance" onclick="pickAddPricing(this,'allowance')">
+          <h5>Allowance + extras</h5><p>N free covers per booking, extras at flat rate.</p>
+        </div>
+        <div class="pricing-mode" data-mode="hybrid" onclick="pickAddPricing(this,'hybrid')">
+          <h5>Hybrid</h5><p>Free basics, some always-paid premium items.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card" style="margin-top:14px;">
+      <h4><span class="info-icon">i</span>What happens next</h4>
+      You'll land on an empty version of this menu where you can add time slots, mains, sides, and drinks. The same admin tools you use here apply. You can also copy structure from any existing menu.
+    </div>
+  `;
+}
+
+function pickIcon(i, el) {
+  document.getElementById('ms-icon').value = i;
+  document.querySelectorAll('.emoji-pick').forEach(e => e.style.borderColor = 'var(--edge)');
+  if (el) el.style.borderColor = 'var(--gold)';
+}
+function pickAddPricing(el, mode) {
+  document.querySelectorAll('#add-pricing-modes .pricing-mode').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  if (modalContext) modalContext.draft.pricingMode = mode;
+}
+
+function renderEmptyStateOrPanels() {
+  // If the active menu hasn't been set up (no items), show a blank-state CTA
+  // and hide the body panels. We add an empty-state node above the panels.
+  const main = document.querySelector('.main');
+  const existing = document.getElementById('empty-state');
+  const isEmpty = !menu.enabled && menu.mains.length === 0 && menu.sides.length === 0;
+
+  if (isEmpty) {
+    if (!existing) {
+      const node = document.createElement('div');
+      node.id = 'empty-state';
+      node.className = 'empty-menu';
+      node.innerHTML = `
+        <div class="icon">${menu.icon}</div>
+        <h3>${menu.name} menu</h3>
+        <p>This menu hasn't been set up yet. Add time slots, mains, sides, and drinks to enable it. The same admin tools you used for breakfast work here.</p>
+        <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="enableMenu()">Enable & start setup</button>
+          <button class="btn" onclick="copyFromBreakfast()">Copy structure from Breakfast</button>
+        </div>
+      `;
+      main.insertBefore(node, main.firstChild);
+    }
+    // Hide the panels
+    document.querySelectorAll('.panel.section-target').forEach(p => p.style.display = 'none');
+  } else {
+    if (existing) existing.remove();
+    document.querySelectorAll('.panel.section-target').forEach(p => p.style.display = '');
+  }
+}
+
+function enableMenu() {
+  menu.enabled = true;
+  // Seed minimal structure if empty
+  if (menu.slots.length === 0) menu.slots.push('1:00 – 2:00 PM');
+  render();
+  toast(`${menu.name} enabled`);
+}
+
+function copyFromBreakfast() {
+  if (!confirm(`Copy Breakfast's structure (sections, choice-group templates) into ${menu.name}? Items themselves are NOT copied — you'll add your own dishes.`)) return;
+  const bk = menus.find(m => m.id === 'breakfast');
+  menu.starting = [...bk.starting];
+  menu.ending = [...bk.ending];
+  menu.sides = JSON.parse(JSON.stringify(bk.sides));
+  menu.enabled = true;
+  render();
+  toast(`Structure copied from Breakfast`);
+}
+
+function renderPricingModePicker() {
+  // Inject the pricing-mode picker at the top of the pricing panel
+  const sec = document.getElementById('sec-pricing');
+  if (!sec) return;
+  let header = sec.querySelector('.pricing-modes');
+  if (!header) {
+    const body = sec.querySelector('.panel-body');
+    header = document.createElement('div');
+    header.className = 'pricing-modes';
+    header.style.marginBottom = '16px';
+    body.insertBefore(header, body.firstChild);
+
+    // Hide allowance fields when à la carte
+    const allowanceTitle = document.createElement('div');
+    allowanceTitle.id = 'pricing-allowance-fields';
+    allowanceTitle.style.cssText = 'border-top:1px solid var(--edge);padding-top:12px;margin-top:6px;';
+    body.appendChild(allowanceTitle);
+  }
+  const m = menu.pricing.mode;
+  header.innerHTML = `
+    <div class="pricing-mode ${m === 'allowance' ? 'active' : ''}" onclick="setPricingMode('allowance')">
+      <h5>Allowance + extras</h5>
+      <p>N comp covers per booking, extras at flat rate. Used for breakfast.</p>
+    </div>
+    <div class="pricing-mode ${m === 'a_la_carte' ? 'active' : ''}" onclick="setPricingMode('a_la_carte')">
+      <h5>À la carte</h5>
+      <p>Every item priced individually. Standard for lunch / dinner.</p>
+    </div>
+    <div class="pricing-mode ${m === 'hybrid' ? 'active' : ''}" onclick="setPricingMode('hybrid')">
+      <h5>Hybrid</h5>
+      <p>Allowance covers basics; some premium items always charged.</p>
+    </div>
+  `;
+  // Show / hide the allowance number rows based on mode
+  const allowanceRows = sec.querySelectorAll('.form-row');
+  allowanceRows.forEach((r, idx) => {
+    // Rows 0-3 are allowance/extra/lock/in-room (relevant to all modes); we only hide row 0 (complimentary) when à la carte
+    const labelText = r.querySelector('label')?.textContent || '';
+    const allowanceOnly = labelText.includes('Complimentary') || labelText.includes('Extra cover');
+    r.style.display = (m === 'a_la_carte' && allowanceOnly) ? 'none' : '';
+  });
+}
+
+function setPricingMode(m) {
+  menu.pricing.mode = m;
+  if (m === 'a_la_carte') {
+    menu.pricing.complimentary = 0;
+    menu.pricing.extraCover = 0;
+  } else if (m === 'allowance' && menu.pricing.complimentary === 0) {
+    menu.pricing.complimentary = 2;
+    menu.pricing.extraCover = 2000;
+  }
+  renderPricingModePicker();
+  toast(`Pricing: ${m.replace('_',' ')}`);
+}
+
+function renderSlots() {
+  const c = document.getElementById('slot-chips');
+  c.innerHTML = '';
+  const total = menu.slots.length;
+  menu.slots.forEach((s, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'slot-chip';
+    const lDis = i === 0, rDis = i === total - 1;
+    chip.innerHTML = `
+      <span class="x" style="font-size:10px;opacity:${lDis?0.3:1};${lDis?'pointer-events:none;':''}" onclick="moveSlot(${i},-1)" title="Move left">◀</span>
+      ${s}
+      <span class="x" style="font-size:10px;opacity:${rDis?0.3:1};${rDis?'pointer-events:none;':''}" onclick="moveSlot(${i},1)" title="Move right">▶</span>
+      <span class="x" onclick="removeSlot(${i})" title="Remove">✕</span>`;
+    c.appendChild(chip);
+  });
+  const inp = document.createElement('input');
+  inp.className = 'slot-add-input';
+  inp.placeholder = '+ Add slot, e.g. 9:00 AM';
+  inp.onkeydown = e => { if (e.key === 'Enter' && inp.value.trim()) { menu.slots.push(inp.value.trim()); inp.value=''; renderSlots(); toast('Slot added'); } };
+  c.appendChild(inp);
+}
+function removeSlot(i) { menu.slots.splice(i, 1); renderSlots(); toast('Slot removed'); }
+function moveSlot(i, dir) {
+  const target = i + dir;
+  if (target < 0 || target >= menu.slots.length) return;
+  [menu.slots[i], menu.slots[target]] = [menu.slots[target], menu.slots[i]];
+  renderSlots();
+}
+
+function renderMains() {
+  const grid = document.getElementById('mains-grid');
+  grid.innerHTML = '';
+  const total = menu.mains.length;
+  menu.mains.forEach((m, i) => {
+    const row = document.createElement('div');
+    row.className = 'item-row' + (!m.active ? ' disabled' : '');
+    // Override grid-template to fit the reorder column
+    row.style.gridTemplateColumns = 'auto 56px 1fr auto auto auto';
+    const groups = m.choiceGroups || [];
+    const groupTags = groups.length === 0
+      ? '<span class="tag">No choices</span>'
+      : groups.map(g => {
+          const cls = g.source === 'master_sides' ? 'tag-rule' : 'tag-mod';
+          return `<span class="tag ${cls}">${summariseGroup(g)}</span>`;
+        }).join('');
+    const price = m.price || 0;
+    const priceTag = price > 0
+      ? `<span class="price-tag add">+PKR ${price.toLocaleString()}</span>`
+      : (menu.pricing.mode === 'allowance'
+          ? `<span class="price-tag free">Comp</span>`
+          : `<span class="price-tag" style="background:var(--edge);color:var(--ink-3);">No price</span>`);
+    row.innerHTML = `
+      <div class="reorder">
+        <button onclick="moveMain(${i}, -1)" ${i === 0 ? 'disabled' : ''} title="Move up">▲</button>
+        <button onclick="moveMain(${i}, 1)" ${i === total - 1 ? 'disabled' : ''} title="Move down">▼</button>
+      </div>
+      <div class="item-img" style="background-image:url(${m.img});"></div>
+      <div>
+        <div class="item-name">${m.name} ${priceTag}</div>
+        <div class="item-desc">${m.short}</div>
+        <div class="item-tags">
+          ${m.popular ? '<span class="tag tag-popular">⭐ Popular</span>' : ''}
+          ${groupTags}
+        </div>
+      </div>
+      <div class="toggle ${m.active ? 'on' : ''}" onclick="toggleMain(${i})"></div>
+      <button class="btn btn-icon" onclick="openItemModal('main', ${i})">Edit</button>
+      <button class="btn btn-icon btn-danger" onclick="deleteMain(${i})">🗑</button>
+    `;
+    grid.appendChild(row);
+  });
+}
+function toggleMain(i) { menu.mains[i].active = !menu.mains[i].active; renderMains(); updateCounts(); toast(menu.mains[i].active ? 'Enabled' : 'Disabled'); }
+function deleteMain(i) { if (confirm(`Delete ${menu.mains[i].name}?`)) { menu.mains.splice(i,1); renderMains(); updateCounts(); toast('Deleted'); } }
+function moveMain(i, dir) {
+  const target = i + dir;
+  if (target < 0 || target >= menu.mains.length) return;
+  [menu.mains[i], menu.mains[target]] = [menu.mains[target], menu.mains[i]];
+  renderMains();
+}
+
+function renderSides() {
+  const grid = document.getElementById('sides-grid');
+  grid.innerHTML = '';
+  const total = menu.sides.length;
+  menu.sides.forEach((s, i) => {
+    if (s.price === undefined) s.price = 0;
+    const row = document.createElement('div');
+    row.className = 'item-row' + (!s.active ? ' disabled' : '');
+    row.style.gridTemplateColumns = 'auto 1fr auto auto auto auto';
+    const priceTag = s.price > 0
+      ? `<span class="price-tag add">+PKR ${s.price.toLocaleString()}</span>`
+      : `<span class="price-tag free">Free</span>`;
+    row.innerHTML = `
+      <div class="reorder">
+        <button onclick="moveSide(${i}, -1)" ${i === 0 ? 'disabled' : ''} title="Move up">▲</button>
+        <button onclick="moveSide(${i}, 1)" ${i === total - 1 ? 'disabled' : ''} title="Move down">▼</button>
+      </div>
+      <div>
+        <div class="item-name">${s.name} ${priceTag}${s.seasonal ? ' <span class="tag" style="background:var(--gold-mist);color:var(--gold-dark);margin-left:6px;">Seasonal</span>' : ''}</div>
+        <div class="item-desc">${s.desc}</div>
+      </div>
+      <span class="input-prefix" title="Side surcharge (PKR). 0 = free / within allowance.">
+        <span style="font-size:9px;">+PKR</span>
+        <input class="input input-sm" type="number" style="width:60px;font-size:12px;" value="${s.price || 0}" min="0" step="50"
+               onchange="setSidePrice(${i}, this.value)">
+      </span>
+      <div class="toggle ${s.active ? 'on' : ''}" onclick="toggleSide(${i})"></div>
+      <button class="btn btn-icon" onclick="editSide(${i})">Edit</button>
+      <button class="btn btn-icon btn-danger" onclick="deleteSide(${i})">🗑</button>
+    `;
+    grid.appendChild(row);
+  });
+}
+function setSidePrice(i, val) {
+  menu.sides[i].price = parseInt(val || '0', 10);
+  renderSides();
+  toast(menu.sides[i].price > 0 ? `Avocado +PKR ${menu.sides[i].price}` : `Free`);
+}
+function toggleSide(i) { menu.sides[i].active = !menu.sides[i].active; renderSides(); updateCounts(); toast(menu.sides[i].active ? 'Enabled' : 'Disabled'); }
+function deleteSide(i) { if (confirm(`Delete ${menu.sides[i].name}?`)) { menu.sides.splice(i,1); renderSides(); updateCounts(); toast('Deleted'); } }
+function moveSide(i, dir) {
+  const target = i + dir;
+  if (target < 0 || target >= menu.sides.length) return;
+  [menu.sides[i], menu.sides[target]] = [menu.sides[target], menu.sides[i]];
+  renderSides();
+}
+function editSide(i) {
+  const s = menu.sides[i];
+  const newDesc = prompt(`Edit description for ${s.name}:`, s.desc);
+  if (newDesc !== null) { s.desc = newDesc; renderSides(); toast('Updated'); }
+}
+
+function renderDrinks(key, containerId) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  const list = menu[key];
+  list.forEach((name, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'pill';
+    const leftDisabled = i === 0;
+    const rightDisabled = i === list.length - 1;
+    pill.innerHTML = `
+      <span class="x" style="font-size:10px;color:${leftDisabled?'var(--ink-4)':'var(--ink-3)'};opacity:${leftDisabled?'0.3':'1'};${leftDisabled?'pointer-events:none;':''}" onclick="moveDrink('${key}',${i},-1)" title="Move left">◀</span>
+      ${name}
+      <span class="x" style="font-size:10px;color:${rightDisabled?'var(--ink-4)':'var(--ink-3)'};opacity:${rightDisabled?'0.3':'1'};${rightDisabled?'pointer-events:none;':''}" onclick="moveDrink('${key}',${i},1)" title="Move right">▶</span>
+      <span class="x" onclick="removeDrink('${key}',${i})" title="Remove">✕</span>`;
+    c.appendChild(pill);
+  });
+  const inp = document.createElement('input');
+  inp.className = 'pill-add-input';
+  inp.placeholder = '+ Type name, press Enter';
+  inp.onkeydown = e => {
+    if (e.key === 'Enter' && inp.value.trim()) {
+      menu[key].push(inp.value.trim()); inp.value=''; renderDrinks(key, containerId);
+      updateCounts(); toast('Added');
+    }
+  };
+  c.appendChild(inp);
+}
+function removeDrink(key, i) { menu[key].splice(i,1); renderDrinks(key, key === 'starting' ? 'start-pills' : 'end-pills'); updateCounts(); toast('Removed'); }
+function moveDrink(key, i, dir) {
+  const target = i + dir;
+  const list = menu[key];
+  if (target < 0 || target >= list.length) return;
+  [list[i], list[target]] = [list[target], list[i]];
+  renderDrinks(key, key === 'starting' ? 'start-pills' : 'end-pills');
+}
+
+function updateCounts() {
+  const activeMains = menu.mains.filter(m => m.active).length;
+  document.getElementById('mains-meta').textContent = `${menu.mains.length} items · ${activeMains} active`;
+  document.getElementById('nav-num-mains').textContent = menu.mains.length;
+  const activeSides = menu.sides.filter(s => s.active).length;
+  document.getElementById('sides-meta').textContent = `${menu.sides.length} items · ${activeSides} active`;
+  document.getElementById('nav-num-sides').textContent = menu.sides.length;
+  document.getElementById('start-meta').textContent = `${menu.starting.length} options`;
+  document.getElementById('nav-num-start').textContent = menu.starting.length;
+  document.getElementById('end-meta').textContent = `${menu.ending.length} options`;
+  document.getElementById('nav-num-end').textContent = menu.ending.length;
+}
+
+// ─── ITEM EDIT MODAL ───
+// modalContext.draft holds the in-progress edit; all modifier/side mutations go to draft,
+// then commit back to menu.* on Save.
+let modalContext = null;
+
+function openItemModal(type, idx) {
+  const isNew = idx === null;
+  const source = isNew
+    ? (type === 'main'
+        ? { id: 'new_'+Date.now(), name:'', short:'', img:'', popular:false, active:true,
+            choiceGroups: [], prepNotes:'', platingNotes:'' }
+        : { id: 'new_'+Date.now(), name:'', desc:'', active:true })
+    : (type === 'main' ? menu.mains[idx] : menu.sides[idx]);
+
+  modalContext = { type, idx, draft: JSON.parse(JSON.stringify(source)) };
+  if (type === 'main' && !modalContext.draft.choiceGroups) modalContext.draft.choiceGroups = [];
+
+  document.getElementById('modal-title').textContent = isNew ? `New ${type}` : `Edit: ${source.name}`;
+  const body = document.getElementById('modal-body');
+  body.innerHTML = (type === 'main') ? renderMainForm(modalContext.draft) : renderSideForm(modalContext.draft);
+  if (type === 'main') renderChoiceGroups();
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  modalContext = null;
+}
+
+function renderMainForm(m) {
+  return `
+    <div class="modal-section">
+      <h4>Basics</h4>
+      <div class="form-row" style="grid-template-columns:1fr;border:none;padding:6px 0;">
+        <input class="input" id="m-name" placeholder="Name (e.g. Aloo Paratha)" value="${escapeHtml(m.name)}">
+      </div>
+      <div class="form-row" style="grid-template-columns:1fr;border:none;padding:6px 0;">
+        <input class="input" id="m-short" placeholder="Short description shown on the card" value="${escapeHtml(m.short)}">
+      </div>
+      <div class="form-row" style="grid-template-columns:1fr;border:none;padding:6px 0;">
+        <input class="input" id="m-img" placeholder="Image URL (paste or drop)" value="${escapeHtml(m.img)}">
+      </div>
+      <div style="display:flex;gap:14px;margin-top:6px;flex-wrap:wrap;">
+        <span class="checkbox-row ${m.popular ? 'checked':''}" id="m-popular-row" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Popular badge</span>
+        <span class="checkbox-row ${m.active ? 'checked':''}" id="m-active-row" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Available now</span>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h4>Price</h4>
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:8px;line-height:1.5;">
+        ${menu.pricing.mode === 'allowance'
+          ? `Leave at <b>0</b> for items within the breakfast allowance. Set a price (e.g. <b>850</b>) to make it a paid premium item — that amount is added to the guest's folio when ordered.`
+          : `Every item is priced individually. The amount goes to the guest's folio.`}
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="input-prefix"><span>PKR</span><input class="input input-sm" type="number" id="m-price" value="${m.price || 0}" min="0" step="50"></span>
+        <span style="font-size:11px;color:var(--ink-4);" id="m-price-hint">${m.price > 0 ? `+ PKR ${Number(m.price).toLocaleString()} added to folio` : (menu.pricing.mode === 'allowance' ? 'Within allowance · free' : 'Required')}</span>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h4>Choice groups</h4>
+      <div style="margin-bottom:10px;font-size:12px;color:var(--ink-3);line-height:1.5;">
+        Add as many groups as you like. Each group is a list of options the guest picks from — could be custom (e.g. oil) or pulled from the master sides list. Set the pick rule per group.
+      </div>
+      <div id="choice-groups"></div>
+      <button class="btn btn-add" style="width:100%;justify-content:center;margin-top:6px;" onclick="addChoiceGroup()">⊕ Add a choice group</button>
+    </div>
+
+    <div class="modal-section">
+      <h4>Kitchen prep + plating notes</h4>
+      <div style="margin-bottom:6px;">
+        <label style="font-size:12px;font-weight:500;color:var(--ink-3);">Prep notes (cook sees on KOT):</label>
+        <textarea class="input" id="m-prep" rows="2" style="margin-top:4px;font-family:var(--f-text);" placeholder="e.g. Roll fresh, cook on tawa medium-high">${escapeHtml(m.prepNotes || '')}</textarea>
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:500;color:var(--ink-3);">Plating notes (line / steward sees):</label>
+        <textarea class="input" id="m-plate" rows="2" style="margin-top:4px;font-family:var(--f-text);" placeholder="e.g. Half fry on top of beans, toast in toast rack">${escapeHtml(m.platingNotes || '')}</textarea>
+      </div>
+    </div>
+  `;
+}
+
+// ─── CHOICE GROUPS (unified modifier + side picker) ───
+const PICK_PRESETS = [
+  { val: 'exact_1',  label: 'Pick exactly 1',  pickMode: 'exact',         pickMin: 1, pickMax: 1 },
+  { val: 'exact_2',  label: 'Pick exactly 2',  pickMode: 'exact',         pickMin: 2, pickMax: 2 },
+  { val: 'up_to_1',  label: 'Up to 1',         pickMode: 'up_to',         pickMin: 0, pickMax: 1 },
+  { val: 'up_to_2',  label: 'Up to 2',         pickMode: 'up_to',         pickMin: 0, pickMax: 2 },
+  { val: 'up_to_3',  label: 'Up to 3',         pickMode: 'up_to',         pickMin: 0, pickMax: 3 },
+  { val: 'all',      label: 'All included',    pickMode: 'all_included',  pickMin: 0, pickMax: 0 },
+  { val: 'custom',   label: 'Custom min–max',  pickMode: 'range',         pickMin: 1, pickMax: 3 },
+];
+function presetForGroup(g) {
+  if (g.pickMode === 'all_included') return 'all';
+  if (g.pickMode === 'exact' && g.pickMax === 1) return 'exact_1';
+  if (g.pickMode === 'exact' && g.pickMax === 2) return 'exact_2';
+  if (g.pickMode === 'up_to' && g.pickMax === 1) return 'up_to_1';
+  if (g.pickMode === 'up_to' && g.pickMax === 2) return 'up_to_2';
+  if (g.pickMode === 'up_to' && g.pickMax === 3) return 'up_to_3';
+  return 'custom';
+}
+
+function renderChoiceGroups() {
+  const container = document.getElementById('choice-groups');
+  if (!container || !modalContext) return;
+  const groups = modalContext.draft.choiceGroups = modalContext.draft.choiceGroups || [];
+  if (groups.length === 0) {
+    container.innerHTML = `<div style="font-size:12px;color:var(--ink-4);font-style:italic;padding:10px 0;">No choice groups yet. Tap "Add a choice group" below.</div>`;
+    return;
+  }
+  container.innerHTML = groups.map((g, gi) => renderOneGroup(g, gi)).join('');
+}
+
+function renderOneGroup(g, gi) {
+  const total = (modalContext.draft.choiceGroups || []).length;
+  const isMaster = g.source === 'master_sides';
+  const optionsHtml = isMaster
+    ? `<div class="checkbox-grid" style="gap:5px;">
+         ${menu.sides.map(s => `
+           <label class="checkbox-row ${(g.allowedFromMaster||[]).includes(s.id) ? 'checked':''}"
+                  onclick="toggleMasterOption(${gi}, '${s.id}', this)">
+             <span class="checkbox-box"></span> ${s.name}
+           </label>`).join('')}
+       </div>
+       <div style="font-size:11px;color:var(--ink-4);margin-top:6px;">
+         ${(g.allowedFromMaster||[]).length} of ${menu.sides.length} sides allowed for this dish
+       </div>`
+    : `<div style="display:flex;flex-wrap:wrap;gap:5px;">
+         ${(g.customOptions||[]).map((o, oi) => `
+           <span class="pill" style="font-size:11.5px;padding:4px 9px;">
+             ${escapeHtml(o)}
+             <span class="x" onclick="removeCustomOption(${gi}, ${oi})">✕</span>
+           </span>
+         `).join('')}
+         <input class="pill-add-input" style="font-size:11.5px;width:140px;" placeholder="+ Add option, Enter"
+                onkeydown="if(event.key==='Enter' && this.value.trim()){addCustomOption(${gi}, this.value.trim()); this.value='';}">
+       </div>`;
+
+  const preset = presetForGroup(g);
+  const presetOptions = PICK_PRESETS.map(p =>
+    `<option value="${p.val}" ${preset === p.val ? 'selected':''}>${p.label}</option>`).join('');
+
+  return `
+    <div style="background:var(--paper);border:1px solid var(--edge);border-radius:var(--r-md);padding:14px 14px 12px;margin-bottom:10px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+        <div class="reorder" style="margin-right:6px;align-self:center;">
+          <button onclick="moveChoiceGroup(${gi}, -1)" ${gi === 0 ? 'disabled' : ''} title="Move up">▲</button>
+          <button onclick="moveChoiceGroup(${gi}, 1)" ${gi === total - 1 ? 'disabled' : ''} title="Move down">▼</button>
+        </div>
+        <div style="flex:1;">
+          <div style="font-size:10px;color:var(--ink-4);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">
+            Group ${gi + 1} of ${total}
+          </div>
+          <input class="input" style="width:100%;font-weight:600;" value="${escapeHtml(g.label)}"
+                 placeholder="Group label, e.g. Cooking oil, Sides, Spice level"
+                 oninput="modalContext.draft.choiceGroups[${gi}].label = this.value">
+          <input class="input" style="width:100%;margin-top:6px;font-size:12.5px;color:var(--ink-3);"
+                 value="${escapeHtml(g.description || '')}"
+                 placeholder="Description (shown to the guest, optional)"
+                 oninput="modalContext.draft.choiceGroups[${gi}].description = this.value">
+        </div>
+        <button class="btn btn-icon btn-danger" onclick="removeChoiceGroup(${gi})" title="Delete group">🗑</button>
+      </div>
+
+      <!-- Source -->
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);align-self:center;margin-right:4px;">Options from:</span>
+        <span class="checkbox-row ${g.source === 'custom' ? 'checked':''}" style="font-size:12px;padding:4px 10px;"
+              onclick="setGroupSource(${gi},'custom')">
+          <span class="checkbox-box"></span> Custom list
+        </span>
+        <span class="checkbox-row ${g.source === 'master_sides' ? 'checked':''}" style="font-size:12px;padding:4px 10px;"
+              onclick="setGroupSource(${gi},'master_sides')">
+          <span class="checkbox-box"></span> Master sides
+        </span>
+      </div>
+
+      ${optionsHtml}
+
+      <!-- Pick rule + required -->
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;align-items:center;">
+        <label style="font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-4);">Pick rule:</label>
+        <select class="input input-sm" style="width:auto;font-size:12px;"
+                onchange="setGroupPreset(${gi}, this.value)">
+          ${presetOptions}
+        </select>
+        ${preset === 'custom' ? `
+          <span class="input-prefix" style="padding:0 4px 0 8px;"><span style="font-size:10px;">min</span>
+            <input class="input input-sm" type="number" min="0" value="${g.pickMin}" style="width:50px;"
+                   onchange="setGroupRange(${gi}, this.value, null)">
+          </span>
+          <span class="input-prefix" style="padding:0 4px 0 8px;"><span style="font-size:10px;">max</span>
+            <input class="input input-sm" type="number" min="0" value="${g.pickMax}" style="width:50px;"
+                   onchange="setGroupRange(${gi}, null, this.value)">
+          </span>
+        ` : ''}
+        <span class="checkbox-row ${g.required ? 'checked':''}" style="font-size:12px;padding:4px 10px;margin-left:auto;"
+              onclick="toggleChoiceRequired(${gi})">
+          <span class="checkbox-box"></span> Required
+        </span>
+      </div>
+    </div>
+  `;
+}
+
+// ─── Choice group mutations (all go via modalContext.draft) ───
+function addChoiceGroup() {
+  if (!modalContext) return;
+  modalContext.draft.choiceGroups = modalContext.draft.choiceGroups || [];
+  modalContext.draft.choiceGroups.push({
+    label: 'New group',
+    description: '',
+    source: 'custom',
+    customOptions: [],
+    allowedFromMaster: [],
+    pickMode: 'exact',
+    pickMin: 1,
+    pickMax: 1,
+    required: true,
+  });
+  renderChoiceGroups();
+}
+function moveChoiceGroup(gi, dir) {
+  if (!modalContext) return;
+  const groups = modalContext.draft.choiceGroups;
+  const target = gi + dir;
+  if (target < 0 || target >= groups.length) return;
+  [groups[gi], groups[target]] = [groups[target], groups[gi]];
+  renderChoiceGroups();
+}
+function removeChoiceGroup(gi) {
+  if (!modalContext) return;
+  if (!confirm('Delete this choice group?')) return;
+  modalContext.draft.choiceGroups.splice(gi, 1);
+  renderChoiceGroups();
+}
+function setGroupSource(gi, src) {
+  if (!modalContext) return;
+  modalContext.draft.choiceGroups[gi].source = src;
+  renderChoiceGroups();
+}
+function setGroupPreset(gi, presetVal) {
+  if (!modalContext) return;
+  const p = PICK_PRESETS.find(x => x.val === presetVal);
+  if (!p) return;
+  const g = modalContext.draft.choiceGroups[gi];
+  g.pickMode = p.pickMode;
+  g.pickMin = p.pickMin;
+  g.pickMax = p.pickMax;
+  // 'all_included' implies optional from the guest's perspective (no choice to make)
+  if (p.pickMode === 'all_included') g.required = false;
+  // exact_N implies required
+  if (p.pickMode === 'exact') g.required = true;
+  renderChoiceGroups();
+}
+function setGroupRange(gi, min, max) {
+  if (!modalContext) return;
+  const g = modalContext.draft.choiceGroups[gi];
+  if (min !== null) g.pickMin = parseInt(min, 10) || 0;
+  if (max !== null) g.pickMax = parseInt(max, 10) || 0;
+  if (g.pickMax < g.pickMin) g.pickMax = g.pickMin;
+}
+function toggleChoiceRequired(gi) {
+  if (!modalContext) return;
+  modalContext.draft.choiceGroups[gi].required = !modalContext.draft.choiceGroups[gi].required;
+  renderChoiceGroups();
+}
+function addCustomOption(gi, value) {
+  if (!modalContext) return;
+  modalContext.draft.choiceGroups[gi].customOptions.push(value);
+  renderChoiceGroups();
+}
+function removeCustomOption(gi, oi) {
+  if (!modalContext) return;
+  modalContext.draft.choiceGroups[gi].customOptions.splice(oi, 1);
+  renderChoiceGroups();
+}
+function toggleMasterOption(gi, sideId, el) {
+  if (!modalContext) return;
+  const g = modalContext.draft.choiceGroups[gi];
+  g.allowedFromMaster = g.allowedFromMaster || [];
+  const i = g.allowedFromMaster.indexOf(sideId);
+  if (i >= 0) g.allowedFromMaster.splice(i, 1);
+  else g.allowedFromMaster.push(sideId);
+  // Class toggle for instant feedback (re-render also works but flicker-free)
+  el.classList.toggle('checked');
+  // Update the count caption
+  const caption = el.parentElement.parentElement.querySelector('div[style*="margin-top:6px"]');
+  if (caption) caption.textContent = `${g.allowedFromMaster.length} of ${menu.sides.length} sides allowed for this dish`;
+}
+
+function renderSideForm(s) {
+  return `
+    <div class="modal-section">
+      <h4>Basics</h4>
+      <input class="input" id="s-name" placeholder="Name" value="${escapeHtml(s.name)}" style="margin-bottom:8px;">
+      <input class="input" id="s-desc" placeholder="Short description" value="${escapeHtml(s.desc)}" style="margin-bottom:8px;">
+      <span class="checkbox-row ${s.active ? 'checked':''}" id="s-active-row" onclick="this.classList.toggle('checked')"><span class="checkbox-box"></span> Available now</span>
+    </div>
+  `;
+}
+
+function saveItemFromModal() {
+  if (!modalContext) return;
+
+  // ── Add-menu modal ──
+  if (modalContext.kind === 'add_menu') {
+    const name = document.getElementById('ms-name').value.trim();
+    const icon = document.getElementById('ms-icon').value.trim() || '🍴';
+    if (name.length < 2) { toast('Service name required'); return; }
+    const id = 'menu_' + Date.now();
+    const newMenu = {
+      id, name, icon, enabled: false,
+      pricing: { mode: modalContext.draft.pricingMode, complimentary: 0, extraCover: 0 },
+      slots: [], mains: [], sides: [], starting: [], ending: [],
+    };
+    menus.push(newMenu);
+    closeModal();
+    switchMenu(id);
+    toast(`${name} added`);
+    return;
+  }
+
+  const { type, idx, draft } = modalContext;
+
+  if (type === 'main') {
+    draft.name = document.getElementById('m-name').value.trim();
+    draft.short = document.getElementById('m-short').value.trim();
+    draft.img = document.getElementById('m-img').value.trim()
+              || 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=300&q=85';
+    draft.popular = document.getElementById('m-popular-row').classList.contains('checked');
+    draft.active = document.getElementById('m-active-row').classList.contains('checked');
+    draft.price = parseInt(document.getElementById('m-price').value || '0', 10);
+    draft.prepNotes = document.getElementById('m-prep').value.trim();
+    draft.platingNotes = document.getElementById('m-plate').value.trim();
+
+    if (!draft.name) { toast('Name required'); return; }
+
+    // Validate every choice group has a label, a non-empty source, and a sensible count
+    const groups = draft.choiceGroups || [];
+    for (const g of groups) {
+      if (!g.label.trim()) { toast('Every choice group needs a label'); return; }
+      const count = g.source === 'custom' ? (g.customOptions || []).length : (g.allowedFromMaster || []).length;
+      if (count === 0 && g.pickMode !== 'all_included') { toast(`Group "${g.label}" has no options`); return; }
+      if (g.pickMode !== 'all_included' && g.pickMax > count) {
+        toast(`Group "${g.label}" can't pick ${g.pickMax} from only ${count} options`);
+        return;
+      }
+    }
+    // Drop legacy fields so model stays clean
+    delete draft.modGroups;
+    delete draft.sideRule;
+
+    if (idx === null) menu.mains.push(draft);
+    else Object.assign(menu.mains[idx], draft);
+    renderMains();
+  } else {
+    draft.name = document.getElementById('s-name').value.trim();
+    draft.desc = document.getElementById('s-desc').value.trim();
+    draft.active = document.getElementById('s-active-row').classList.contains('checked');
+    if (!draft.name) { toast('Name required'); return; }
+    if (idx === null) menu.sides.push(draft);
+    else Object.assign(menu.sides[idx], draft);
+    renderSides();
+  }
+  updateCounts();
+  closeModal();
+  toast('Saved');
+}
+
+function escapeHtml(t) { return (t || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function onSeasonalChange() {
+  const v = document.getElementById('seasonal-input').value || 'Mango';
+  document.getElementById('seasonal-label').textContent = v;
+  // Sync to "Fresh juice of the day" if such item exists
+  const idx = menu.starting.findIndex(s => s.toLowerCase().includes('fresh juice'));
+  if (idx >= 0) {
+    menu.starting[idx] = `Fresh Juice (${v})`;
+    renderDrinks('starting', 'start-pills');
+  }
+  // Or set Fruit Bowl seasonal description
+  const fb = menu.sides.find(s => s.id === 'fruit');
+  if (fb) {
+    const cleaned = v.split(',').map(x => x.trim()).filter(Boolean).join(', ');
+    if (cleaned) fb.desc = `Today: ${cleaned}`;
+    renderSides();
+  }
+}
+
+// ─── Toast ───
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.firstChild && t.firstChild.remove && (t.innerHTML = '');
+  t.append(msg);
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ─── Scrollspy active state ───
+function setupScrollSpy() {
+  const links = document.querySelectorAll('.nav a');
+  const sections = [...document.querySelectorAll('.section-target')];
+  function onScroll() {
+    let active = sections[0]?.id;
+    sections.forEach(s => {
+      const r = s.getBoundingClientRect();
+      if (r.top < 120) active = s.id;
+    });
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + active));
+  }
+  window.addEventListener('scroll', onScroll);
+  onScroll();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  render();
+  setupScrollSpy();
+});
+</script>
+</body>
+</html>

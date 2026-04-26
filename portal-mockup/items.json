@@ -1,0 +1,47 @@
+{
+  "property": {
+    "code": "FSL",
+    "name": "Hamsun Shahr-e-Faisal",
+    "room": "301"
+  },
+  "guest": {
+    "first_name": "Hassan",
+    "last_name": "Ateeq"
+  },
+  "categories": [
+    { "key": "all",        "label": "All" },
+    { "key": "drinks",     "label": "Drinks" },
+    { "key": "munchies",   "label": "Munchies" },
+    { "key": "otc_meds",   "label": "Wellness" },
+    { "key": "phone",      "label": "Phone" },
+    { "key": "toiletries", "label": "Toiletries" },
+    { "key": "packing",    "label": "Packing" }
+  ],
+  "items": [
+    { "sku": "MS-DRNK-002", "name": "Rani Orange Juice", "size": "240ml can", "sub": "drinks", "price": 400, "stock": 16, "low": false, "img": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=600&q=85" },
+    { "sku": "MS-DRNK-001", "name": "Nestle Fruita Vitals Sparkling Lime", "size": "250ml", "sub": "drinks", "price": 250, "stock": 24, "low": false, "img": "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=600&q=85" },
+    { "sku": "MS-DRNK-005", "name": "Day Fresh Belgian Chocolate Milk", "size": "225ml", "sub": "drinks", "price": 200, "stock": 12, "low": false, "img": "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&q=85" },
+
+    { "sku": "MS-MNCH-003", "name": "Cadbury Dairy Milk", "size": "38g", "sub": "munchies", "price": 200, "stock": 24, "low": false, "img": "https://images.unsplash.com/photo-1623935885311-49b80fe2dad2?w=600&q=85" },
+    { "sku": "MS-MNCH-006", "name": "Bakeri Butter Cookies", "size": "Snack pack", "sub": "munchies", "price": 150, "stock": 12, "low": false, "img": "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=600&q=85" },
+    { "sku": "MS-MNCH-007", "name": "Innovative Digestive Wheat Biscuits", "size": "270g", "sub": "munchies", "price": 100, "stock": 6, "low": true, "img": "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&q=85" },
+    { "sku": "MS-MNCH-001", "name": "Lays Classic", "size": "30g", "sub": "munchies", "price": 100, "stock": 24, "low": false, "img": "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=600&q=85" },
+
+    { "sku": "MS-OTCM-006", "name": "Band-aids", "size": "5 strips", "sub": "otc_meds", "price": 0, "stock": 100, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1626516470759-1cffd6f7adfa?w=600&q=85" },
+    { "sku": "MS-OTCM-002", "name": "Buscopan", "size": "4 tabs", "sub": "otc_meds", "price": 0, "stock": 100, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=85" },
+    { "sku": "MS-OTCM-004", "name": "ENO Sachet", "size": "Single", "sub": "otc_meds", "price": 0, "stock": 14, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=600&q=85" },
+    { "sku": "MS-OTCM-001", "name": "Imodium", "size": "Loperamide 2mg", "sub": "otc_meds", "price": 0, "stock": 60, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1550572017-edd951b55104?w=600&q=85" },
+    { "sku": "MS-OTCM-005", "name": "ORS Sachet", "size": "Pack", "sub": "otc_meds", "price": 0, "stock": 20, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1603726574822-d1ce42a08e80?w=600&q=85" },
+    { "sku": "MS-OTCM-003", "name": "Panadol Strip", "size": "4 tabs", "sub": "otc_meds", "price": 0, "stock": 200, "low": false, "comp": true, "img": "https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=600&q=85" },
+
+    { "sku": "MS-PACK-001", "name": "Brown Packing Tape", "size": "2\" × 50 yds", "sub": "packing", "price": 250, "stock": 6, "low": false, "img": "https://images.unsplash.com/photo-1624365168968-3a1a14ad8efe?w=600&q=85" },
+
+    { "sku": "MS-PHON-003", "name": "USB Wall Adapter", "size": "5W generic", "sub": "phone", "price": 1000, "stock": 9, "low": false, "img": "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&q=85" },
+    { "sku": "MS-PHON-002", "name": "Lightning Cable", "size": "iPhone, 1m", "sub": "phone", "price": 850, "stock": 10, "low": false, "img": "https://images.unsplash.com/photo-1588666309990-d68f08e3d4a6?w=600&q=85" },
+    { "sku": "MS-PHON-001", "name": "Type-C USB Cable", "size": "1m generic", "sub": "phone", "price": 800, "stock": 9, "low": false, "img": "https://images.unsplash.com/photo-1601524909162-ae8725290836?w=600&q=85" },
+
+    { "sku": "MS-TOIL-003", "name": "Nail Cutter", "size": "Standard", "sub": "toiletries", "price": 400, "stock": 10, "low": false, "img": "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=85" },
+    { "sku": "MS-TOIL-004", "name": "Butterfly Sanitary Pads", "size": "6 pieces", "sub": "toiletries", "price": 250, "stock": 10, "low": false, "img": "https://images.unsplash.com/photo-1611937663697-3260fb6f6cee?w=600&q=85" },
+    { "sku": "MS-TOIL-002", "name": "Eye Mask", "size": "Sleep mask", "sub": "toiletries", "price": 200, "stock": 10, "low": false, "img": "https://images.unsplash.com/photo-1611174797136-5f4f0bf5c0bc?w=600&q=85" }
+  ]
+}

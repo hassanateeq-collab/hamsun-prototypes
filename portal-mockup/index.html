@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#1A1A1A">
+<title>Hamsun · Your Stay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1A1A1A;
+    --ink-2: #2C2C2C;
+    --ink-3: #5A5A5A;
+    --ink-4: #8B8B8B;
+    --gold: #C8A45E;
+    --gold-mist: #F5E6C3;
+    --gold-dark: #9E7F43;
+    --cream: #FAF8F4;
+    --paper: #FFFFFF;
+    --edge: #EBE6DD;
+    --edge-soft: #F2EEE8;
+    --moss: #2D8F4E;
+    --ember: #C62828;
+
+    --f-display: 'Fraunces', Georgia, serif;
+    --f-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --r-xl: 22px;
+    --r-pill: 999px;
+
+    --shadow-1: 0 1px 2px rgba(26,26,26,0.04), 0 1px 1px rgba(26,26,26,0.03);
+    --shadow-2: 0 6px 20px rgba(26,26,26,0.06), 0 2px 6px rgba(26,26,26,0.04);
+    --shadow-3: 0 18px 40px rgba(26,26,26,0.14), 0 4px 12px rgba(26,26,26,0.08);
+
+    --spring-soft: cubic-bezier(0.32, 0.72, 0, 1);
+    --spring-firm: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+
+  body {
+    font-family: var(--f-text);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink);
+    background: #E8E4DC;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Desktop: center phone frame on neutral bg */
+  @media (min-width: 520px) {
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      background: radial-gradient(circle at 50% 0%, #EDE9E1 0%, #DDD8CE 100%);
+    }
+    .app-frame {
+      width: 390px;
+      height: 844px;
+      max-height: 90vh;
+      border-radius: 52px;
+      overflow: hidden;
+      box-shadow: 0 40px 80px -20px rgba(26,26,26,0.25), 0 10px 24px rgba(26,26,26,0.08);
+      border: 10px solid #1A1A1A;
+      background: var(--cream);
+    }
+    .app { height: 100%; overflow-y: auto; }
+  }
+  @media (max-width: 519px) {
+    .app-frame { min-height: 100vh; background: var(--cream); }
+    .app { min-height: 100vh; }
+  }
+
+  .app {
+    background: var(--cream);
+    padding-bottom: calc(100px + env(safe-area-inset-bottom));
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ========== HERO ========== */
+  .hero {
+    position: relative;
+    height: 340px;
+    overflow: hidden;
+    background: #1A1A1A;
+  }
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.04);
+    opacity: 0.88;
+  }
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(26,26,26,0.5) 0%, rgba(26,26,26,0) 22%, rgba(26,26,26,0) 45%, rgba(26,26,26,0.9) 100%);
+  }
+  .hero-top {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: calc(18px + env(safe-area-inset-top)) 20px 0;
+  }
+  .wordmark {
+    font-family: var(--f-display);
+    font-weight: 300;
+    font-size: 20px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.96);
+  }
+  .wordmark b {
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 15px;
+  }
+  .avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(14px) saturate(1.6);
+    -webkit-backdrop-filter: blur(14px) saturate(1.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: var(--f-display);
+    font-weight: 500;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.22);
+  }
+  .hero-content {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 2;
+    padding: 24px 22px 26px;
+    color: white;
+  }
+  .hero-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .hero-label::before {
+    content: '';
+    width: 14px;
+    height: 1px;
+    background: var(--gold);
+  }
+  .hero-greeting {
+    font-family: var(--f-display);
+    font-size: 36px;
+    font-weight: 300;
+    font-variation-settings: "opsz" 144;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    margin-bottom: 10px;
+  }
+  .hero-greeting em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-mist);
+  }
+  .hero-meta {
+    font-size: 13px;
+    color: rgba(255,255,255,0.72);
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+  .hero-meta-sep {
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    vertical-align: middle;
+    margin: 0 10px;
+  }
+
+  /* ========== FEED ========== */
+  .feed {
+    padding: 26px 16px 0;
+  }
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .live-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--moss);
+    display: inline-block;
+  }
+  .live-dot::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: var(--moss);
+    opacity: 0.4;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.4; }
+    70% { transform: scale(2.2); opacity: 0; }
+    100% { transform: scale(2.2); opacity: 0; }
+  }
+  .section-title.live::before { display: none; }
+
+  /* Featured card */
+  .card {
+    background: var(--paper);
+    border-radius: var(--r-xl);
+    overflow: hidden;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-1);
+    border: 1px solid var(--edge);
+    transition: transform 0.28s var(--spring-soft), box-shadow 0.28s;
+    cursor: pointer;
+    position: relative;
+  }
+  .card:active {
+    transform: scale(0.985);
+    box-shadow: var(--shadow-2);
+  }
+  .card-featured-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+  .card-featured-image-wrap {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-featured-image-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(26,26,26,0) 60%, rgba(26,26,26,0.3) 100%);
+  }
+  .card-featured-body {
+    padding: 18px 20px 20px;
+  }
+  .card-badge-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .card-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    border-radius: 5px;
+    background: var(--gold-mist);
+    color: var(--gold-dark);
+  }
+  .card-badge.ghost {
+    background: transparent;
+    color: var(--ink-3);
+    border: 1px solid var(--edge);
+  }
+  .card-title {
+    font-family: var(--f-display);
+    font-size: 24px;
+    font-weight: 400;
+    font-variation-settings: "opsz" 144;
+    letter-spacing: -0.015em;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .card-sub {
+    font-size: 14px;
+    color: var(--ink-3);
+    line-height: 1.5;
+  }
+  .card-cta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--edge);
+  }
+  .card-cta-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .card-cta-arrow {
+    color: var(--gold-dark);
+    font-family: var(--f-display);
+    font-size: 22px;
+    line-height: 1;
+    transition: transform 0.2s var(--spring-firm);
+  }
+  .card:active .card-cta-arrow { transform: translateX(4px); }
+
+  /* Status card (smaller) */
+  .card-status {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .card-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: var(--gold-mist);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 22px;
+  }
+  .card-icon.ink { background: var(--ink); color: white; }
+  .card-icon.soft { background: var(--edge-soft); }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+  .card-row-title {
+    font-family: var(--f-display);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 3px;
+    letter-spacing: -0.005em;
+  }
+  .card-row-detail {
+    font-size: 12.5px;
+    color: var(--ink-3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-row-detail .dot-sep {
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--ink-4);
+  }
+  .card-arrow {
+    color: var(--ink-4);
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  /* Quick actions rail */
+  .rail-wrap {
+    margin: 0 -16px 0;
+    padding: 0 16px;
+  }
+  .rail {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rail::-webkit-scrollbar { display: none; }
+
+  .rail-item {
+    flex-shrink: 0;
+    width: 88px;
+    height: 92px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    background: var(--paper);
+    border-radius: var(--r-md);
+    border: 1px solid var(--edge);
+    cursor: pointer;
+    transition: transform 0.22s var(--spring-soft);
+  }
+  .rail-item:active { transform: scale(0.94); }
+  .rail-icon {
+    font-size: 24px;
+    line-height: 1;
+  }
+  .rail-label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-2);
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+
+  /* Explore grid */
+  .explore-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .explore-card {
+    background: var(--paper);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--edge);
+    cursor: pointer;
+    transition: transform 0.22s var(--spring-soft);
+  }
+  .explore-card:active { transform: scale(0.97); }
+  .explore-image {
+    width: 100%;
+    aspect-ratio: 1.3 / 1;
+    object-fit: cover;
+    display: block;
+  }
+  .explore-body {
+    padding: 11px 13px 14px;
+  }
+  .explore-title {
+    font-family: var(--f-display);
+    font-size: 15.5px;
+    font-weight: 500;
+    line-height: 1.25;
+    margin-bottom: 3px;
+    letter-spacing: -0.005em;
+  }
+  .explore-sub {
+    font-size: 11px;
+    color: var(--ink-4);
+    font-weight: 500;
+    letter-spacing: 0.005em;
+  }
+
+  /* All services link */
+  .all-services {
+    text-align: center;
+    padding: 28px 0 10px;
+  }
+  .all-services a {
+    font-family: var(--f-display);
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--ink-2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--gold);
+    padding-bottom: 3px;
+    letter-spacing: 0.005em;
+  }
+
+  /* WhatsApp bar */
+  .wa-bar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    z-index: 20;
+    width: calc(100% - 32px);
+    max-width: 358px;
+    background: var(--ink);
+    border-radius: var(--r-pill);
+    padding: 11px 16px 11px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-3);
+    cursor: pointer;
+    transition: transform 0.24s var(--spring-soft);
+  }
+  .wa-bar:active { transform: translateX(-50%) scale(0.97); }
+
+  @media (min-width: 520px) {
+    .wa-bar {
+      position: absolute;
+      max-width: 332px;
+      width: calc(100% - 32px);
+      bottom: 22px;
+    }
+  }
+
+  .wa-logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #25D366;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .wa-logo svg { width: 18px; height: 18px; color: white; }
+  .wa-text { flex: 1; line-height: 1.2; }
+  .wa-text-main { font-weight: 600; font-size: 13.5px; letter-spacing: -0.005em; }
+  .wa-text-sub { font-size: 11px; color: rgba(255,255,255,0.6); font-weight: 400; margin-top: 1px; }
+  .wa-arrow { color: var(--gold); font-family: var(--f-display); font-size: 18px; }
+
+</style>
+</head>
+<body>
+<div class="app-frame">
+<div class="app">
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=85" alt="Room" class="hero-image">
+    <div class="hero-overlay"></div>
+
+    <div class="hero-top">
+      <div class="wordmark"><b>HAMSUN</b></div>
+      <div class="avatar">H</div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-label">Shahr-e-Faisal</div>
+      <h1 class="hero-greeting">Good evening,<br><em>Hassan</em></h1>
+      <div class="hero-meta">
+        Room 301
+        <span class="hero-meta-sep"></span>
+        2 nights left
+        <span class="hero-meta-sep"></span>
+        Checkout Sun 12 PM
+      </div>
+    </div>
+  </section>
+
+  <!-- FEED -->
+  <div class="feed">
+
+    <!-- Tomorrow Morning -->
+    <div class="section-title">Tomorrow morning</div>
+    <div class="card">
+      <div class="card-featured-image-wrap">
+        <img src="https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=1200&q=85" alt="Breakfast" class="card-featured-image">
+      </div>
+      <div class="card-featured-body">
+        <div class="card-badge-row">
+          <span class="card-badge">2 complimentary</span>
+          <span class="card-badge ghost">À la carte</span>
+        </div>
+        <h3 class="card-title">Choose your breakfast</h3>
+        <p class="card-sub">Pick your meal tonight. We'll deliver to your room or the café at your chosen time.</p>
+        <div class="card-cta">
+          <span class="card-cta-text">Start ordering</span>
+          <span class="card-cta-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- In progress -->
+    <div class="section-title live" style="margin-top: 26px;">
+      <span class="live-dot"></span>In progress
+    </div>
+    <div class="card">
+      <div class="card-status">
+        <div class="card-icon">🧺</div>
+        <div class="card-body">
+          <div class="card-row-title">Laundry being washed</div>
+          <div class="card-row-detail">Picked 10:30 AM<span class="dot-sep"></span>Back by 5 PM today</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-status">
+        <div class="card-icon ink">🚗</div>
+        <div class="card-body">
+          <div class="card-row-title">Airport drop · tomorrow 6 PM</div>
+          <div class="card-row-detail">Flight PK-304<span class="dot-sep"></span>Driver confirmed by noon</div>
+        </div>
+        <span class="card-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <div class="section-title" style="margin-top: 28px;">Quick actions</div>
+    <div class="rail-wrap">
+      <div class="rail">
+        <div class="rail-item"><span class="rail-icon">🍽️</span><span class="rail-label">Order food</span></div>
+        <div class="rail-item"><span class="rail-icon">🛎️</span><span class="rail-label">Amenities</span></div>
+        <div class="rail-item"><span class="rail-icon">🚗</span><span class="rail-label">Transport</span></div>
+        <div class="rail-item"><span class="rail-icon">🔧</span><span class="rail-label">Report issue</span></div>
+        <div class="rail-item"><span class="rail-icon">💼</span><span class="rail-label">Concierge</span></div>
+        <div class="rail-item"><span class="rail-icon">📋</span><span class="rail-label">My stay</span></div>
+      </div>
+    </div>
+
+    <!-- Explore -->
+    <div class="section-title" style="margin-top: 28px;">Explore</div>
+    <div class="explore-grid">
+      <div class="explore-card">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&q=85" class="explore-image" alt="Corti">
+        <div class="explore-body">
+          <div class="explore-title">Corti Café</div>
+          <div class="explore-sub">Delivered to your room</div>
+        </div>
+      </div>
+      <div class="explore-card">
+        <img src="https://images.unsplash.com/photo-1524850011238-e3d235c7d4c9?w=800&q=85" class="explore-image" alt="Tour">
+        <div class="explore-body">
+          <div class="explore-title">Karachi tour</div>
+          <div class="explore-sub">Half day with guide</div>
+        </div>
+      </div>
+      <div class="explore-card">
+        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=800&q=85" class="explore-image" alt="Celebration">
+        <div class="explore-body">
+          <div class="explore-title">Celebrations</div>
+          <div class="explore-sub">Cake, flowers, setup</div>
+        </div>
+      </div>
+      <div class="explore-card">
+        <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=800&q=85" class="explore-image" alt="Dinner">
+        <div class="explore-body">
+          <div class="explore-title">In-room dining</div>
+          <div class="explore-sub">Kitchen open till 11 PM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="all-services"><a href="#">View all services</a></div>
+
+  </div>
+
+  <!-- WhatsApp bar -->
+  <div class="wa-bar">
+    <div class="wa-logo">
+      <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.711.226 1.358.194 1.869.118.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/>
+      </svg>
+    </div>
+    <div class="wa-text">
+      <div class="wa-text-main">Prefer to chat?</div>
+      <div class="wa-text-sub">Message us on WhatsApp</div>
+    </div>
+    <span class="wa-arrow">→</span>
+  </div>
+
+</div>
+</div>
+</body>
+</html>

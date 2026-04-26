@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Housekeeping Module · Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --blue: #1F6FB2; --blue-mist: #E0EEF7;
+  --violet: #6B4FA0; --violet-mist: #ECE4F4;
+  --indigo: #4051B5; --indigo-mist: #E2E5F4;
+  --green: #2D8F4E; --green-mist: #E5F1E9;
+  --gray: #6E6E6E; --gray-mist: #ECECEC;
+  --whatsapp: #25D366; --whatsapp-bg: #DCF8C6;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 14px; line-height: 1.55;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+  padding-bottom: 40px;
+}
+button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
+
+/* ─── Topbar ─── */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--edge);
+  padding: 12px 28px;
+  display: flex; align-items: center; gap: 18px;
+}
+.brand { font-family: var(--f-display); font-size: 18px; font-weight: 500; }
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink-4); padding-left: 14px; border-left: 1px solid var(--edge);
+}
+.spacer { flex: 1; }
+.topbar a {
+  font-size: 12px; font-weight: 500; color: var(--ink-3);
+  text-decoration: none; padding: 6px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge); background: var(--paper);
+}
+.topbar a:hover { background: var(--edge-soft); }
+
+/* ─── TOC sidebar ─── */
+.layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; max-width: 1320px; margin: 0 auto; padding: 28px 28px; }
+.toc { position: sticky; top: 70px; align-self: start; }
+.toc h4 {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--ink-4); margin-bottom: 10px;
+}
+.toc ol { list-style: none; padding-left: 0; counter-reset: tocnum; }
+.toc li {
+  counter-increment: tocnum;
+  padding: 6px 0; font-size: 12.5px; line-height: 1.4;
+  border-left: 2px solid transparent;
+  padding-left: 12px; margin-left: -2px;
+}
+.toc li::before { content: counter(tocnum) ". "; color: var(--ink-4); }
+.toc li:hover { border-left-color: var(--gold); }
+.toc li.active { border-left-color: var(--gold-dark); font-weight: 500; }
+.toc a { color: var(--ink-3); text-decoration: none; }
+.toc li:hover a { color: var(--ink); }
+
+/* ─── Page content ─── */
+.page { min-width: 0; }
+
+/* ─── Section ─── */
+.section {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 28px 32px; margin-bottom: 22px;
+  scroll-margin-top: 80px;
+}
+.section h2 {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.015em; margin-bottom: 4px;
+}
+.section h2 em { color: var(--gold-dark); }
+.section .lede {
+  font-size: 13.5px; color: var(--ink-3); margin-bottom: 22px;
+  max-width: 720px;
+}
+.section-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: var(--gold-mist); color: var(--gold-dark);
+  padding: 3px 10px; border-radius: var(--r-pill);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+}
+.section h3 {
+  font-family: var(--f-display); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.005em; margin-bottom: 10px; margin-top: 22px;
+}
+.section h4 {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--ink-4); margin-bottom: 10px; margin-top: 18px;
+}
+
+/* ─── Hero callout (Section 0) ─── */
+.hero {
+  background: linear-gradient(135deg, var(--cream), #faedd2);
+  border: 1px solid var(--gold);
+}
+.hero h1 {
+  font-family: var(--f-display); font-size: 32px; font-weight: 500;
+  letter-spacing: -0.02em; margin-bottom: 6px;
+}
+.hero h1 em { color: var(--gold-dark); }
+.hero p { font-size: 14px; color: var(--ink-2); max-width: 680px; }
+.hero p + p { margin-top: 8px; }
+.hero .stats {
+  margin-top: 18px; display: flex; gap: 28px; flex-wrap: wrap;
+}
+.hero .stat {
+  font-family: var(--f-display); font-size: 24px; font-weight: 500;
+  letter-spacing: -0.012em; color: var(--ink);
+}
+.hero .stat span {
+  display: block; font-family: var(--f-text); font-size: 10px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-4);
+  margin-top: 2px;
+}
+
+/* ─── Separation diagram ─── */
+.separation {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  margin-bottom: 18px;
+}
+.sep-card {
+  background: var(--cream); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 16px 18px;
+}
+.sep-card.this {
+  background: var(--gold-mist); border-color: var(--gold-dark);
+}
+.sep-card .head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.sep-card .head .icon { font-size: 18px; }
+.sep-card .head h4 {
+  font-family: var(--f-display); font-size: 14px; font-weight: 500; margin: 0;
+  text-transform: none; letter-spacing: -0.005em; color: var(--ink);
+}
+.sep-card .head .badge {
+  margin-left: auto; font-size: 9.5px; font-weight: 700; padding: 2px 7px;
+  border-radius: var(--r-pill); text-transform: uppercase; letter-spacing: 0.08em;
+  background: var(--paper); color: var(--ink-3); border: 1px solid var(--edge);
+}
+.sep-card.this .head .badge { background: var(--gold-dark); color: white; border: 0; }
+.sep-card ul { list-style: none; padding-left: 0; font-size: 12.5px; color: var(--ink-2); }
+.sep-card ul li {
+  padding: 3px 0; padding-left: 16px; position: relative;
+}
+.sep-card ul li::before {
+  content: '·'; position: absolute; left: 5px; color: var(--ink-4);
+}
+
+/* ─── Source cards (Section 2) ─── */
+.source-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+.source-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: border-color 0.2s;
+}
+.source-card.auto { border-left: 4px solid var(--moss); }
+.source-card.user { border-left: 4px solid var(--blue); }
+.source-card .head { display: flex; align-items: center; gap: 8px; }
+.source-card .head .icon { font-size: 22px; }
+.source-card .head .num {
+  font-family: var(--f-display); font-size: 11px; font-weight: 600;
+  background: var(--gold-mist); color: var(--gold-dark);
+  padding: 2px 7px; border-radius: var(--r-pill); margin-left: auto;
+  letter-spacing: 0.06em;
+}
+.source-card h4 {
+  font-family: var(--f-display); font-size: 14px; font-weight: 500;
+  text-transform: none; letter-spacing: -0.005em; color: var(--ink);
+  margin: 2px 0;
+}
+.source-card .kind-tag {
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 2px 7px; border-radius: var(--r-pill); margin-left: 4px;
+}
+.kind-tag.auto { background: var(--moss-mist); color: var(--moss); }
+.kind-tag.user { background: var(--blue-mist); color: var(--blue); }
+.source-card .row {
+  font-size: 12px; padding: 4px 0;
+  display: grid; grid-template-columns: 80px 1fr; gap: 10px;
+  border-top: 1px solid var(--edge-soft);
+}
+.source-card .row:nth-of-type(1) { border-top: 0; padding-top: 8px; }
+.source-card .row .lbl {
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--ink-4); padding-top: 1px;
+}
+.source-card .row .val { color: var(--ink-2); }
+.source-card .row .val code {
+  font-family: var(--f-mono); font-size: 11px;
+  background: var(--cream); padding: 1px 5px; border-radius: 3px;
+}
+
+/* ─── Auto-daily diagram (Section 3) ─── */
+.auto-daily-block {
+  display: grid; grid-template-columns: 1fr; gap: 18px;
+}
+.preference-card {
+  background: var(--cream); border: 1px solid var(--gold);
+  border-radius: var(--r-md); padding: 18px 22px;
+  text-align: center;
+}
+.preference-card .col-pref {
+  display: inline-block; padding: 14px 22px;
+  background: var(--paper); border-radius: var(--r-md);
+  border: 1px solid var(--gold-dark);
+}
+.preference-card .col-name {
+  font-family: var(--f-mono); font-size: 13px; font-weight: 600;
+  color: var(--ink);
+}
+.preference-card .col-meta {
+  font-size: 11.5px; color: var(--ink-3); margin-top: 4px;
+}
+.preference-card .col-meta code {
+  font-family: var(--f-mono); font-size: 11px;
+  background: var(--cream); padding: 1px 5px; border-radius: 3px;
+}
+.entry-points {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.entry-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 14px 16px;
+  text-align: center;
+}
+.entry-card .icon { font-size: 24px; margin-bottom: 4px; }
+.entry-card h5 {
+  font-family: var(--f-display); font-size: 13px; font-weight: 500;
+  letter-spacing: -0.005em; margin-bottom: 4px;
+}
+.entry-card .desc { font-size: 11.5px; color: var(--ink-3); }
+.arrow-down {
+  text-align: center; color: var(--gold-dark); font-size: 18px;
+  padding: 6px 0;
+}
+
+/* ─── State machine diagram ─── */
+.state-flow {
+  display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  background: var(--cream); padding: 18px; border-radius: var(--r-md);
+  border: 1px solid var(--edge);
+}
+.state-pill {
+  font-size: 11.5px; font-weight: 600; padding: 7px 13px;
+  border-radius: var(--r-pill); white-space: nowrap;
+  border: 1px solid;
+}
+.sp-amber  { background: var(--amber-mist);  color: var(--amber);  border-color: var(--amber); }
+.sp-blue   { background: var(--blue-mist);   color: var(--blue);   border-color: var(--blue); }
+.sp-indigo { background: var(--indigo-mist); color: var(--indigo); border-color: var(--indigo); }
+.sp-green  { background: var(--green-mist);  color: var(--green);  border-color: var(--green); }
+.sp-orange { background: var(--orange-mist); color: var(--orange); border-color: var(--orange); }
+.sp-gray   { background: var(--gray-mist);   color: var(--gray);   border-color: var(--gray); }
+.flow-arr { color: var(--ink-4); font-size: 14px; }
+
+/* ─── Timeline ─── */
+.timeline {
+  display: grid; grid-template-columns: 100px repeat(7, 1fr); gap: 4px;
+  font-size: 12px;
+}
+.timeline .col-head {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-4); padding: 8px 4px; text-align: center;
+}
+.timeline .col-head.row-lbl { text-align: left; }
+.timeline .day-cell {
+  background: var(--cream); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 6px 4px; text-align: center; min-height: 60px;
+  font-size: 11px; line-height: 1.3;
+  display: flex; flex-direction: column; gap: 3px; align-items: center; justify-content: center;
+}
+.timeline .day-cell.checkin { background: var(--blue-mist); border-color: var(--blue); }
+.timeline .day-cell.checkout { background: var(--gold-mist); border-color: var(--gold); }
+.timeline .day-cell .task {
+  font-size: 10.5px; font-weight: 600;
+  background: var(--paper); padding: 2px 6px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge);
+}
+.timeline .day-cell .task.daily { background: var(--moss-mist); color: var(--moss); border-color: var(--moss); }
+.timeline .day-cell .task.deep  { background: var(--violet-mist); color: var(--violet); border-color: var(--violet); }
+.timeline .day-cell .task.checkout-clean { background: var(--gold-mist); color: var(--gold-dark); border-color: var(--gold-dark); }
+.timeline .day-cell .task.skip { background: var(--gray-mist); color: var(--gray); border-color: var(--gray); }
+.timeline .row-lbl {
+  font-size: 11px; font-weight: 600; padding: 6px 8px;
+  display: flex; align-items: center;
+}
+
+/* ─── Schema box ─── */
+.schema {
+  background: var(--ink); color: #d4ddd0;
+  font-family: var(--f-mono); font-size: 12px; line-height: 1.7;
+  padding: 18px 22px; border-radius: var(--r-md);
+  white-space: pre-wrap; overflow-x: auto;
+}
+.schema .kw { color: #d8a973; }
+.schema .com { color: #6b8a72; font-style: italic; }
+.schema .str { color: #b9da9d; }
+.schema .add { color: #88dd88; }
+
+/* ─── WhatsApp mockup ─── */
+.wa-conv {
+  background: #ECE5DD; padding: 18px;
+  border-radius: var(--r-md); display: flex; flex-direction: column; gap: 8px;
+  max-width: 480px; margin: 0 auto;
+}
+.wa-bubble {
+  padding: 10px 12px; border-radius: var(--r-md);
+  max-width: 80%;
+  font-size: 13px; line-height: 1.42;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.12);
+}
+.wa-bubble.us {
+  background: var(--whatsapp-bg); align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+.wa-bubble.them {
+  background: white; align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+.wa-bubble .meta {
+  font-size: 10px; color: var(--ink-4); margin-top: 4px; text-align: right;
+}
+.wa-bubble .btn-row {
+  margin-top: 8px; display: flex; gap: 4px; flex-wrap: wrap;
+  border-top: 1px solid rgba(0,0,0,0.06); padding-top: 6px;
+}
+.wa-bubble .btn-row .wa-btn {
+  font-size: 12px; color: #075E54; font-weight: 500;
+  padding: 6px 10px; background: #f5fbf8;
+  border: 1px solid #cce6db; border-radius: var(--r-sm);
+  flex: 1; text-align: center; cursor: pointer;
+}
+.wa-bubble .btn-row .wa-btn:hover { background: #e9f5ee; }
+
+/* ─── Portal toggle mockup ─── */
+.portal-mock {
+  background: var(--cream); padding: 22px;
+  border-radius: var(--r-md); border: 1px solid var(--edge);
+  max-width: 480px; margin: 0 auto;
+}
+.portal-mock .portal-head {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+  margin-bottom: 14px; letter-spacing: -0.012em;
+}
+.portal-mock .portal-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px; background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); margin-bottom: 8px;
+}
+.portal-mock .portal-row .icon { font-size: 22px; }
+.portal-mock .portal-row .info { flex: 1; }
+.portal-mock .portal-row .info .name { font-weight: 600; font-size: 13.5px; }
+.portal-mock .portal-row .info .desc { font-size: 11.5px; color: var(--ink-4); margin-top: 2px; }
+.toggle-switch {
+  width: 42px; height: 24px; background: var(--moss); border-radius: 99px;
+  position: relative; flex-shrink: 0; cursor: pointer;
+}
+.toggle-switch::after {
+  content: ''; position: absolute; top: 2px; right: 2px;
+  width: 20px; height: 20px; background: white; border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-switch.off { background: var(--edge); }
+.toggle-switch.off::after { right: 20px; left: 2px; }
+
+/* ─── Trigger card ─── */
+.trigger-list { display: flex; flex-direction: column; gap: 12px; }
+.trigger-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 14px 18px;
+}
+.trigger-card .top {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+}
+.trigger-card .top .num {
+  font-family: var(--f-mono); font-size: 11px; font-weight: 600;
+  background: var(--ink); color: white; width: 22px; height: 22px;
+  border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+}
+.trigger-card .top h4 {
+  font-family: var(--f-display); font-size: 14px; font-weight: 500;
+  margin: 0; text-transform: none; letter-spacing: -0.005em; color: var(--ink);
+}
+.trigger-card .top .when {
+  margin-left: auto; font-size: 11px; color: var(--ink-4);
+  background: var(--cream); padding: 3px 8px; border-radius: var(--r-pill);
+}
+.trigger-card .body { font-size: 12.5px; color: var(--ink-2); padding-left: 32px; }
+.trigger-card .body code {
+  font-family: var(--f-mono); font-size: 11.5px;
+  background: var(--cream); padding: 1px 6px; border-radius: 3px;
+}
+
+/* ─── Decisions (Q list) ─── */
+.q-list { display: flex; flex-direction: column; gap: 10px; }
+.q-card {
+  background: #FFFBEC; border: 1px solid #F0DCA0;
+  border-radius: var(--r-md); padding: 14px 18px;
+  display: grid; grid-template-columns: 28px 1fr; gap: 10px;
+}
+.q-card .num {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+  color: var(--gold-dark); line-height: 1;
+}
+.q-card .body .question {
+  font-weight: 600; color: var(--ink); font-size: 13.5px;
+}
+.q-card .body .options {
+  font-size: 12px; color: var(--ink-3); margin-top: 4px;
+}
+.q-card .body .options code {
+  font-family: var(--f-mono); font-size: 11px;
+  background: rgba(158,127,67,0.1); padding: 1px 5px; border-radius: 3px;
+}
+.q-card .body .options b { color: var(--ink-2); font-weight: 600; }
+
+@media (max-width: 920px) {
+  .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  .toc { position: static; }
+  .toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
+  .toc li { padding: 4px 8px; border-left: 0; border: 1px solid var(--edge); border-radius: var(--r-pill); margin: 0; }
+  .section { padding: 18px 18px; }
+  .separation { grid-template-columns: 1fr; }
+  .timeline { grid-template-columns: 80px repeat(7, 1fr); font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Housekeeping Module · Flow</span>
+  <span class="spacer"></span>
+  <a href="http://localhost:4325/" target="_blank">↗ Workflows editor</a>
+  <a href="http://localhost:4324/" target="_blank">↗ Reception inbox</a>
+</header>
+
+<div class="layout">
+
+  <aside class="toc">
+    <h4>Sections</h4>
+    <ol>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#scope">What's in / what's out</a></li>
+      <li><a href="#sources">Task sources</a></li>
+      <li><a href="#auto-daily">Auto-daily cleaning</a></li>
+      <li><a href="#lifecycle">Task lifecycle</a></li>
+      <li><a href="#timeline">Sample timeline</a></li>
+      <li><a href="#schema">Data model</a></li>
+      <li><a href="#whatsapp">WhatsApp opt-in</a></li>
+      <li><a href="#portal">Portal toggle</a></li>
+      <li><a href="#triggers">Cron &amp; triggers</a></li>
+      <li><a href="#decisions">Open decisions</a></li>
+    </ol>
+  </aside>
+
+  <main class="page">
+
+    <!-- ─── Section 0: Overview ─── -->
+    <section class="section hero" id="overview">
+      <span class="section-tag">Module spec</span>
+      <h1>Hamsun <em>Housekeeping</em></h1>
+      <p>The housekeeping module manages <b>cleaning and deep-cleaning tasks</b> — generated automatically from booking events and the daily schedule, or manually requested by guest or reception. The cleaning team owns this queue end-to-end. Reception only sees a peek (in the command center) so they know what's pending and overdue.</p>
+      <p>Items requests (towels, linen, amenities, laundry pickup) are <b>not</b> handled here. Those continue to flow through the existing reception request portal.</p>
+      <div class="stats">
+        <div class="stat">4 <span>task sources</span></div>
+        <div class="stat">3 <span>opt-in entry points for auto-daily</span></div>
+        <div class="stat">5 <span>task subtypes</span></div>
+        <div class="stat">5 <span>workflow states</span></div>
+      </div>
+    </section>
+
+    <!-- ─── Section 1: Scope ─── -->
+    <section class="section" id="scope">
+      <h2><em>What's in</em> the housekeeping module</h2>
+      <p class="lede">Hamsun has a recurring confusion between "housekeeping items" (towels, linen) and "housekeeping cleaning" (room cleaning by the cleaning team). This module handles only the latter.</p>
+
+      <div class="separation">
+        <div class="sep-card this">
+          <div class="head">
+            <span class="icon">🧹</span>
+            <h4>Housekeeping module · this spec</h4>
+            <span class="badge">In scope</span>
+          </div>
+          <ul>
+            <li>Daily cleaning</li>
+            <li>Deep cleaning</li>
+            <li>Bathroom-only cleaning</li>
+            <li>Turn-down service</li>
+            <li>Post-checkout cleaning</li>
+            <li>Linen change as part of cleaning visit</li>
+          </ul>
+        </div>
+        <div class="sep-card">
+          <div class="head">
+            <span class="icon">🧺</span>
+            <h4>Reception requests · existing portal</h4>
+            <span class="badge">Out of scope</span>
+          </div>
+          <ul>
+            <li>Extra towels (separately)</li>
+            <li>Toiletries refill</li>
+            <li>Slippers, robe, kettle, hairdryer</li>
+            <li>Amenities top-up</li>
+            <li>Laundry pickup</li>
+            <li>Iron / ironing board</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Section 2: Task sources ─── -->
+    <section class="section" id="sources">
+      <h2>Task <em>sources</em></h2>
+      <p class="lede">Cleaning tasks enter the queue in 4 distinct ways. Two are automatic (system-generated), two are user-driven.</p>
+
+      <div class="source-grid">
+
+        <div class="source-card auto">
+          <div class="head">
+            <span class="icon">✈</span>
+            <span class="kind-tag auto">Auto</span>
+            <span class="num">Source 1</span>
+          </div>
+          <h4>On checkout</h4>
+          <div class="row">
+            <span class="lbl">Trigger</span>
+            <span class="val"><code>bookings.checkin_status</code> changes to <code>CHECKED_OUT</code></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Generates</span>
+            <span class="val"><code>post_checkout</code> cleaning task for that room</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Default</span>
+            <span class="val">Always on, per-property override possible</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Priority</span>
+            <span class="val">High — blocks the room until done</span>
+          </div>
+        </div>
+
+        <div class="source-card auto">
+          <div class="head">
+            <span class="icon">⏰</span>
+            <span class="kind-tag auto">Auto</span>
+            <span class="num">Source 2</span>
+          </div>
+          <h4>Daily auto-cleaning</h4>
+          <div class="row">
+            <span class="lbl">Trigger</span>
+            <span class="val">Daily cron at <code>09:00 PKT</code> <span style="color:var(--ember);">← decide time</span></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Filters</span>
+            <span class="val">Bookings where <code>auto_daily_cleaning = true</code> AND <code>checkin_status = CHECKED_IN</code></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Skips</span>
+            <span class="val">Arrival day · Departure day · DND today · Already cleaned today</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Generates</span>
+            <span class="val"><code>daily_clean</code> task per qualifying room</span>
+          </div>
+        </div>
+
+        <div class="source-card user">
+          <div class="head">
+            <span class="icon">📱</span>
+            <span class="kind-tag user">User</span>
+            <span class="num">Source 3</span>
+          </div>
+          <h4>Guest portal</h4>
+          <div class="row">
+            <span class="lbl">User</span>
+            <span class="val">Guest taps <b>Request cleaning</b> in their stay portal</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Choices</span>
+            <span class="val">Daily · Deep · Bathroom only · Refresh · Linen change</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Source tag</span>
+            <span class="val"><code>source = 'guest_portal'</code></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Notification</span>
+            <span class="val">WhatsApp ack to guest, plus Slack ping to housekeeping channel</span>
+          </div>
+        </div>
+
+        <div class="source-card user">
+          <div class="head">
+            <span class="icon">🛎</span>
+            <span class="kind-tag user">User</span>
+            <span class="num">Source 4</span>
+          </div>
+          <h4>Reception / PMS</h4>
+          <div class="row">
+            <span class="lbl">User</span>
+            <span class="val">Reception staff or housekeeping lead manually creates a job</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Use cases</span>
+            <span class="val">Walk-in request · Pre-scheduled deep clean · One-off mid-stay</span>
+          </div>
+          <div class="row">
+            <span class="lbl">Source tag</span>
+            <span class="val"><code>source = 'staff_manual'</code></span>
+          </div>
+          <div class="row">
+            <span class="lbl">Permission</span>
+            <span class="val"><code>cleaning.create</code> — reception + housekeeping team</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Section 3: Auto-daily cleaning ─── -->
+    <section class="section" id="auto-daily">
+      <h2><em>Auto-daily</em> cleaning · the booking-level toggle</h2>
+      <p class="lede">A booking-level boolean drives whether the daily cron auto-creates a cleaning task each morning. Three entry points let the toggle be flipped — the system stays in sync regardless of how the guest opted in.</p>
+
+      <h3>The single source of truth</h3>
+      <div class="auto-daily-block">
+        <div class="preference-card">
+          <div class="col-pref">
+            <div class="col-name">bookings.auto_daily_cleaning</div>
+            <div class="col-meta">boolean · default <code>false</code> · stored on the booking record</div>
+          </div>
+        </div>
+
+        <h3 style="text-align: center; margin-top: 8px;">Three ways to flip it</h3>
+
+        <div class="entry-points">
+          <div class="entry-card">
+            <div class="icon">📱</div>
+            <h5>Guest portal</h5>
+            <div class="desc">Toggle in <code style="font-family:var(--f-mono);font-size:11px;">/portal/preferences</code> page · saves immediately, WhatsApp confirm</div>
+          </div>
+          <div class="entry-card">
+            <div class="icon">💬</div>
+            <h5>WhatsApp reply</h5>
+            <div class="desc">Guest replies <b>DAILY</b> or taps a button on the welcome message · webhook updates the flag</div>
+          </div>
+          <div class="entry-card">
+            <div class="icon">🛎</div>
+            <h5>Reception / PMS</h5>
+            <div class="desc">Checkbox on the booking edit form · staff toggles based on guest request at check-in</div>
+          </div>
+        </div>
+
+        <div class="arrow-down">↓</div>
+
+        <div class="preference-card" style="background: var(--moss-mist); border-color: var(--moss);">
+          <div style="font-family: var(--f-display); font-size: 14px; color: var(--moss); font-weight: 500;">
+            All three paths write to the same column.<br/>
+            <span style="font-size: 12px; color: var(--ink-3); font-weight: 400;">Daily cron reads it once each morning.</span>
+          </div>
+        </div>
+      </div>
+
+      <h3>Skip rules</h3>
+      <p class="lede" style="margin-bottom: 14px;">Even when <code style="font-family: var(--f-mono); font-size: 12px; background: var(--cream); padding: 1px 6px; border-radius: 4px;">auto_daily_cleaning = true</code>, the daily cron still skips a booking when any of these apply:</p>
+      <ul style="font-size: 13px; color: var(--ink-2); padding-left: 22px; line-height: 1.7;">
+        <li><b>Arrival day</b> — guest is checking in, room was just cleaned post-checkout of the previous guest</li>
+        <li><b>Departure day</b> — guest is leaving today, the post-checkout source will handle it</li>
+        <li><b>DND today</b> — booking has <code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 5px;border-radius:3px;">cleaning_dnd_today = true</code> (guest told reception "no service today")</li>
+        <li><b>Already cleaned today</b> — there's already an active or done <code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 5px;border-radius:3px;">daily_clean</code> task for this room today</li>
+        <li><b>Date in the skip list</b> — booking has <code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 5px;border-radius:3px;">cleaning_skip_dates</code> array containing today's date (planned skips, e.g. business meeting day)</li>
+      </ul>
+    </section>
+
+    <!-- ─── Section 4: Lifecycle ─── -->
+    <section class="section" id="lifecycle">
+      <h2>Task <em>lifecycle</em> · 5 states</h2>
+      <p class="lede">Each cleaning task moves through these states. The cleaning team primarily uses the queue; reception sees the live count via the command center peek card.</p>
+
+      <h3>States</h3>
+      <div class="state-flow">
+        <span class="state-pill sp-amber">Scheduled</span>
+        <span class="flow-arr">→</span>
+        <span class="state-pill sp-blue">Assigned</span>
+        <span class="flow-arr">→</span>
+        <span class="state-pill sp-indigo">In progress</span>
+        <span class="flow-arr">→</span>
+        <span class="state-pill sp-green">Done</span>
+        <span class="flow-arr" style="margin: 0 8px;">|</span>
+        <span class="state-pill sp-orange">Skipped</span>
+        <span class="state-pill sp-gray">Cancelled</span>
+      </div>
+
+      <h3>Actions</h3>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px;">
+        <thead>
+          <tr style="background: var(--cream); border-bottom: 1px solid var(--edge);">
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">Button</th>
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">From</th>
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">To</th>
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">Flags</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: 12.5px;">
+          <tr style="border-bottom: 1px solid var(--edge-soft);"><td style="padding: 9px 12px;"><b>→ Assign</b></td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px;">scheduled</td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px; color: var(--gold-dark);">→ assigned</td><td style="padding: 9px 12px;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--violet-mist);color:var(--violet);">requires assignee</span></td></tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);"><td style="padding: 9px 12px;"><b>✓ Started</b></td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px;">assigned</td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px; color: var(--gold-dark);">→ in_progress</td><td style="padding: 9px 12px; color: var(--ink-4); font-size: 11px;">—</td></tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);"><td style="padding: 9px 12px;"><b>✓ Done</b></td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px;">in_progress</td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px; color: var(--gold-dark);">→ done</td><td style="padding: 9px 12px;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--orange-mist);color:var(--orange);">notify guest</span></td></tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);"><td style="padding: 9px 12px;"><b>⊘ Skip today</b></td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px;">any active</td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px; color: var(--gold-dark);">→ skipped</td><td style="padding: 9px 12px;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--blue-mist);color:var(--blue);">requires reason</span></td></tr>
+          <tr><td style="padding: 9px 12px;"><b>✕ Cancel</b></td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px;">any active</td><td style="padding: 9px 12px; font-family: var(--f-mono); font-size: 11.5px; color: var(--gold-dark);">→ cancelled</td><td style="padding: 9px 12px;"><span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--ember-mist);color:var(--ember);">destructive · note</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Subtypes</h3>
+      <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <span style="background: var(--moss-mist); color: var(--moss); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600;">daily_clean</span>
+        <span style="background: var(--violet-mist); color: var(--violet); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600;">deep_clean</span>
+        <span style="background: var(--blue-mist); color: var(--blue); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600;">bathroom_only</span>
+        <span style="background: var(--gold-mist); color: var(--gold-dark); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600;">post_checkout</span>
+        <span style="background: var(--indigo-mist); color: var(--indigo); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600;">turn_down</span>
+        <span style="background: var(--cream); color: var(--ink-3); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600; border: 1px solid var(--edge);">linen_change</span>
+        <span style="background: var(--cream); color: var(--ink-3); font-family: var(--f-mono); font-size: 12px; padding: 4px 12px; border-radius: 99px; font-weight: 600; border: 1px solid var(--edge);">refresh</span>
+      </div>
+    </section>
+
+    <!-- ─── Section 5: Sample timeline ─── -->
+    <section class="section" id="timeline">
+      <h2>Sample <em>timeline</em> · 5-night stay</h2>
+      <p class="lede">Guest in Room G06, books Mon–Sat (5 nights). Below shows what tasks the system auto-generates each day under different settings.</p>
+
+      <h4>A · Booking has <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">auto_daily_cleaning = true</code></h4>
+      <div class="timeline">
+        <div class="col-head row-lbl">Day</div>
+        <div class="col-head">Mon</div>
+        <div class="col-head">Tue</div>
+        <div class="col-head">Wed</div>
+        <div class="col-head">Thu</div>
+        <div class="col-head">Fri</div>
+        <div class="col-head">Sat</div>
+        <div class="col-head">Sun</div>
+
+        <div class="row-lbl">Stay event</div>
+        <div class="day-cell checkin">Check-in</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell checkout">Check-out</div>
+        <div class="day-cell" style="opacity:0.4;">Vacant</div>
+
+        <div class="row-lbl">Auto-tasks</div>
+        <div class="day-cell"><span class="task skip">skip · arrival</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task checkout-clean">post-checkout</span></div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+      </div>
+
+      <h4>B · Same booking, but guest sets DND on Wed and skips Thu in advance</h4>
+      <div class="timeline">
+        <div class="col-head row-lbl">Day</div>
+        <div class="col-head">Mon</div>
+        <div class="col-head">Tue</div>
+        <div class="col-head">Wed</div>
+        <div class="col-head">Thu</div>
+        <div class="col-head">Fri</div>
+        <div class="col-head">Sat</div>
+        <div class="col-head">Sun</div>
+
+        <div class="row-lbl">Stay event</div>
+        <div class="day-cell checkin">Check-in</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell" style="background: var(--ember-mist); border-color: var(--ember);">DND set</div>
+        <div class="day-cell" style="background: var(--gray-mist); border-color: var(--gray);">In skip-list</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell checkout">Check-out</div>
+        <div class="day-cell" style="opacity:0.4;">Vacant</div>
+
+        <div class="row-lbl">Auto-tasks</div>
+        <div class="day-cell"><span class="task skip">skip · arrival</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task skip">skip · DND</span></div>
+        <div class="day-cell"><span class="task skip">skip · listed</span></div>
+        <div class="day-cell"><span class="task daily">daily clean</span></div>
+        <div class="day-cell"><span class="task checkout-clean">post-checkout</span></div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+      </div>
+
+      <h4>C · Booking has auto-daily OFF, but guest manually requests deep clean on Wed</h4>
+      <div class="timeline">
+        <div class="col-head row-lbl">Day</div>
+        <div class="col-head">Mon</div>
+        <div class="col-head">Tue</div>
+        <div class="col-head">Wed</div>
+        <div class="col-head">Thu</div>
+        <div class="col-head">Fri</div>
+        <div class="col-head">Sat</div>
+        <div class="col-head">Sun</div>
+
+        <div class="row-lbl">Stay event</div>
+        <div class="day-cell checkin">Check-in</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell" style="background: var(--violet-mist); border-color: var(--violet);">Guest requests</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell">In stay</div>
+        <div class="day-cell checkout">Check-out</div>
+        <div class="day-cell" style="opacity:0.4;">Vacant</div>
+
+        <div class="row-lbl">Auto-tasks</div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+        <div class="day-cell"><span class="task deep">deep clean</span></div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+        <div class="day-cell"><span class="task checkout-clean">post-checkout</span></div>
+        <div class="day-cell" style="opacity:0.4;">—</div>
+      </div>
+    </section>
+
+    <!-- ─── Section 6: Schema ─── -->
+    <section class="section" id="schema">
+      <h2><em>Data model</em> changes</h2>
+      <p class="lede">Two parts: additions to the <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">bookings</code> table for the per-booking preference, and a new <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">cleaning</code> request_type that reuses the existing <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">portal.requests</code> infrastructure.</p>
+
+      <h4>1. Booking preference columns</h4>
+      <div class="schema"><span class="com">-- Per-booking cleaning preferences</span>
+<span class="kw">ALTER TABLE</span> public.bookings
+  <span class="add">ADD COLUMN auto_daily_cleaning   boolean DEFAULT false</span>,
+  <span class="add">ADD COLUMN cleaning_pref_time     time DEFAULT '10:00'</span>,        <span class="com">-- when guest prefers cleaning</span>
+  <span class="add">ADD COLUMN cleaning_dnd_today     boolean DEFAULT false</span>,         <span class="com">-- temporary "no service today"</span>
+  <span class="add">ADD COLUMN cleaning_skip_dates    date[] DEFAULT '{}'</span>,            <span class="com">-- specific dates to skip</span>
+  <span class="add">ADD COLUMN cleaning_special_notes text</span>;                          <span class="com">-- "guest has a small dog", etc.</span>
+
+<span class="com">-- Daily cron resets DND every midnight to false (so it doesn't carry over)</span></div>
+
+      <h4>2. Use existing <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">portal.requests</code> with new <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">cleaning</code> type</h4>
+      <p class="lede" style="margin-top: 4px;">No new tables — cleaning tasks are <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">portal.requests</code> rows with <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">type_slug = 'cleaning'</code>. This reuses workflow engine, status history, audit log, and the dynamic action bar.</p>
+      <div class="schema"><span class="com">-- New request_type seeded into portal.request_types</span>
+<span class="kw">INSERT INTO</span> portal.request_types (slug, display_name, icon, default_team, is_paid, default_sla_minutes, workflow)
+<span class="kw">VALUES</span> (
+  <span class="str">'cleaning'</span>,
+  <span class="str">'Housekeeping (cleaning)'</span>,
+  <span class="str">'broom'</span>,
+  <span class="str">'housekeeping'</span>,
+  <span class="kw">false</span>,
+  60,
+  <span class="str">'{ "initial_status": "scheduled", "statuses": [...], "actions": [...], "subtypes": ["daily_clean", "deep_clean", "bathroom_only", "post_checkout", "turn_down", "linen_change", "refresh"] }'</span>::jsonb
+);
+
+<span class="com">-- New source values to track origin (extends portal.requests.source enum)</span>
+<span class="kw">ALTER TYPE</span> portal.request_source <span class="kw">ADD VALUE</span> <span class="str">'cleaning_cron'</span>;
+<span class="kw">ALTER TYPE</span> portal.request_source <span class="kw">ADD VALUE</span> <span class="str">'checkout_trigger'</span>;</div>
+
+      <h4>3. Optional log table for daily-cleaning bookkeeping</h4>
+      <div class="schema"><span class="com">-- One row per booking per day to show "did we run the cron?"</span>
+<span class="kw">CREATE TABLE</span> housekeeping.daily_cron_log (
+  id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  ran_at       timestamptz NOT NULL DEFAULT now(),
+  booking_id   uuid NOT NULL REFERENCES public.bookings(id),
+  ran_date     date NOT NULL,
+  outcome      text NOT NULL CHECK (outcome IN (
+    <span class="str">'task_created'</span>, <span class="str">'skip_arrival'</span>, <span class="str">'skip_departure'</span>,
+    <span class="str">'skip_dnd'</span>, <span class="str">'skip_already_cleaned'</span>, <span class="str">'skip_listed_date'</span>,
+    <span class="str">'skip_pref_off'</span>
+  )),
+  task_id      uuid REFERENCES portal.requests(id),
+  UNIQUE (booking_id, ran_date)
+);</div>
+    </section>
+
+    <!-- ─── Section 7: WhatsApp ─── -->
+    <section class="section" id="whatsapp">
+      <h2>WhatsApp <em>opt-in</em> flow</h2>
+      <p class="lede">At check-in (or on first WhatsApp interaction), the system sends a one-tap opt-in for daily cleaning. Guest's reply parses to <code style="font-family:var(--f-mono);font-size:12px;background:var(--cream);padding:1px 6px;border-radius:4px;">bookings.auto_daily_cleaning</code>.</p>
+
+      <h4>Sample conversation</h4>
+      <div class="wa-conv">
+        <div class="wa-bubble us">
+          Welcome to Hamsun, Mr. Marutani — your room G06 is ready.<br/><br/>
+          Would you like daily cleaning around <b>10am</b> every day during your stay? You can change this anytime.
+          <div class="btn-row">
+            <button class="wa-btn">Yes, daily</button>
+            <button class="wa-btn">No, on request only</button>
+            <button class="wa-btn">Change time</button>
+          </div>
+          <div class="meta">Reception · 14:32 ✓✓</div>
+        </div>
+        <div class="wa-bubble them">
+          Yes, daily
+          <div class="meta">14:34 ✓</div>
+        </div>
+        <div class="wa-bubble us">
+          Got it — cleaning crew will visit between <b>10:00–11:00 AM</b> daily. Reply <b>SKIP</b> any morning to skip just that day.<br/><br/>
+          Reply <b>STOP</b> to turn off daily cleaning entirely.
+          <div class="meta">14:34 ✓✓</div>
+        </div>
+      </div>
+
+      <h4 style="margin-top: 22px;">Reply parsing rules</h4>
+      <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+        <thead>
+          <tr style="background: var(--cream); border-bottom: 1px solid var(--edge);">
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">Guest message</th>
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">Effect</th>
+            <th style="padding: 8px 12px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);">Bot reply</th>
+          </tr>
+        </thead>
+        <tbody style="font-size: 12.5px;">
+          <tr style="border-bottom: 1px solid var(--edge-soft);">
+            <td style="padding: 9px 12px;"><code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 6px;border-radius:3px;">DAILY</code>, "yes daily", "yes please"</td>
+            <td style="padding: 9px 12px;">Set <code style="font-family:var(--f-mono);font-size:11.5px;">auto_daily_cleaning = true</code></td>
+            <td style="padding: 9px 12px;">"Got it — daily cleaning starting tomorrow."</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);">
+            <td style="padding: 9px 12px;"><code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 6px;border-radius:3px;">STOP</code>, "no daily", "cancel daily"</td>
+            <td style="padding: 9px 12px;">Set <code style="font-family:var(--f-mono);font-size:11.5px;">auto_daily_cleaning = false</code></td>
+            <td style="padding: 9px 12px;">"Daily cleaning paused. Reply DAILY anytime to restart."</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);">
+            <td style="padding: 9px 12px;"><code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 6px;border-radius:3px;">SKIP</code>, "skip today", "no clean today"</td>
+            <td style="padding: 9px 12px;">Set <code style="font-family:var(--f-mono);font-size:11.5px;">cleaning_dnd_today = true</code></td>
+            <td style="padding: 9px 12px;">"Skipping today's cleaning. Tomorrow as usual."</td>
+          </tr>
+          <tr style="border-bottom: 1px solid var(--edge-soft);">
+            <td style="padding: 9px 12px;"><code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 6px;border-radius:3px;">CLEAN NOW</code>, "send cleaning"</td>
+            <td style="padding: 9px 12px;">Create immediate cleaning task</td>
+            <td style="padding: 9px 12px;">"Cleaning crew on the way — within 30 min."</td>
+          </tr>
+          <tr>
+            <td style="padding: 9px 12px;"><code style="font-family:var(--f-mono);font-size:11.5px;background:var(--cream);padding:1px 6px;border-radius:3px;">CHANGE TIME 14:00</code></td>
+            <td style="padding: 9px 12px;">Set <code style="font-family:var(--f-mono);font-size:11.5px;">cleaning_pref_time = '14:00'</code></td>
+            <td style="padding: 9px 12px;">"Cleaning shifted to 2pm starting tomorrow."</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── Section 8: Portal toggle ─── -->
+    <section class="section" id="portal">
+      <h2>Guest <em>portal</em> toggle</h2>
+      <p class="lede">A "Cleaning preferences" section in the guest's stay portal — same toggle, surfaced visibly so guests don't need WhatsApp.</p>
+
+      <div class="portal-mock">
+        <div class="portal-head">Cleaning <em style="color: var(--gold-dark); font-style: italic;">preferences</em></div>
+
+        <div class="portal-row">
+          <span class="icon">🧹</span>
+          <div class="info">
+            <div class="name">Daily cleaning</div>
+            <div class="desc">Cleaning crew visits every day around 10:00 AM</div>
+          </div>
+          <div class="toggle-switch"></div>
+        </div>
+
+        <div class="portal-row">
+          <span class="icon">🌙</span>
+          <div class="info">
+            <div class="name">Skip today</div>
+            <div class="desc">No cleaning visit today only · resumes tomorrow</div>
+          </div>
+          <div class="toggle-switch off"></div>
+        </div>
+
+        <div class="portal-row">
+          <span class="icon">⏰</span>
+          <div class="info">
+            <div class="name">Preferred time</div>
+            <div class="desc">10:00 AM · tap to change</div>
+          </div>
+          <div style="font-size: 18px; color: var(--ink-4);">›</div>
+        </div>
+
+        <button style="width: 100%; padding: 12px; background: var(--ink); color: white; border-radius: 10px; font-size: 13px; font-weight: 500; margin-top: 14px;">Request cleaning now</button>
+      </div>
+    </section>
+
+    <!-- ─── Section 9: Triggers ─── -->
+    <section class="section" id="triggers">
+      <h2>Cron &amp; <em>triggers</em></h2>
+      <p class="lede">Three pieces of automation glue the module together.</p>
+
+      <div class="trigger-list">
+
+        <div class="trigger-card">
+          <div class="top">
+            <span class="num">1</span>
+            <h4>Postgres trigger · post-checkout cleaning</h4>
+            <span class="when">runs on update</span>
+          </div>
+          <div class="body">
+            On <code>UPDATE OF checkin_status ON public.bookings</code> when new value is <code>CHECKED_OUT</code> and old value wasn't, insert a <code>portal.requests</code> row with <code>type_slug = 'cleaning'</code>, <code>subtype = 'post_checkout'</code>, <code>source = 'checkout_trigger'</code>, <code>scheduled_for = now()</code>.
+          </div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="top">
+            <span class="num">2</span>
+            <h4>Daily cron · auto-daily-cleaning</h4>
+            <span class="when">09:00 PKT daily</span>
+          </div>
+          <div class="body">
+            New edge function <code>daily-cleaning-cron</code>. Loops every booking where <code>auto_daily_cleaning = true</code> AND <code>checkin_status = CHECKED_IN</code>. Applies skip rules. For each qualifying booking, inserts a <code>cleaning</code> request with <code>subtype = 'daily_clean'</code>, <code>source = 'cleaning_cron'</code>. Logs every booking checked into <code>housekeeping.daily_cron_log</code> with the outcome.
+          </div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="top">
+            <span class="num">3</span>
+            <h4>WhatsApp inbound · reply parser</h4>
+            <span class="when">on incoming message</span>
+          </div>
+          <div class="body">
+            Extends existing <code>wasender-webhook</code> edge function. Parses guest replies for <code>DAILY</code>, <code>STOP</code>, <code>SKIP</code>, <code>CLEAN NOW</code>, <code>CHANGE TIME hh:mm</code>. Updates <code>bookings.auto_daily_cleaning</code> / <code>cleaning_dnd_today</code> / <code>cleaning_pref_time</code> via the booking inferred from sender's WhatsApp number. Sends confirmation reply.
+          </div>
+        </div>
+
+        <div class="trigger-card">
+          <div class="top">
+            <span class="num">4</span>
+            <h4>Daily DND reset</h4>
+            <span class="when">23:59 PKT daily</span>
+          </div>
+          <div class="body">
+            Tiny SQL job: <code>UPDATE bookings SET cleaning_dnd_today = false WHERE cleaning_dnd_today = true</code>. Runs at end-of-day so the flag doesn't accidentally carry into the next day.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Section 10: Decisions ─── -->
+    <section class="section" id="decisions">
+      <h2><em>Open decisions</em> · 8 questions for you</h2>
+      <p class="lede">Before I write the schema migration and edge functions, please confirm these:</p>
+
+      <div class="q-list">
+
+        <div class="q-card">
+          <div class="num">Q1</div>
+          <div class="body">
+            <div class="question">What time should the daily cron run?</div>
+            <div class="options">Options: <b>09:00</b> · <b>10:00</b> · <b>11:00</b> · <b>configurable per property</b>. Affects when cleaning crew sees their day's queue. Currently I assume <code>09:00 PKT</code>.</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q2</div>
+          <div class="body">
+            <div class="question">Default for new bookings — auto-daily on or off?</div>
+            <div class="options">If <b>on by default</b> (opt-out), maximises cleaning revenue and consistency but risks unwanted visits. If <b>off by default</b> (opt-in), respects guest privacy but kills daily-cleaning adoption rate. My read is <b>off, with WhatsApp opt-in offered at check-in</b> — but you may prefer otherwise per property type (CLF apartments vs FSL hotel rooms might differ).</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q3</div>
+          <div class="body">
+            <div class="question">Skip arrival day &amp; departure day automatically?</div>
+            <div class="options">Arrival: room is fresh from previous post-checkout, so daily cleaning would be redundant. Departure: post-checkout cleaning will fire anyway. <b>Recommend: skip both automatically.</b> Confirm?</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q4</div>
+          <div class="body">
+            <div class="question">Deep cleaning schedule for long stays?</div>
+            <div class="options">For stays > 7 nights, do you want an automatic <b>weekly deep clean</b>? Or always manual? Currently no auto-deep. Would surface in the timeline if added.</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q5</div>
+          <div class="body">
+            <div class="question">Cleaning team — separate "cleaning" team or part of housekeeping team?</div>
+            <div class="options">In the data model, <code>default_team = 'housekeeping'</code> right now. If you have a separate cleaning crew, change to <code>'cleaning'</code> and create that team. Affects who gets Slack notifications and assignment dropdowns.</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q6</div>
+          <div class="body">
+            <div class="question">WhatsApp opt-in — when does the bot send the message?</div>
+            <div class="options">Options: <b>at booking confirmation</b> (days/weeks early) · <b>day before check-in</b> · <b>at check-in</b> · <b>only if guest hasn't opted in 12h after check-in</b>. My read: <b>at check-in</b> as part of the welcome message. Confirm.</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q7</div>
+          <div class="body">
+            <div class="question">Naming the request type — <code>cleaning</code> or <code>housekeeping</code>?</div>
+            <div class="options">The seeded <code>housekeeping</code> request_type currently handles items (towels, linen). If you want this new module also called housekeeping, we need to rename the old one to <code>housekeeping_items</code> first. Otherwise this becomes <code>cleaning</code> as a separate type. <b>Recommend: keep them distinct in the DB</b> (<code>cleaning</code> vs <code>housekeeping_items</code>) but UI can label both as "Housekeeping".</div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="num">Q8</div>
+          <div class="body">
+            <div class="question">Does post-checkout cleaning ever bill the guest?</div>
+            <div class="options">Currently <code>is_paid = false</code> for all cleaning. But damaged-rooms or extra-mess clean might warrant a <b>damage</b> or <b>extra clean fee</b>. Out of scope for v1, but worth noting. Confirm v1 = always free?</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

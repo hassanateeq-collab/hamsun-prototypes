@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Workflows Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --blue: #1F6FB2; --blue-mist: #E0EEF7;
+  --violet: #6B4FA0; --violet-mist: #ECE4F4;
+  --indigo: #4051B5; --indigo-mist: #E2E5F4;
+  --red: #C62828; --red-mist: #FCE9E9;
+  --green: #2D8F4E; --green-mist: #E5F1E9;
+  --gray: #6E6E6E; --gray-mist: #ECECEC;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 14px; line-height: 1.5;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+  padding-bottom: 100px;
+}
+button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
+
+/* Topbar */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--edge);
+  padding: 12px 28px;
+  display: flex; align-items: center; gap: 18px;
+}
+.brand { font-family: var(--f-display); font-size: 18px; font-weight: 500; }
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink-4); padding-left: 14px; border-left: 1px solid var(--edge);
+}
+.spacer { flex: 1; }
+.topbar a, .topbar button.linklike {
+  font-size: 12px; font-weight: 500; color: var(--ink-3);
+  text-decoration: none; padding: 6px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge); background: var(--paper); cursor: pointer;
+}
+.topbar a:hover, .topbar button.linklike:hover { background: var(--edge-soft); }
+.dirty-pill {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: var(--r-pill); background: var(--amber-mist); color: var(--amber);
+  letter-spacing: 0.04em; text-transform: uppercase;
+}
+.dirty-pill.zero { background: var(--moss-mist); color: var(--moss); }
+
+/* Page container */
+.page {
+  max-width: 1280px; margin: 0 auto; padding: 28px 28px 60px;
+}
+
+/* Intro block */
+.intro {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 22px 26px; margin-bottom: 24px;
+}
+.intro h1 {
+  font-family: var(--f-display); font-size: 26px; font-weight: 500;
+  letter-spacing: -0.018em; margin-bottom: 6px;
+}
+.intro h1 em { color: var(--gold-dark); }
+.intro p { color: var(--ink-3); font-size: 13.5px; max-width: 720px; }
+.intro p + p { margin-top: 6px; }
+.intro-tag {
+  display: inline-block; font-size: 10.5px; font-weight: 700;
+  background: var(--gold-mist); color: var(--gold-dark);
+  padding: 3px 10px; border-radius: var(--r-pill);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+}
+.intro code {
+  font-family: var(--f-mono); font-size: 12px;
+  background: var(--cream); padding: 1px 6px; border-radius: 4px;
+}
+
+/* Summary mini-table */
+.summary {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); overflow: hidden; margin-bottom: 28px;
+}
+.summary-head {
+  padding: 12px 18px; border-bottom: 1px solid var(--edge); background: var(--cream);
+  display: flex; align-items: center; gap: 10px;
+}
+.summary-head h2 {
+  font-family: var(--f-display); font-size: 15px; font-weight: 500;
+}
+.summary-head .meta { font-size: 11.5px; color: var(--ink-4); margin-left: auto; }
+table.tbl { width: 100%; border-collapse: collapse; }
+table.tbl th, table.tbl td { padding: 9px 14px; text-align: left; font-size: 12.5px; }
+table.tbl th {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-4); background: var(--cream); border-bottom: 1px solid var(--edge);
+}
+table.tbl td { border-bottom: 1px solid var(--edge-soft); }
+table.tbl tr:last-child td { border-bottom: 0; }
+table.tbl tr:hover td { background: var(--edge-soft); }
+table.tbl td.num { font-variant-numeric: tabular-nums; text-align: right; }
+table.tbl td.code { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2); }
+table.tbl td a { color: var(--gold-dark); text-decoration: none; font-weight: 500; }
+table.tbl td a:hover { text-decoration: underline; }
+table.tbl tr.dirty td { background: var(--amber-mist); }
+table.tbl tr.dirty td:first-child::before {
+  content: '●'; color: var(--amber); margin-right: 6px;
+}
+
+/* Card */
+.card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); overflow: hidden; margin-bottom: 22px;
+  scroll-margin-top: 80px;
+  transition: border-color 0.2s;
+}
+.card.dirty { border-color: var(--amber); box-shadow: 0 0 0 3px var(--amber-mist); }
+
+.card-head {
+  padding: 16px 22px; background: var(--cream); border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.card-head .icon-input {
+  font-size: 22px; width: 40px; text-align: center;
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 4px;
+}
+.card-head .name-input {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+  letter-spacing: -0.012em; color: var(--ink);
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 6px 10px;
+  flex: 0 0 240px; min-width: 0;
+}
+.card-head .slug {
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-4);
+  background: var(--paper); padding: 4px 10px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge);
+}
+
+.meta-row {
+  padding: 12px 22px; border-bottom: 1px solid var(--edge-soft);
+  display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
+  background: var(--cream);
+  font-size: 12.5px;
+}
+.meta-row label {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--ink-3); font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.meta-row select, .meta-row input[type=text], .meta-row input[type=number] {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 5px 8px; font-size: 12.5px;
+  font-family: var(--f-text); color: var(--ink);
+}
+.meta-row input[type=number] { width: 60px; text-align: right; font-variant-numeric: tabular-nums; }
+.meta-row .checkbox-group { display: inline-flex; align-items: center; gap: 4px; }
+.meta-row input[type=checkbox] { accent-color: var(--gold-dark); width: 14px; height: 14px; }
+
+.card-body { padding: 18px 22px; }
+.card-body section + section { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--edge-soft); }
+.section-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+}
+.section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--ink-4);
+}
+.section-title em { font-style: normal; color: var(--gold-dark); }
+.section-help {
+  font-size: 11.5px; color: var(--ink-4); margin-left: auto;
+  max-width: 460px; text-align: right;
+}
+
+.btn-add {
+  background: var(--cream); color: var(--ink-2); border: 1px dashed var(--edge);
+  padding: 6px 12px; border-radius: var(--r-sm); font-size: 11.5px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-left: auto;
+}
+.btn-add:hover { background: var(--gold-mist); color: var(--gold-dark); border-color: var(--gold-dark); }
+
+/* Status row (editable) */
+.status-list { display: flex; flex-direction: column; gap: 6px; }
+.status-row {
+  display: grid;
+  grid-template-columns: minmax(140px,1fr) 100px 90px 90px auto;
+  gap: 8px;
+  padding: 8px 10px; border-radius: var(--r-md);
+  background: var(--cream); border: 1px solid var(--edge-soft);
+  align-items: center;
+}
+.status-row.terminal { background: rgba(110,110,110,0.04); }
+.status-row .label-input {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 6px 10px;
+  font-size: 13px; font-weight: 500;
+}
+.status-row .key-display {
+  font-family: var(--f-mono); font-size: 10.5px; color: var(--ink-4);
+  display: block; margin-top: 1px;
+}
+.status-row .color-select {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 6px 6px;
+  font-size: 11.5px;
+}
+.status-row .color-swatch {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 50%; margin-right: 4px; vertical-align: middle;
+}
+.status-row .toggle-cell {
+  display: flex; align-items: center; gap: 4px; font-size: 11px;
+  color: var(--ink-3);
+}
+.status-row .row-actions { display: flex; gap: 2px; align-items: center; }
+.row-btn {
+  background: transparent; color: var(--ink-4); padding: 5px 7px;
+  border-radius: 4px; font-size: 13px; line-height: 1; cursor: pointer;
+}
+.row-btn:hover { background: var(--edge-soft); color: var(--ink-2); }
+.row-btn.danger:hover { background: var(--ember-mist); color: var(--ember); }
+
+/* Action row (editable) */
+.action-list { display: flex; flex-direction: column; gap: 10px; }
+.action-row {
+  background: var(--cream); border: 1px solid var(--edge-soft);
+  border-radius: var(--r-md); padding: 12px;
+  display: grid; grid-template-columns: 1fr; gap: 10px;
+}
+.action-row.charge {
+  background: var(--moss-mist); border-color: var(--moss);
+}
+.action-row.destructive { background: var(--ember-mist); border-color: var(--ember); }
+.action-row.destructive.charge { background: linear-gradient(135deg, var(--ember-mist), var(--moss-mist)); }
+.action-row .action-head {
+  display: flex; align-items: center; gap: 10px;
+}
+.action-row .label-input {
+  flex: 1;
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 7px 10px;
+  font-size: 13.5px; font-weight: 600;
+}
+.action-row .from-to-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  font-size: 12px;
+}
+.action-row .from-to-row .lbl {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ink-4);
+}
+.action-row .state-select {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-sm); padding: 6px 8px;
+  font-size: 12px; font-family: var(--f-mono);
+}
+.flag-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 6px 14px; padding-top: 6px;
+  border-top: 1px solid var(--edge-soft);
+}
+.flag-cell {
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 4px 0;
+}
+.flag-cell input[type=checkbox] {
+  accent-color: var(--ink); width: 14px; height: 14px;
+  margin-top: 1px; flex-shrink: 0; cursor: pointer;
+}
+.flag-cell.charge input[type=checkbox] { accent-color: var(--moss); }
+.flag-cell.destructive input[type=checkbox] { accent-color: var(--ember); }
+.flag-cell label {
+  font-size: 12px; line-height: 1.35; cursor: pointer;
+  display: flex; flex-direction: column; gap: 1px;
+}
+.flag-cell label .flag-name { font-weight: 600; color: var(--ink); }
+.flag-cell label .flag-help {
+  font-size: 10.5px; color: var(--ink-4); font-weight: 400;
+}
+.flag-cell.charge label .flag-name { color: var(--moss); }
+.flag-cell.destructive label .flag-name { color: var(--ember); }
+.flag-cell .role-input, .flag-cell .template-input {
+  margin-left: 4px; padding: 3px 6px; font-size: 11.5px;
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: 4px; font-family: var(--f-mono);
+  width: 110px; flex-shrink: 0;
+}
+.action-row.charge::before {
+  content: '💰  POSTS CHARGE TO FOLIO';
+  display: block; font-size: 9.5px; font-weight: 700;
+  color: var(--moss); letter-spacing: 0.14em;
+  margin-bottom: -4px;
+}
+.action-row.destructive::before {
+  content: '⚠  DESTRUCTIVE ACTION';
+  display: block; font-size: 9.5px; font-weight: 700;
+  color: var(--ember); letter-spacing: 0.14em;
+  margin-bottom: -4px;
+}
+.action-row.destructive.charge::before {
+  content: '💰⚠  POSTS CHARGE & DESTRUCTIVE';
+}
+
+/* Subtypes */
+.subtype-edit { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.subtype-chip {
+  background: var(--paper); border: 1px solid var(--edge);
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-2);
+  padding: 4px 6px 4px 10px; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.subtype-chip button { color: var(--ink-4); padding: 0 4px; font-size: 12px; line-height: 1; }
+.subtype-chip button:hover { color: var(--ember); }
+.subtype-add-input {
+  border: 1px dashed var(--edge); background: transparent;
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--ink);
+  padding: 4px 10px; border-radius: var(--r-pill); width: 180px;
+}
+.subtype-add-input:focus { outline: 0; border-color: var(--gold-dark); border-style: solid; }
+
+/* Severity */
+.severity-edit { display: flex; flex-wrap: wrap; gap: 6px; }
+.severity-chip {
+  font-size: 11px; font-weight: 700; padding: 4px 8px 4px 10px;
+  border-radius: var(--r-pill); letter-spacing: 0.04em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.severity-chip.urgent { background: var(--ember-mist); color: var(--ember); }
+.severity-chip.normal { background: var(--gold-mist); color: var(--gold-dark); }
+.severity-chip.low { background: var(--gray-mist); color: var(--ink-3); }
+.severity-chip button { color: inherit; padding: 0 4px; font-size: 12px; opacity: 0.6; }
+
+/* Status-pill (for preview & visualization) */
+.status-pill {
+  font-size: 11px; font-weight: 600; padding: 5px 10px;
+  border-radius: var(--r-pill); letter-spacing: 0.005em;
+  white-space: nowrap; display: inline-block;
+}
+.status-pill.amber  { background: var(--amber-mist);  color: var(--amber); }
+.status-pill.blue   { background: var(--blue-mist);   color: var(--blue); }
+.status-pill.violet { background: var(--violet-mist); color: var(--violet); }
+.status-pill.indigo { background: var(--indigo-mist); color: var(--indigo); }
+.status-pill.orange { background: var(--orange-mist); color: var(--orange); }
+.status-pill.green  { background: var(--green-mist);  color: var(--green); }
+.status-pill.red    { background: var(--red-mist);    color: var(--red); }
+.status-pill.gray   { background: var(--gray-mist);   color: var(--gray); }
+
+/* Live preview table */
+.preview-table { width: 100%; border-collapse: collapse; }
+.preview-table th {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-4); padding: 7px 10px; text-align: left; border-bottom: 1px solid var(--edge);
+}
+.preview-table td {
+  padding: 9px 10px; border-bottom: 1px solid var(--edge-soft); vertical-align: top;
+}
+.preview-table .actions-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.btn-preview {
+  font-size: 11px; font-weight: 500; padding: 5px 9px;
+  border-radius: var(--r-sm); border: 1px solid var(--edge);
+  background: var(--paper); color: var(--ink);
+}
+.btn-preview.primary { background: var(--ink); color: white; border-color: var(--ink); }
+.btn-preview.danger { background: var(--paper); color: var(--ember); border-color: var(--ember-mist); }
+.btn-preview.charge::after { content: ' 💰'; }
+
+/* Card foot buttons */
+.card-foot {
+  padding: 10px 22px; background: var(--cream); border-top: 1px solid var(--edge-soft);
+  display: flex; gap: 8px; align-items: center;
+}
+.card-foot .btn {
+  font-size: 11.5px; font-weight: 500; padding: 6px 12px;
+  border-radius: var(--r-sm); border: 1px solid var(--edge); background: var(--paper);
+  cursor: pointer; color: var(--ink);
+}
+.card-foot .btn:hover { background: var(--edge-soft); }
+.card-foot .btn.warn { color: var(--ember); border-color: var(--ember-mist); }
+.card-foot .btn.warn:hover { background: var(--ember-mist); }
+.card-foot .spacer-flex { flex: 1; }
+.card-foot .meta-info {
+  font-size: 11px; color: var(--ink-4);
+}
+
+/* Floating save bar */
+.save-bar {
+  position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+  background: var(--ink); color: white;
+  padding: 12px 18px; border-radius: var(--r-pill);
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.32), 0 4px 12px rgba(0,0,0,0.18);
+  z-index: 50;
+  font-size: 13px;
+  transition: transform 0.32s var(--spring), opacity 0.32s var(--spring);
+}
+.save-bar.hidden { opacity: 0; transform: translate(-50%, 24px); pointer-events: none; }
+.save-bar .count { font-weight: 700; padding-right: 8px; border-right: 1px solid rgba(255,255,255,0.2); }
+.save-bar button {
+  background: rgba(255,255,255,0.16); color: white;
+  padding: 8px 14px; border-radius: var(--r-pill); font-size: 12px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.22);
+  cursor: pointer;
+}
+.save-bar button:hover { background: rgba(255,255,255,0.28); }
+.save-bar button.primary {
+  background: var(--gold); color: var(--ink); border-color: var(--gold);
+}
+.save-bar button.primary:hover { background: var(--gold-dark); color: white; }
+.save-bar button.warn { background: rgba(198,40,40,0.32); border-color: rgba(198,40,40,0.4); }
+
+/* Modal for SQL output */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,0.55);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal {
+  background: var(--paper); border-radius: var(--r-lg);
+  max-width: 880px; width: 100%; max-height: 86vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+}
+.modal-head {
+  padding: 18px 22px; border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 10px;
+}
+.modal-head h3 {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+}
+.modal-head .close-btn {
+  margin-left: auto; padding: 6px 10px; font-size: 14px;
+  color: var(--ink-3); border-radius: var(--r-sm);
+}
+.modal-head .close-btn:hover { background: var(--edge-soft); color: var(--ink); }
+.modal-body {
+  padding: 18px 22px; overflow-y: auto; flex: 1;
+}
+.modal-body pre {
+  background: var(--ink); color: #d4ddd0;
+  font-family: var(--f-mono); font-size: 12px; line-height: 1.65;
+  padding: 14px 18px; border-radius: var(--r-md);
+  white-space: pre-wrap; word-break: break-word;
+}
+.modal-foot {
+  padding: 14px 22px; border-top: 1px solid var(--edge);
+  display: flex; gap: 8px; justify-content: flex-end;
+}
+.modal-foot button {
+  padding: 8px 14px; border-radius: var(--r-sm); font-size: 12.5px; font-weight: 500;
+  cursor: pointer;
+}
+.modal-foot button.primary { background: var(--ink); color: white; border: 1px solid var(--ink); }
+.modal-foot button.secondary { background: var(--paper); color: var(--ink); border: 1px solid var(--edge); }
+
+@media (max-width: 920px) {
+  .page { padding: 16px 14px 60px; }
+  .card-head .name-input { flex: 1 1 auto; }
+  .meta-row { gap: 10px; padding: 10px 14px; }
+  .card-body { padding: 14px; }
+  .status-row { grid-template-columns: 1fr 90px auto; gap: 6px; }
+  .status-row .toggle-cell { grid-column: 1 / -1; }
+  .flag-grid { grid-template-columns: 1fr; }
+  .save-bar { left: 14px; right: 14px; transform: none; }
+  .save-bar.hidden { transform: translateY(24px); }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Workflows Editor</span>
+  <span class="dirty-pill zero" id="dirty-pill">All saved</span>
+  <span class="spacer"></span>
+  <a href="http://localhost:4324/" target="_blank">↗ Reception inbox</a>
+  <a href="http://localhost:4326/" target="_blank">↗ Housekeeping flow</a>
+</header>
+
+<main class="page">
+
+  <div class="intro">
+    <span class="intro-tag">Settings · Request Types &amp; Workflows</span>
+    <h1>Define <em>actions, statuses, and charge points</em> per category</h1>
+    <p>Every category below is editable. Add or remove statuses, rename action labels, change which transitions are allowed, set the <code>posts_charge</code> flag on the action where the folio should get charged, decide which actions notify the guest. Changes save to your browser as you type.</p>
+    <p>When you're happy, click <b>Generate SQL migration</b> at the bottom — that produces a single migration that updates <code>portal.request_types.workflow</code> in the production DB. Nothing touches the DB until you run that migration.</p>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="summary-head">
+      <h2>All categories</h2>
+      <span class="meta">Click a row to jump to its editor.</span>
+    </div>
+    <table class="tbl">
+      <thead><tr>
+        <th>#</th><th>Category</th><th>Slug</th><th>Team</th>
+        <th>Billing</th><th>SLA</th>
+        <th class="num">Statuses</th><th class="num">Actions</th>
+        <th class="num">Charge points</th>
+      </tr></thead>
+      <tbody id="summary-tbody"></tbody>
+    </table>
+  </div>
+
+  <div id="cards"></div>
+
+</main>
+
+<!-- Floating save bar -->
+<div class="save-bar hidden" id="save-bar">
+  <span class="count" id="save-count">0 unsaved</span>
+  <button class="warn" onclick="discardAll()">⊘ Discard all</button>
+  <button onclick="exportJSON()">{ } Copy JSON</button>
+  <button class="primary" onclick="generateSQL()">↓ Generate SQL migration</button>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay" style="display:none;">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">SQL Migration</h3>
+      <span style="font-size:12px;color:var(--ink-4);" id="modal-meta"></span>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <pre id="modal-content"></pre>
+    </div>
+    <div class="modal-foot">
+      <button class="secondary" onclick="closeModal()">Close</button>
+      <button class="primary" onclick="copyModalContent()">📋 Copy to clipboard</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════
+// Seeded workflows — verbatim from the production DB (zanpnhfcuqznmmokbchv)
+// ════════════════════════════════════════════════════════════════════════
+const SEEDED = [
+  {
+    slug: "housekeeping", display_name: "Housekeeping", icon: "🧺",
+    default_team: "housekeeping", is_paid: false, charge_category: null, default_sla_minutes: 30,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",          color: "amber",  label: "New",          is_active: true,  is_terminal: false },
+        { key: "acknowledged", color: "blue",   label: "Acknowledged", is_active: true,  is_terminal: false },
+        { key: "assigned",     color: "violet", label: "Assigned",     is_active: true,  is_terminal: false },
+        { key: "in_progress",  color: "indigo", label: "In Progress",  is_active: true,  is_terminal: false },
+        { key: "done",         color: "green",  label: "Done",         is_active: false, is_terminal: true  },
+        { key: "cancelled",    color: "gray",   label: "Cancelled",    is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "acknowledge", label: "Acknowledge",     from: "new",    to: "acknowledged" },
+        { key: "assign",      label: "Assign to staff", from_any_active: true, to: "assigned",   requires_assignee: true },
+        { key: "start",       label: "Mark in progress", from_any_active: true, to: "in_progress" },
+        { key: "complete",    label: "Mark done",       from_any_active: true, to: "done" },
+        { key: "cancel",      label: "Cancel",          from_any_active: true, to: "cancelled",  destructive: true, requires_note: true },
+      ],
+      subtypes: ["towels", "linen", "cleaning", "amenities", "laundry_pickup", "other"],
+    },
+  },
+  {
+    slug: "kitchen_fnb", display_name: "Kitchen / F&B", icon: "🍳",
+    default_team: "kitchen", is_paid: true, charge_category: "room_service", default_sla_minutes: 15,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",       color: "amber",  label: "New",       is_active: true,  is_terminal: false },
+        { key: "confirmed", color: "blue",   label: "Confirmed", is_active: true,  is_terminal: false },
+        { key: "preparing", color: "violet", label: "Preparing", is_active: true,  is_terminal: false },
+        { key: "ready",     color: "indigo", label: "Ready",     is_active: true,  is_terminal: false },
+        { key: "delivered", color: "green",  label: "Delivered", is_active: false, is_terminal: true  },
+        { key: "cancelled", color: "gray",   label: "Cancelled", is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "confirm",       label: "Confirm order",                from: "new",       to: "confirmed" },
+        { key: "start_cooking", label: "Start preparing",              from: "confirmed", to: "preparing" },
+        { key: "mark_ready",    label: "Mark ready",                   from: "preparing", to: "ready" },
+        { key: "deliver",       label: "Mark delivered & post to folio", from: "ready",   to: "delivered", posts_charge: true },
+        { key: "cancel",        label: "Cancel",                       from_any_active: true, to: "cancelled", destructive: true, requires_note: true },
+      ],
+      subtypes: ["breakfast", "in_room_dining", "snacks", "drinks", "special_diet", "other"],
+    },
+  },
+  {
+    slug: "airport_transport", display_name: "Airport / Transport", icon: "🚗",
+    default_team: "concierge", is_paid: true, charge_category: "airport_transfer", default_sla_minutes: 60,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",             color: "amber",  label: "New",             is_active: true,  is_terminal: false },
+        { key: "scheduled",       color: "blue",   label: "Scheduled",       is_active: true,  is_terminal: false },
+        { key: "driver_assigned", color: "violet", label: "Driver assigned", is_active: true,  is_terminal: false },
+        { key: "in_transit",      color: "indigo", label: "In transit",      is_active: true,  is_terminal: false },
+        { key: "completed",       color: "green",  label: "Completed",       is_active: false, is_terminal: true  },
+        { key: "no_show",         color: "red",    label: "Guest no-show",   is_active: false, is_terminal: true  },
+        { key: "cancelled",       color: "gray",   label: "Cancelled",       is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "schedule",        label: "Schedule pickup",                  from: "new",             to: "scheduled",       requires_scheduled_for: true },
+        { key: "assign_driver",   label: "Assign driver",                    from: "scheduled",       to: "driver_assigned" },
+        { key: "mark_in_transit", label: "Mark in transit",                  from: "driver_assigned", to: "in_transit" },
+        { key: "complete",        label: "Mark completed & post to folio",   from: "in_transit",      to: "completed",       posts_charge: true },
+        { key: "no_show",         label: "Guest no-show",                    from: "driver_assigned", to: "no_show",         requires_note: true },
+        { key: "cancel",          label: "Cancel",                           from_any_active: true,   to: "cancelled",       destructive: true, requires_note: true },
+      ],
+      subtypes: ["airport_pickup", "airport_drop", "city_drop", "city_tour", "other"],
+    },
+  },
+  {
+    slug: "maintenance", display_name: "Maintenance", icon: "🔧",
+    default_team: "maintenance", is_paid: false, charge_category: null, default_sla_minutes: 60,
+    workflow: {
+      initial_status: "new", severity_levels: ["urgent", "normal", "low"],
+      statuses: [
+        { key: "new",            color: "amber",  label: "New",            is_active: true,  is_terminal: false },
+        { key: "triaged",        color: "blue",   label: "Triaged",        is_active: true,  is_terminal: false },
+        { key: "assigned",       color: "violet", label: "Assigned",       is_active: true,  is_terminal: false },
+        { key: "in_progress",    color: "indigo", label: "In progress",    is_active: true,  is_terminal: false },
+        { key: "waiting_parts",  color: "orange", label: "Waiting on parts", is_active: true, is_terminal: false },
+        { key: "done",           color: "green",  label: "Resolved",       is_active: false, is_terminal: true  },
+        { key: "cannot_resolve", color: "red",    label: "Cannot resolve", is_active: false, is_terminal: true  },
+        { key: "cancelled",      color: "gray",   label: "Cancelled",      is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "triage",         label: "Triage",            from: "new",           to: "triaged" },
+        { key: "assign",         label: "Assign technician", from_any_active: true, to: "assigned",       requires_assignee: true },
+        { key: "start",          label: "Start work",        from_any_active: true, to: "in_progress" },
+        { key: "wait_parts",     label: "Waiting on parts",  from_any_active: true, to: "waiting_parts",  requires_note: true },
+        { key: "resolve",        label: "Mark resolved",     from_any_active: true, to: "done" },
+        { key: "cannot_resolve", label: "Cannot resolve",    from_any_active: true, to: "cannot_resolve", requires_note: true },
+        { key: "cancel",         label: "Cancel",            from_any_active: true, to: "cancelled",      destructive: true, requires_note: true },
+      ],
+      subtypes: ["ac_heating", "plumbing", "electrical", "wifi_tv", "furniture", "appliance", "other"],
+    },
+  },
+  {
+    slug: "booking_action", display_name: "Booking actions", icon: "📅",
+    default_team: "reception", is_paid: true, charge_category: null, default_sla_minutes: 30,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",              color: "amber",  label: "New",              is_active: true,  is_terminal: false },
+        { key: "pending_approval", color: "orange", label: "Pending approval", is_active: true,  is_terminal: false },
+        { key: "approved",         color: "blue",   label: "Approved",         is_active: true,  is_terminal: false },
+        { key: "completed",        color: "green",  label: "Completed",        is_active: false, is_terminal: true  },
+        { key: "rejected",         color: "red",    label: "Rejected",         is_active: false, is_terminal: true  },
+        { key: "cancelled",        color: "gray",   label: "Cancelled",        is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "request_approval", label: "Send for approval",                from: "new",           to: "pending_approval" },
+        { key: "approve",          label: "Approve",                          from_any_active: true, to: "approved",         requires_role: "manager" },
+        { key: "reject",           label: "Reject",                           from_any_active: true, to: "rejected",         requires_role: "manager", requires_note: true },
+        { key: "complete",         label: "Mark completed & post to folio",   from: "approved",      to: "completed",        posts_charge: true },
+        { key: "cancel",           label: "Cancel",                           from_any_active: true, to: "cancelled",        destructive: true, requires_note: true },
+      ],
+      subtypes: ["late_checkout", "early_checkin", "extend_stay", "shorten_stay", "room_change", "special_occasion", "other"],
+    },
+  },
+  {
+    slug: "concierge", display_name: "Concierge / General", icon: "🛎",
+    default_team: "reception", is_paid: false, charge_category: null, default_sla_minutes: 60,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",            color: "amber",  label: "New",            is_active: true,  is_terminal: false },
+        { key: "acknowledged",   color: "blue",   label: "Acknowledged",   is_active: true,  is_terminal: false },
+        { key: "in_progress",    color: "indigo", label: "In progress",    is_active: true,  is_terminal: false },
+        { key: "done",           color: "green",  label: "Done",           is_active: false, is_terminal: true  },
+        { key: "cannot_fulfill", color: "red",    label: "Cannot fulfill", is_active: false, is_terminal: true  },
+        { key: "cancelled",      color: "gray",   label: "Cancelled",      is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "acknowledge",    label: "Acknowledge",   from: "new",           to: "acknowledged" },
+        { key: "start",          label: "Start",         from_any_active: true, to: "in_progress" },
+        { key: "complete",       label: "Mark done",     from_any_active: true, to: "done" },
+        { key: "cannot_fulfill", label: "Cannot fulfill", from_any_active: true, to: "cannot_fulfill", requires_note: true },
+        { key: "cancel",         label: "Cancel",        from_any_active: true, to: "cancelled",      destructive: true, requires_note: true },
+      ],
+      subtypes: ["wake_up_call", "lost_and_found", "info_request", "feedback", "complaint", "recommendation", "other"],
+    },
+  },
+  {
+    slug: "mini_shop", display_name: "Mini-shop / Sundries", icon: "🛒",
+    default_team: "reception", is_paid: true, charge_category: "grocery", default_sla_minutes: 30,
+    workflow: {
+      initial_status: "new",
+      statuses: [
+        { key: "new",       color: "amber",  label: "New",       is_active: true,  is_terminal: false },
+        { key: "approved",  color: "blue",   label: "Approved",  is_active: true,  is_terminal: false },
+        { key: "preparing", color: "violet", label: "Preparing", is_active: true,  is_terminal: false },
+        { key: "delivered", color: "green",  label: "Delivered", is_active: false, is_terminal: true  },
+        { key: "rejected",  color: "red",    label: "Rejected",  is_active: false, is_terminal: true  },
+        { key: "cancelled", color: "gray",   label: "Cancelled", is_active: false, is_terminal: true  },
+      ],
+      actions: [
+        { key: "approve",    label: "Approve",                          from: "new",           to: "approved" },
+        { key: "start_prep", label: "Start preparing",                  from: "approved",      to: "preparing" },
+        { key: "deliver",    label: "Mark delivered & post to folio",   from_any_active: true, to: "delivered", posts_charge: true },
+        { key: "reject",     label: "Reject",                           from: "new",           to: "rejected",  requires_note: true },
+        { key: "cancel",     label: "Cancel",                           from_any_active: true, to: "cancelled", destructive: true, requires_note: true },
+      ],
+      subtypes: ["beverages", "snacks", "toiletries", "stationery", "tobacco", "other"],
+    },
+  },
+];
+
+// ════════════════════════════════════════════════════════════════════════
+// State
+// ════════════════════════════════════════════════════════════════════════
+const COLOR_OPTIONS = [
+  { v: "amber",  label: "🟡 amber"  },
+  { v: "blue",   label: "🔵 blue"   },
+  { v: "violet", label: "🟣 violet" },
+  { v: "indigo", label: "🔷 indigo" },
+  { v: "orange", label: "🟠 orange" },
+  { v: "green",  label: "🟢 green"  },
+  { v: "red",    label: "🔴 red"    },
+  { v: "gray",   label: "⚪ gray"   },
+];
+
+const TEAM_OPTIONS = ["reception", "housekeeping", "kitchen", "maintenance", "concierge", "cleaning"];
+
+const STORAGE_KEY = "hamsun-workflows-editor-v1";
+
+let state = loadState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch (e) { console.warn("loadState failed:", e); }
+  return JSON.parse(JSON.stringify(SEEDED));
+}
+
+function persistState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function isDirty(slug) {
+  const live = state.find(w => w.slug === slug);
+  const seed = SEEDED.find(w => w.slug === slug);
+  return JSON.stringify(live) !== JSON.stringify(seed);
+}
+
+function dirtySlugs() { return state.filter(w => isDirty(w.slug)).map(w => w.slug); }
+
+// ════════════════════════════════════════════════════════════════════════
+// Render
+// ════════════════════════════════════════════════════════════════════════
+
+function chargePointCount(w) {
+  return w.workflow.actions.filter(a => a.posts_charge).length;
+}
+
+function renderSummary() {
+  const tbody = document.getElementById("summary-tbody");
+  tbody.innerHTML = state.map((w, i) => `
+    <tr class="${isDirty(w.slug) ? 'dirty' : ''}">
+      <td class="num">${i + 1}</td>
+      <td><a href="#card-${w.slug}">${w.icon} ${w.display_name}</a></td>
+      <td class="code">${w.slug}</td>
+      <td class="code">${w.default_team}</td>
+      <td>${w.is_paid ? '<span style="color:var(--moss);font-weight:600;">Paid</span> · <code style="font-family:var(--f-mono);font-size:11px;">' + (w.charge_category || '—') + '</code>' : '<span style="color:var(--ink-4);">Free</span>'}</td>
+      <td class="code">${w.default_sla_minutes}m</td>
+      <td class="num">${w.workflow.statuses.length}</td>
+      <td class="num">${w.workflow.actions.length}</td>
+      <td class="num">${chargePointCount(w)}</td>
+    </tr>
+  `).join("");
+}
+
+function colorSelect(currentColor, onChange) {
+  return `<select class="color-select" onchange="${onChange}">
+    ${COLOR_OPTIONS.map(c => `<option value="${c.v}" ${c.v === currentColor ? 'selected' : ''}>${c.label}</option>`).join('')}
+  </select>`;
+}
+
+function teamSelect(currentTeam, onChange) {
+  return `<select onchange="${onChange}">
+    ${TEAM_OPTIONS.map(t => `<option value="${t}" ${t === currentTeam ? 'selected' : ''}>${t}</option>`).join('')}
+  </select>`;
+}
+
+function stateSelect(workflow, currentValue, onChange, includeAnyActive = false) {
+  const options = [];
+  if (includeAnyActive) {
+    options.push(`<option value="__any_active" ${currentValue === '__any_active' ? 'selected' : ''}>(any active state)</option>`);
+  }
+  workflow.statuses.forEach(s => {
+    options.push(`<option value="${s.key}" ${currentValue === s.key ? 'selected' : ''}>${s.key}</option>`);
+  });
+  return `<select class="state-select" onchange="${onChange}">${options.join('')}</select>`;
+}
+
+function statusRowHtml(w, status, idx) {
+  const slug = w.slug;
+  return `
+    <div class="status-row ${status.is_terminal ? 'terminal' : ''}">
+      <div>
+        <input type="text" class="label-input" value="${escapeAttr(status.label)}" onchange="editStatus('${slug}', ${idx}, 'label', this.value)" />
+        <span class="key-display">${status.key}</span>
+      </div>
+      ${colorSelect(status.color, `editStatus('${slug}', ${idx}, 'color', this.value)`)}
+      <label class="toggle-cell"><input type="checkbox" ${status.is_active ? 'checked' : ''} onchange="editStatus('${slug}', ${idx}, 'is_active', this.checked)" /> active</label>
+      <label class="toggle-cell"><input type="checkbox" ${status.is_terminal ? 'checked' : ''} onchange="editStatus('${slug}', ${idx}, 'is_terminal', this.checked)" /> terminal</label>
+      <div class="row-actions">
+        <button class="row-btn" onclick="moveStatus('${slug}', ${idx}, -1)" title="Move up">↑</button>
+        <button class="row-btn" onclick="moveStatus('${slug}', ${idx}, 1)" title="Move down">↓</button>
+        <button class="row-btn danger" onclick="deleteStatus('${slug}', ${idx})" title="Delete">✕</button>
+      </div>
+    </div>
+  `;
+}
+
+function actionRowHtml(w, action, idx) {
+  const slug = w.slug;
+  const fromValue = action.from_any_active ? '__any_active' : (action.from || '');
+  const charge = action.posts_charge ? 'charge' : '';
+  const destr = action.destructive ? 'destructive' : '';
+  return `
+    <div class="action-row ${charge} ${destr}">
+      <div class="action-head">
+        <input type="text" class="label-input" value="${escapeAttr(action.label)}" placeholder="Button label" onchange="editAction('${slug}', ${idx}, 'label', this.value)" />
+        <button class="row-btn" onclick="moveAction('${slug}', ${idx}, -1)" title="Move up">↑</button>
+        <button class="row-btn" onclick="moveAction('${slug}', ${idx}, 1)" title="Move down">↓</button>
+        <button class="row-btn danger" onclick="deleteAction('${slug}', ${idx})" title="Delete">✕</button>
+      </div>
+      <div class="from-to-row">
+        <span class="lbl">From</span>
+        ${stateSelect(w.workflow, fromValue, `editActionFrom('${slug}', ${idx}, this.value)`, true)}
+        <span style="color:var(--ink-4);">→</span>
+        <span class="lbl">To</span>
+        ${stateSelect(w.workflow, action.to || '', `editAction('${slug}', ${idx}, 'to', this.value)`)}
+      </div>
+      <div class="flag-grid">
+        <div class="flag-cell charge">
+          <input type="checkbox" id="${slug}_${idx}_charge" ${action.posts_charge ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'posts_charge', this.checked)" />
+          <label for="${slug}_${idx}_charge">
+            <span class="flag-name">💰 Posts charge to folio</span>
+            <span class="flag-help">Automatically posts the charge category to guest's folio</span>
+          </label>
+        </div>
+        <div class="flag-cell destructive">
+          <input type="checkbox" id="${slug}_${idx}_destr" ${action.destructive ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'destructive', this.checked)" />
+          <label for="${slug}_${idx}_destr">
+            <span class="flag-name">⚠ Destructive</span>
+            <span class="flag-help">Renders red, requires 2-tap confirmation</span>
+          </label>
+        </div>
+        <div class="flag-cell">
+          <input type="checkbox" id="${slug}_${idx}_note" ${action.requires_note ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'requires_note', this.checked)" />
+          <label for="${slug}_${idx}_note">
+            <span class="flag-name">📝 Requires note</span>
+            <span class="flag-help">Staff must enter explanation before saving</span>
+          </label>
+        </div>
+        <div class="flag-cell">
+          <input type="checkbox" id="${slug}_${idx}_assignee" ${action.requires_assignee ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'requires_assignee', this.checked)" />
+          <label for="${slug}_${idx}_assignee">
+            <span class="flag-name">👤 Requires assignee</span>
+            <span class="flag-help">Staff must pick who's responsible</span>
+          </label>
+        </div>
+        <div class="flag-cell">
+          <input type="checkbox" id="${slug}_${idx}_sched" ${action.requires_scheduled_for ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'requires_scheduled_for', this.checked)" />
+          <label for="${slug}_${idx}_sched">
+            <span class="flag-name">⏰ Requires scheduled time</span>
+            <span class="flag-help">e.g., wake-up call time, pickup time</span>
+          </label>
+        </div>
+        <div class="flag-cell" style="align-items: center;">
+          <input type="checkbox" id="${slug}_${idx}_role" ${action.requires_role ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'requires_role', this.checked ? 'manager' : null)" />
+          <label for="${slug}_${idx}_role" style="flex-direction: row; align-items: center; gap: 4px; flex-wrap: wrap;">
+            <span class="flag-name">🔐 Requires role</span>
+            <input type="text" class="role-input" value="${escapeAttr(action.requires_role || '')}" placeholder="manager" onchange="editAction('${slug}', ${idx}, 'requires_role', this.value || null)" />
+          </label>
+        </div>
+        <div class="flag-cell" style="grid-column: 1/-1;">
+          <input type="checkbox" id="${slug}_${idx}_notify" ${action.notify_guest_on_action ? 'checked' : ''} onchange="editActionFlag('${slug}', ${idx}, 'notify_guest_on_action', this.checked)" />
+          <label for="${slug}_${idx}_notify" style="flex-direction: row; align-items: center; gap: 4px; flex-wrap: wrap;">
+            <span class="flag-name">💬 Notifies guest via WhatsApp</span>
+            <input type="text" class="template-input" value="${escapeAttr(action.notification_template || '')}" placeholder="template_name" onchange="editAction('${slug}', ${idx}, 'notification_template', this.value || null)" style="width: 160px;" />
+            <span class="flag-help" style="margin-left: auto;">e.g. <code style="font-family:var(--f-mono);font-size:10.5px;">request_done</code></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function previewTableHtml(w) {
+  const wf = w.workflow;
+  const activeStatuses = wf.statuses.filter(s => !s.is_terminal);
+  // For each non-terminal status, show what reception sees
+  return `
+    <table class="preview-table">
+      <thead>
+        <tr>
+          <th style="width: 200px;">When status =</th>
+          <th>Reception sees these buttons</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${activeStatuses.map(status => {
+          const visibleActions = wf.actions.filter(a => {
+            if (a.from && a.from !== status.key) return false;
+            if (a.from_any_active && !status.is_active) return false;
+            return true;
+          });
+          return `
+            <tr>
+              <td><span class="status-pill ${status.color}">${status.label}</span></td>
+              <td>
+                <div class="actions-row">
+                  ${visibleActions.length ? visibleActions.map(a => {
+                    const cls = (a.destructive ? 'danger' : 'primary') + (a.posts_charge ? ' charge' : '');
+                    return `<span class="btn-preview ${cls}">${a.label}</span>`;
+                  }).join('') : '<span style="color:var(--ink-4);font-size:11.5px;">No actions available</span>'}
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+function subtypesHtml(w) {
+  return `
+    <div class="subtype-edit">
+      ${w.workflow.subtypes.map((s, i) => `
+        <span class="subtype-chip">${s}<button onclick="deleteSubtype('${w.slug}', ${i})">✕</button></span>
+      `).join('')}
+      <input type="text" class="subtype-add-input" placeholder="+ add subtype, press Enter" onkeydown="if(event.key==='Enter'){addSubtype('${w.slug}', this.value); this.value=''; event.preventDefault();}" />
+    </div>
+  `;
+}
+
+function severityHtml(w) {
+  const lvls = w.workflow.severity_levels;
+  if (!lvls) {
+    return `
+      <button class="btn-add" onclick="enableSeverity('${w.slug}')">+ Enable severity levels</button>
+    `;
+  }
+  return `
+    <div class="severity-edit">
+      ${lvls.map((s, i) => `
+        <span class="severity-chip ${s}">${s}<button onclick="deleteSeverity('${w.slug}', ${i})">✕</button></span>
+      `).join('')}
+      <input type="text" class="subtype-add-input" placeholder="+ add level" onkeydown="if(event.key==='Enter'){addSeverity('${w.slug}', this.value); this.value=''; event.preventDefault();}" />
+      <button class="row-btn danger" onclick="disableSeverity('${w.slug}')" title="Remove severity feature">✕ remove</button>
+    </div>
+  `;
+}
+
+function cardHtml(w) {
+  return `
+    <article class="card ${isDirty(w.slug) ? 'dirty' : ''}" id="card-${w.slug}">
+      <header class="card-head">
+        <input type="text" class="icon-input" value="${escapeAttr(w.icon)}" maxlength="2" onchange="editMeta('${w.slug}', 'icon', this.value)" />
+        <input type="text" class="name-input" value="${escapeAttr(w.display_name)}" onchange="editMeta('${w.slug}', 'display_name', this.value)" />
+        <span class="slug">${w.slug}</span>
+      </header>
+
+      <div class="meta-row">
+        <label>Team ${teamSelect(w.default_team, `editMeta('${w.slug}', 'default_team', this.value)`)}</label>
+        <label class="checkbox-group">
+          <input type="checkbox" ${w.is_paid ? 'checked' : ''} onchange="editMeta('${w.slug}', 'is_paid', this.checked)" />
+          Paid
+        </label>
+        ${w.is_paid ? `
+          <label>Charge category
+            <input type="text" value="${escapeAttr(w.charge_category || '')}" placeholder="room_service" onchange="editMeta('${w.slug}', 'charge_category', this.value || null)" style="width: 140px; font-family: var(--f-mono); font-size: 12px;" />
+          </label>
+        ` : ''}
+        <label>Default SLA
+          <input type="number" value="${w.default_sla_minutes}" min="1" max="1440" onchange="editMeta('${w.slug}', 'default_sla_minutes', parseInt(this.value, 10))" />
+          min
+        </label>
+      </div>
+
+      <div class="card-body">
+
+        <section>
+          <div class="section-head">
+            <span class="section-title">Statuses · <em>${w.workflow.statuses.length}</em></span>
+            <span class="section-help">Active = guest sees this status. Terminal = end state, no further actions.</span>
+            <button class="btn-add" onclick="addStatus('${w.slug}')">+ Add status</button>
+          </div>
+          <div class="status-list">
+            ${w.workflow.statuses.map((s, i) => statusRowHtml(w, s, i)).join('')}
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <span class="section-title">Actions · <em>${w.workflow.actions.length}</em> · ${chargePointCount(w)} post charge</span>
+            <span class="section-help">Each action is a button. Set <em>Posts charge</em> on the action where the folio should be charged.</span>
+            <button class="btn-add" onclick="addAction('${w.slug}')">+ Add action</button>
+          </div>
+          <div class="action-list">
+            ${w.workflow.actions.map((a, i) => actionRowHtml(w, a, i)).join('')}
+          </div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <span class="section-title">Live reception preview</span>
+            <span class="section-help">Auto-updates as you edit above. Charge buttons show 💰.</span>
+          </div>
+          ${previewTableHtml(w)}
+        </section>
+
+        <section>
+          <div class="section-head">
+            <span class="section-title">Subtypes · <em>${w.workflow.subtypes.length}</em></span>
+            <span class="section-help">Sub-categorization within this request type.</span>
+          </div>
+          ${subtypesHtml(w)}
+        </section>
+
+        <section>
+          <div class="section-head">
+            <span class="section-title">Severity levels ${w.workflow.severity_levels ? '· <em>' + w.workflow.severity_levels.length + '</em>' : ''}</span>
+            <span class="section-help">Optional — only used by maintenance currently.</span>
+          </div>
+          ${severityHtml(w)}
+        </section>
+
+      </div>
+
+      <div class="card-foot">
+        <button class="btn warn" onclick="resetWorkflow('${w.slug}')">↺ Reset to seed</button>
+        <button class="btn" onclick="copyJSON('${w.slug}')">{ } Copy this workflow's JSON</button>
+        <span class="spacer-flex"></span>
+        <span class="meta-info">${isDirty(w.slug) ? '<span style="color:var(--amber);font-weight:600;">● modified</span>' : 'unchanged'}</span>
+      </div>
+    </article>
+  `;
+}
+
+function renderAll() {
+  document.getElementById("cards").innerHTML = state.map(cardHtml).join("");
+  renderSummary();
+  updateSaveBar();
+  persistState();
+}
+
+function renderCard(slug) {
+  const card = document.getElementById(`card-${slug}`);
+  if (!card) return renderAll();
+  const w = state.find(x => x.slug === slug);
+  card.outerHTML = cardHtml(w);
+  renderSummary();
+  updateSaveBar();
+  persistState();
+}
+
+function updateSaveBar() {
+  const dirty = dirtySlugs();
+  const bar = document.getElementById("save-bar");
+  const count = document.getElementById("save-count");
+  const pill = document.getElementById("dirty-pill");
+  if (dirty.length === 0) {
+    bar.classList.add("hidden");
+    pill.textContent = "All saved";
+    pill.classList.add("zero");
+  } else {
+    bar.classList.remove("hidden");
+    count.textContent = `${dirty.length} workflow${dirty.length === 1 ? '' : 's'} modified`;
+    pill.textContent = `${dirty.length} unsaved`;
+    pill.classList.remove("zero");
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Mutators
+// ════════════════════════════════════════════════════════════════════════
+
+function getW(slug) { return state.find(x => x.slug === slug); }
+
+function editMeta(slug, field, val) {
+  const w = getW(slug);
+  if (field === 'is_paid' && !val) w.charge_category = null;
+  w[field] = val;
+  renderCard(slug);
+}
+
+function editStatus(slug, idx, field, val) {
+  const w = getW(slug);
+  w.workflow.statuses[idx][field] = val;
+  // If they changed label, regenerate key (slugify) — but that breaks references. Skip for safety.
+  renderCard(slug);
+}
+
+function addStatus(slug) {
+  const w = getW(slug);
+  const newKey = `state_${Date.now().toString().slice(-5)}`;
+  w.workflow.statuses.push({
+    key: newKey, label: "New status", color: "blue",
+    is_active: true, is_terminal: false,
+  });
+  renderCard(slug);
+}
+
+function deleteStatus(slug, idx) {
+  const w = getW(slug);
+  if (w.workflow.statuses.length <= 2) { alert("A workflow needs at least 2 statuses."); return; }
+  if (!confirm(`Delete status "${w.workflow.statuses[idx].label}"? Any actions referencing it will need fixing.`)) return;
+  w.workflow.statuses.splice(idx, 1);
+  renderCard(slug);
+}
+
+function moveStatus(slug, idx, dir) {
+  const w = getW(slug);
+  const target = idx + dir;
+  if (target < 0 || target >= w.workflow.statuses.length) return;
+  const [moved] = w.workflow.statuses.splice(idx, 1);
+  w.workflow.statuses.splice(target, 0, moved);
+  renderCard(slug);
+}
+
+function editAction(slug, idx, field, val) {
+  const w = getW(slug);
+  if (val === null || val === undefined || val === '') delete w.workflow.actions[idx][field];
+  else w.workflow.actions[idx][field] = val;
+  renderCard(slug);
+}
+
+function editActionFrom(slug, idx, val) {
+  const w = getW(slug);
+  const a = w.workflow.actions[idx];
+  if (val === '__any_active') {
+    a.from_any_active = true;
+    delete a.from;
+  } else {
+    delete a.from_any_active;
+    a.from = val;
+  }
+  renderCard(slug);
+}
+
+function editActionFlag(slug, idx, field, val) {
+  const w = getW(slug);
+  if (val === false || val === null || val === '') delete w.workflow.actions[idx][field];
+  else w.workflow.actions[idx][field] = val;
+  renderCard(slug);
+}
+
+function addAction(slug) {
+  const w = getW(slug);
+  const newKey = `action_${Date.now().toString().slice(-5)}`;
+  const firstActive = w.workflow.statuses.find(s => s.is_active);
+  const firstTerminal = w.workflow.statuses.find(s => s.is_terminal);
+  w.workflow.actions.push({
+    key: newKey, label: "New action",
+    from: firstActive?.key || "",
+    to: firstTerminal?.key || firstActive?.key || "",
+  });
+  renderCard(slug);
+}
+
+function deleteAction(slug, idx) {
+  const w = getW(slug);
+  if (!confirm(`Delete action "${w.workflow.actions[idx].label}"?`)) return;
+  w.workflow.actions.splice(idx, 1);
+  renderCard(slug);
+}
+
+function moveAction(slug, idx, dir) {
+  const w = getW(slug);
+  const target = idx + dir;
+  if (target < 0 || target >= w.workflow.actions.length) return;
+  const [moved] = w.workflow.actions.splice(idx, 1);
+  w.workflow.actions.splice(target, 0, moved);
+  renderCard(slug);
+}
+
+function addSubtype(slug, value) {
+  const v = (value || '').trim().toLowerCase().replace(/\s+/g, '_');
+  if (!v) return;
+  const w = getW(slug);
+  if (w.workflow.subtypes.includes(v)) return;
+  w.workflow.subtypes.push(v);
+  renderCard(slug);
+}
+
+function deleteSubtype(slug, idx) {
+  const w = getW(slug);
+  w.workflow.subtypes.splice(idx, 1);
+  renderCard(slug);
+}
+
+function enableSeverity(slug) {
+  const w = getW(slug);
+  w.workflow.severity_levels = ["urgent", "normal", "low"];
+  renderCard(slug);
+}
+
+function disableSeverity(slug) {
+  const w = getW(slug);
+  delete w.workflow.severity_levels;
+  renderCard(slug);
+}
+
+function addSeverity(slug, value) {
+  const v = (value || '').trim().toLowerCase().replace(/\s+/g, '_');
+  if (!v) return;
+  const w = getW(slug);
+  if (!w.workflow.severity_levels) w.workflow.severity_levels = [];
+  if (w.workflow.severity_levels.includes(v)) return;
+  w.workflow.severity_levels.push(v);
+  renderCard(slug);
+}
+
+function deleteSeverity(slug, idx) {
+  const w = getW(slug);
+  w.workflow.severity_levels.splice(idx, 1);
+  if (w.workflow.severity_levels.length === 0) delete w.workflow.severity_levels;
+  renderCard(slug);
+}
+
+function resetWorkflow(slug) {
+  if (!confirm("Reset this workflow to the seeded version? Any edits to this category will be lost.")) return;
+  const i = state.findIndex(w => w.slug === slug);
+  state[i] = JSON.parse(JSON.stringify(SEEDED.find(s => s.slug === slug)));
+  renderAll();
+}
+
+function discardAll() {
+  if (!confirm("Discard ALL edits across every workflow? This will reset to the seeded versions.")) return;
+  state = JSON.parse(JSON.stringify(SEEDED));
+  renderAll();
+}
+
+function copyJSON(slug) {
+  const w = getW(slug);
+  const json = JSON.stringify(w.workflow, null, 2);
+  showModal(`Workflow JSON: ${w.display_name}`, json, `Copy this and paste into the migration if needed.`);
+}
+
+function exportJSON() {
+  const dirty = dirtySlugs();
+  const subset = dirty.length ? state.filter(w => dirty.includes(w.slug)) : state;
+  const json = JSON.stringify(subset, null, 2);
+  showModal(`All ${dirty.length ? 'modified ' : ''}workflows JSON`, json,
+    dirty.length ? `${dirty.length} of 7 workflows shown (the modified ones).` : `All 7 workflows.`);
+}
+
+function generateSQL() {
+  const dirty = dirtySlugs();
+  if (dirty.length === 0) {
+    alert("No changes to generate SQL for.");
+    return;
+  }
+
+  // Build a single migration with one UPDATE per modified workflow.
+  // Auto-derive transitions from actions (collect from→to pairs).
+  let sql = `-- ════════════════════════════════════════════════════════════════\n`;
+  sql +=    `-- Hamsun · Update portal.request_types workflows\n`;
+  sql +=    `-- Generated: ${new Date().toISOString()}\n`;
+  sql +=    `-- Modified: ${dirty.join(', ')}\n`;
+  sql +=    `-- ════════════════════════════════════════════════════════════════\n\n`;
+  sql +=    `BEGIN;\n\n`;
+
+  dirty.forEach(slug => {
+    const w = getW(slug);
+    const wf = JSON.parse(JSON.stringify(w.workflow));
+
+    // Auto-derive transitions from actions
+    const transitionsByFrom = {};
+    const activeKeys = wf.statuses.filter(s => s.is_active).map(s => s.key);
+    wf.actions.forEach(a => {
+      const fromStates = a.from_any_active ? activeKeys : (a.from ? [a.from] : []);
+      fromStates.forEach(f => {
+        if (!transitionsByFrom[f]) transitionsByFrom[f] = new Set();
+        transitionsByFrom[f].add(a.to);
+      });
+    });
+    wf.transitions = Object.entries(transitionsByFrom).map(([from, toSet]) => ({
+      from, to: [...toSet]
+    }));
+
+    const wfJson = JSON.stringify(wf).replace(/'/g, "''");
+    sql += `-- ── ${w.display_name} (${slug}) ─────────────────────────────────────\n`;
+    sql += `UPDATE portal.request_types SET\n`;
+    sql += `  display_name = '${w.display_name.replace(/'/g, "''")}',\n`;
+    sql += `  icon = '${w.icon}',\n`;
+    sql += `  default_team = '${w.default_team}',\n`;
+    sql += `  is_paid = ${w.is_paid},\n`;
+    sql += `  charge_category = ${w.charge_category ? "'" + w.charge_category + "'" : 'NULL'},\n`;
+    sql += `  default_sla_minutes = ${w.default_sla_minutes},\n`;
+    sql += `  workflow = '${wfJson}'::jsonb,\n`;
+    sql += `  updated_at = now()\n`;
+    sql += `WHERE slug = '${slug}';\n\n`;
+  });
+
+  sql += `COMMIT;\n`;
+
+  showModal("SQL Migration — ready to run", sql,
+    `${dirty.length} workflow${dirty.length === 1 ? '' : 's'} updated. Run this against the production DB (zanpnhfcuqznmmokbchv) to apply.`);
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Modal
+// ════════════════════════════════════════════════════════════════════════
+
+function showModal(title, content, meta = '') {
+  document.getElementById("modal-title").textContent = title;
+  document.getElementById("modal-meta").textContent = meta;
+  document.getElementById("modal-content").textContent = content;
+  document.getElementById("modal-overlay").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").style.display = "none";
+}
+
+function copyModalContent() {
+  const content = document.getElementById("modal-content").textContent;
+  navigator.clipboard.writeText(content).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = "✓ Copied!";
+    setTimeout(() => btn.textContent = orig, 1400);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Utils
+// ════════════════════════════════════════════════════════════════════════
+
+function escapeAttr(s) {
+  return String(s ?? '').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
+// ════════════════════════════════════════════════════════════════════════
+// Init
+// ════════════════════════════════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
