@@ -12,6 +12,7 @@ Once Pages is enabled in repo settings, every prototype is accessible at:
 
 ```
 https://hassanateeq-collab.github.io/hamsun-prototypes/                          ← landing page (index)
+https://hassanateeq-collab.github.io/hamsun-prototypes/master-flow/                ← architecture spine (read first)
 https://hassanateeq-collab.github.io/hamsun-prototypes/menu-admin/
 https://hassanateeq-collab.github.io/hamsun-prototypes/breakfast-prototype/
 https://hassanateeq-collab.github.io/hamsun-prototypes/portal-mockup/
@@ -28,6 +29,7 @@ Open on phone, desktop, share with a designer, demo to anyone. Auto-redeploys on
 
 | Folder | What it is | Status | Design lock |
 |---|---|---|---|
+| [`master-flow/`](./master-flow) | **Architecture spine** — entry point, stay state, 8 sub-flows, data model, edge functions, build sequence, invariants | **Read first** | [`DESIGN.md`](./master-flow/DESIGN.md) |
 | [`menu-admin/`](./menu-admin) | Multi-menu admin (breakfast / lunch / dinner / snacks) — pricing modes, time slots, choice groups, KOT config | Locked | [`DESIGN_LOCK.md`](./menu-admin/DESIGN_LOCK.md) |
 | [`breakfast-prototype/`](./breakfast-prototype) | Guest-facing breakfast pre-order portal (linked via WhatsApp) | Locked | [`DESIGN.md`](./breakfast-prototype/DESIGN.md) |
 | [`portal-mockup/`](./portal-mockup) | Mini-shop / sundries item picker (referenced by guest portal request flow) | Locked | [`DESIGN.md`](./portal-mockup/DESIGN.md) |
@@ -60,6 +62,7 @@ The landing page at `:4320/` has cards linking to each module. Cross-links betwe
 | `reception-inbox` | `:4324` |
 | `workflows-admin` | `:4325` |
 | `housekeeping-module` | `:4326` |
+| `master-flow` | `:4327` |
 
 Each folder has a `.claude/launch.json` configured for its dedicated port. Run `python3 -m http.server <port>` from inside the module folder.
 

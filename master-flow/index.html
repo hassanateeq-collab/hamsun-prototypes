@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Master Portal Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --blue: #1F6FB2; --blue-mist: #E0EEF7;
+  --violet: #6B4FA0; --violet-mist: #ECE4F4;
+  --indigo: #4051B5; --indigo-mist: #E2E5F4;
+  --gray: #6E6E6E; --gray-mist: #ECECEC;
+  --whatsapp: #25D366; --whatsapp-bg: #DCF8C6;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 14px; line-height: 1.55;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* ─── Topbar ─── */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--edge);
+  padding: 12px 28px;
+  display: flex; align-items: center; gap: 18px;
+}
+.brand { font-family: var(--f-display); font-size: 18px; font-weight: 500; }
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink-4); padding-left: 14px; border-left: 1px solid var(--edge);
+}
+.spacer { flex: 1; }
+.topbar a {
+  font-size: 12px; font-weight: 500; color: var(--ink-3);
+  text-decoration: none; padding: 6px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge); background: var(--paper);
+}
+.topbar a:hover { background: var(--edge-soft); }
+
+/* ─── TOC ─── */
+.layout { display: grid; grid-template-columns: 220px 1fr; gap: 32px; max-width: 1320px; margin: 0 auto; padding: 28px 28px; }
+.toc { position: sticky; top: 70px; align-self: start; }
+.toc h4 {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--ink-4); margin-bottom: 10px;
+}
+.toc ol { list-style: none; padding-left: 0; counter-reset: tocnum; }
+.toc li {
+  counter-increment: tocnum;
+  padding: 6px 0; font-size: 12.5px; line-height: 1.4;
+  border-left: 2px solid transparent;
+  padding-left: 12px; margin-left: -2px;
+}
+.toc li::before { content: counter(tocnum) ". "; color: var(--ink-4); }
+.toc li:hover { border-left-color: var(--gold); }
+.toc a { color: var(--ink-3); text-decoration: none; }
+.toc li:hover a { color: var(--ink); }
+
+/* ─── Section ─── */
+.page { min-width: 0; }
+.section {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 26px 30px; margin-bottom: 22px;
+  scroll-margin-top: 80px;
+}
+.section h2 {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.015em; margin-bottom: 4px;
+}
+.section h2 em { color: var(--gold-dark); }
+.section .lede {
+  font-size: 13.5px; color: var(--ink-3); margin-bottom: 22px;
+  max-width: 720px;
+}
+.section h3 {
+  font-family: var(--f-display); font-size: 15.5px; font-weight: 500;
+  letter-spacing: -0.005em; margin-bottom: 10px; margin-top: 22px;
+}
+.section h4 {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--ink-4); margin-bottom: 10px; margin-top: 16px;
+}
+.section p { font-size: 13.5px; color: var(--ink-2); margin-bottom: 10px; }
+.section p code, .section li code, .section td code {
+  font-family: var(--f-mono); font-size: 12px;
+  background: var(--cream); padding: 1px 6px; border-radius: 3px;
+}
+.section ul { padding-left: 20px; font-size: 13px; line-height: 1.65; color: var(--ink-2); }
+.section ul li + li { margin-top: 4px; }
+.section-tag {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  background: var(--gold-mist); color: var(--gold-dark);
+  padding: 3px 10px; border-radius: var(--r-pill);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+}
+
+/* ─── Hero ─── */
+.hero {
+  background: linear-gradient(135deg, var(--cream), #faedd2);
+  border: 1px solid var(--gold);
+}
+.hero h1 {
+  font-family: var(--f-display); font-size: 32px; font-weight: 500;
+  letter-spacing: -0.02em; margin-bottom: 6px;
+}
+.hero h1 em { color: var(--gold-dark); }
+.hero p { font-size: 14.5px; color: var(--ink-2); max-width: 680px; }
+.hero p + p { margin-top: 8px; }
+
+/* ─── Big-picture diagram ─── */
+.bigpic {
+  background: var(--cream); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 22px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.bigpic-row {
+  display: flex; gap: 8px; align-items: center; justify-content: center;
+  flex-wrap: wrap;
+}
+.bp-box {
+  background: var(--paper); border: 1.5px solid var(--ink); border-radius: var(--r-md);
+  padding: 10px 14px; min-width: 130px; text-align: center;
+  font-size: 12px;
+}
+.bp-box .lbl {
+  font-family: var(--f-display); font-size: 13px; font-weight: 500;
+  display: block; margin-bottom: 1px;
+}
+.bp-box .sub { font-size: 10.5px; color: var(--ink-4); }
+.bp-box.guest { background: var(--whatsapp-bg); border-color: var(--whatsapp); }
+.bp-box.portal { background: var(--gold-mist); border-color: var(--gold-dark); }
+.bp-box.subflow { background: var(--blue-mist); border-color: var(--blue); }
+.bp-box.subflow .sub { color: var(--blue); }
+.bp-box.backend { background: var(--violet-mist); border-color: var(--violet); }
+.bp-box.notify { background: var(--moss-mist); border-color: var(--moss); }
+.bp-arrow {
+  font-size: 18px; color: var(--ink-4);
+  align-self: center;
+}
+
+/* ─── Stay state machine ─── */
+.state-machine {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  background: var(--cream); padding: 18px; border-radius: var(--r-md);
+  border: 1px solid var(--edge);
+}
+.state-pill {
+  font-size: 12px; font-weight: 600; padding: 8px 14px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid;
+}
+.sp-amber  { background: var(--amber-mist);  color: var(--amber);  border-color: var(--amber); }
+.sp-blue   { background: var(--blue-mist);   color: var(--blue);   border-color: var(--blue); }
+.sp-indigo { background: var(--indigo-mist); color: var(--indigo); border-color: var(--indigo); }
+.sp-orange { background: var(--orange-mist); color: var(--orange); border-color: var(--orange); }
+.sp-green  { background: var(--green-mist);  color: var(--green);  border-color: var(--green); }
+.sp-gray   { background: var(--gray-mist);   color: var(--gray);   border-color: var(--gray); }
+.sm-arr { color: var(--ink-4); font-size: 16px; }
+
+/* ─── State enablement table ─── */
+table.enable {
+  width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 12px;
+}
+table.enable th {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--ink-4);
+  padding: 10px 8px; text-align: center; border-bottom: 1px solid var(--edge);
+  background: var(--cream);
+}
+table.enable th:first-child { text-align: left; }
+table.enable td {
+  padding: 9px 8px; border-bottom: 1px solid var(--edge-soft);
+  text-align: center; font-size: 13px;
+}
+table.enable td:first-child { text-align: left; font-weight: 500; }
+table.enable td.yes { color: var(--moss); font-weight: 700; }
+table.enable td.no { color: var(--ink-4); }
+
+/* ─── Sub-flow card ─── */
+.subflow-grid {
+  display: grid; grid-template-columns: 1fr; gap: 14px;
+}
+.subflow-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.subflow-card.live { border-left: 4px solid var(--moss); }
+.subflow-card.partial { border-left: 4px solid var(--amber); }
+.subflow-card.spec { border-left: 4px solid var(--blue); }
+.subflow-card.planned { border-left: 4px solid var(--gray); }
+.subflow-head {
+  padding: 14px 18px; display: flex; align-items: center; gap: 10px;
+  background: var(--cream); border-bottom: 1px solid var(--edge-soft);
+}
+.subflow-head .icon { font-size: 22px; }
+.subflow-head h3 {
+  font-family: var(--f-display); font-size: 16px; font-weight: 500;
+  margin: 0;
+}
+.subflow-head h3 em { color: var(--gold-dark); }
+.subflow-head .status-badge {
+  margin-left: auto; font-size: 9.5px; font-weight: 700;
+  padding: 3px 8px; border-radius: var(--r-pill);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.status-badge.live    { background: var(--moss-mist);  color: var(--moss); }
+.status-badge.partial { background: var(--amber-mist); color: var(--amber); }
+.status-badge.spec    { background: var(--blue-mist);  color: var(--blue); }
+.status-badge.planned { background: var(--gray-mist);  color: var(--ink-3); }
+
+.subflow-body { padding: 14px 18px; }
+.subflow-body .meta-grid {
+  display: grid; grid-template-columns: 130px 1fr; gap: 8px 14px;
+  font-size: 12.5px;
+}
+.subflow-body .meta-grid .lbl {
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--ink-4); padding-top: 1px;
+}
+.subflow-body .meta-grid .val { color: var(--ink-2); }
+.subflow-body .meta-grid .val code {
+  font-family: var(--f-mono); font-size: 11px;
+  background: var(--cream); padding: 1px 6px; border-radius: 3px;
+  margin: 1px 2px 1px 0; display: inline-block;
+}
+
+/* ─── Data table ─── */
+table.data {
+  width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px;
+}
+table.data th {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--ink-4);
+  padding: 10px; text-align: left; border-bottom: 1px solid var(--edge);
+  background: var(--cream);
+}
+table.data td {
+  padding: 9px 10px; border-bottom: 1px solid var(--edge-soft);
+  vertical-align: top;
+}
+table.data tr:hover td { background: var(--edge-soft); }
+table.data td code {
+  font-family: var(--f-mono); font-size: 11.5px;
+  background: var(--cream); padding: 1px 5px; border-radius: 3px;
+}
+table.data td.first { font-weight: 600; }
+
+/* ─── Build sequence ─── */
+.seq-list { display: flex; flex-direction: column; gap: 8px; }
+.seq-item {
+  display: grid; grid-template-columns: 32px 1fr auto; gap: 12px; align-items: center;
+  padding: 12px 16px;
+  background: var(--paper); border: 1px solid var(--edge); border-radius: var(--r-md);
+}
+.seq-item .num {
+  font-family: var(--f-display); font-size: 16px; font-weight: 500;
+  background: var(--ink); color: white; width: 28px; height: 28px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.seq-item .num.done { background: var(--moss); }
+.seq-item .num.next { background: var(--gold-dark); }
+.seq-item .body { font-size: 13px; }
+.seq-item .body .head {
+  font-weight: 600; font-size: 13.5px; margin-bottom: 1px;
+}
+.seq-item .body .deps {
+  font-size: 11px; color: var(--ink-4);
+}
+.seq-item .body .deps code {
+  font-family: var(--f-mono); font-size: 10.5px;
+  background: var(--cream); padding: 1px 5px; border-radius: 3px;
+}
+.seq-item .effort {
+  font-size: 11px; font-weight: 700; color: var(--ink-3);
+  background: var(--cream); padding: 4px 10px; border-radius: var(--r-pill);
+  white-space: nowrap;
+}
+
+/* ─── Invariant card ─── */
+.inv-list { display: flex; flex-direction: column; gap: 8px; }
+.inv-card {
+  background: #FCE9E9; border: 1px solid var(--ember);
+  border-radius: var(--r-md); padding: 12px 16px;
+  display: grid; grid-template-columns: 24px 1fr; gap: 10px;
+}
+.inv-card.warn { background: #FFFBEC; border-color: #F0DCA0; }
+.inv-card .icon { font-size: 16px; }
+.inv-card .body .title {
+  font-weight: 600; font-size: 13.5px; color: var(--ink); margin-bottom: 2px;
+}
+.inv-card .body .desc { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.inv-card .body .desc code {
+  font-family: var(--f-mono); font-size: 11px;
+  background: rgba(255,255,255,0.6); padding: 1px 5px; border-radius: 3px;
+}
+
+/* ─── Mini-mockup of master portal ─── */
+.master-mock {
+  background: var(--cream); padding: 22px;
+  border-radius: var(--r-md); border: 1px solid var(--edge);
+  max-width: 420px; margin: 0 auto;
+}
+.master-mock .mock-hdr {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.012em; margin-bottom: 4px;
+}
+.master-mock .mock-hdr em { color: var(--gold-dark); }
+.master-mock .mock-meta { font-size: 11.5px; color: var(--ink-4); margin-bottom: 16px; }
+.master-mock .mock-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+}
+.master-mock .mock-card.live { border-color: var(--moss); }
+.master-mock .mock-card.dim { opacity: 0.5; }
+.master-mock .mock-card .icon { font-size: 22px; }
+.master-mock .mock-card .info { flex: 1; min-width: 0; }
+.master-mock .mock-card .info .name { font-weight: 600; font-size: 13.5px; }
+.master-mock .mock-card .info .desc { font-size: 11.5px; color: var(--ink-4); margin-top: 1px; }
+.master-mock .mock-card .arrow { font-size: 18px; color: var(--ink-4); }
+.master-mock .mock-card.dim .arrow { display: none; }
+
+@media (max-width: 920px) {
+  .layout { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  .toc { position: static; }
+  .toc ol { display: flex; flex-wrap: wrap; gap: 4px; }
+  .toc li { padding: 4px 8px; border-left: 0; border: 1px solid var(--edge); border-radius: var(--r-pill); margin: 0; }
+  .section { padding: 18px 18px; }
+  .bigpic-row { flex-direction: column; }
+  .subflow-body .meta-grid { grid-template-columns: 1fr; gap: 4px; }
+  .subflow-body .meta-grid .lbl { padding-top: 8px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Master Portal · Architecture</span>
+  <span class="spacer"></span>
+  <a href="../">↗ All prototypes</a>
+</header>
+
+<div class="layout">
+
+  <aside class="toc">
+    <h4>Sections</h4>
+    <ol>
+      <li><a href="#big-picture">Big picture</a></li>
+      <li><a href="#entry">Entry point</a></li>
+      <li><a href="#stay-state">Stay state machine</a></li>
+      <li><a href="#master-portal">Master portal landing</a></li>
+      <li><a href="#subflows">Sub-flows (8)</a></li>
+      <li><a href="#data-model">Data model</a></li>
+      <li><a href="#edge-fns">Edge functions</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#build-seq">Build sequence</a></li>
+      <li><a href="#invariants">Invariants</a></li>
+    </ol>
+  </aside>
+
+  <main class="page">
+
+    <!-- ─── Hero ─── -->
+    <section class="section hero">
+      <span class="section-tag">Architecture spec</span>
+      <h1>Master <em>Portal Architecture</em></h1>
+      <p>The architecture spine that ties every guest-facing module together — breakfast pre-orders, cleaning preferences, mini-shop, transport, maintenance, all the request types. Each module hangs off this master portal; this doc defines the wiring so we can build modules in parallel without breaking each other.</p>
+      <p>Read this before opening any other module spec. Once locked, each module's <code>DESIGN.md</code> defers to this for the cross-cutting concerns (auth, state, data flow, notifications).</p>
+    </section>
+
+    <!-- ─── Big picture ─── -->
+    <section class="section" id="big-picture">
+      <h2>The <em>big picture</em></h2>
+      <p class="lede">One guest enters via a WhatsApp link. They land on the master portal. The portal routes them to one of 8 sub-flows. Each sub-flow writes to a specific backend table, fires its own notifications, and follows a typed state machine.</p>
+
+      <div class="bigpic">
+        <div class="bigpic-row">
+          <div class="bp-box guest"><span class="lbl">Guest</span><span class="sub">on phone</span></div>
+          <span class="bp-arrow">→</span>
+          <div class="bp-box guest"><span class="lbl">WhatsApp</span><span class="sub">deep link with ?c=CODE</span></div>
+          <span class="bp-arrow">→</span>
+          <div class="bp-box portal"><span class="lbl">Master Portal</span><span class="sub">hamsun.pk/?c=…</span></div>
+        </div>
+
+        <div style="text-align: center; color: var(--ink-4); font-size: 14px;">↓</div>
+
+        <div class="bigpic-row">
+          <div class="bp-box subflow"><span class="lbl">Breakfast</span><span class="sub">/portal/breakfast</span></div>
+          <div class="bp-box subflow"><span class="lbl">Request</span><span class="sub">/portal/request/:type</span></div>
+          <div class="bp-box subflow"><span class="lbl">Cleaning prefs</span><span class="sub">/portal/cleaning</span></div>
+          <div class="bp-box subflow"><span class="lbl">My stay</span><span class="sub">/portal/stay</span></div>
+        </div>
+
+        <div style="text-align: center; color: var(--ink-4); font-size: 14px;">↓</div>
+
+        <div class="bigpic-row">
+          <div class="bp-box backend"><span class="lbl">Edge fns</span><span class="sub">portal-submit-request<br/>submit-menu-order</span></div>
+          <span class="bp-arrow">→</span>
+          <div class="bp-box backend"><span class="lbl">Database</span><span class="sub">portal.requests<br/>service_menus.orders<br/>bookings prefs</span></div>
+          <span class="bp-arrow">→</span>
+          <div class="bp-box notify"><span class="lbl">Notifications</span><span class="sub">WhatsApp ack<br/>Slack to team</span></div>
+        </div>
+
+        <div style="text-align: center; color: var(--ink-4); font-size: 14px;">↓</div>
+
+        <div class="bigpic-row">
+          <div class="bp-box backend" style="background: var(--paper); border-color: var(--ink-3);"><span class="lbl">PMS Reception Inbox</span><span class="sub">staff acts on requests · workflow engine renders dynamic buttons</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Entry point ─── -->
+    <section class="section" id="entry">
+      <h2>Entry · <em>portal code → stay state</em></h2>
+      <p class="lede">Every guest-facing flow starts with a 6-character code embedded in a WhatsApp deep link. The code maps to exactly one booking, which determines what features are available.</p>
+
+      <h3>URL pattern</h3>
+      <p>WhatsApp message: "Welcome to Hamsun! Open your stay portal here: <code>https://hamsun.pk/?c=A4B7K2</code>"</p>
+
+      <h3>Code resolution</h3>
+      <p>Frontend calls <code>portal_resolve_code(p_code text)</code> RPC, which returns:</p>
+      <ul>
+        <li><b>booking</b> — id, beds24_booking_id, dates, status, checkin_status, room, property</li>
+        <li><b>guest</b> — id, name, phone, language preference</li>
+        <li><b>property</b> — id, code (CLF/FSL/EXT), name, time zone, default settings</li>
+        <li><b>state</b> — derived stay state (see §3 below)</li>
+        <li><b>preferences</b> — auto_daily_cleaning, cleaning_pref_time, dietary notes, etc.</li>
+      </ul>
+
+      <h3>Code lifecycle</h3>
+      <ul>
+        <li>Generated when booking is created (CONFIRMED status)</li>
+        <li>Embedded in welcome WhatsApp at confirmation + check-in welcome</li>
+        <li>Valid for the entire booking window + 7 days post-checkout (for receipts/feedback)</li>
+        <li>One code per booking (never reused)</li>
+      </ul>
+
+      <h3>What the portal stores in browser context</h3>
+      <p>Once the code resolves, the portal keeps booking ID, guest ID, property ID, and stay state in <code>PortalContext</code>. Every sub-flow reads from this context — no need to re-resolve.</p>
+    </section>
+
+    <!-- ─── Stay state ─── -->
+    <section class="section" id="stay-state">
+      <h2>Stay <em>state machine</em></h2>
+      <p class="lede">A booking moves through 5 states. The state determines which sub-flows are available, what data is editable, and what notifications fire.</p>
+
+      <div class="state-machine">
+        <span class="state-pill sp-amber">pre_checkin</span>
+        <span class="sm-arr">→</span>
+        <span class="state-pill sp-blue">arrival_day</span>
+        <span class="sm-arr">→</span>
+        <span class="state-pill sp-indigo">in_house</span>
+        <span class="sm-arr">→</span>
+        <span class="state-pill sp-orange">departure_day</span>
+        <span class="sm-arr">→</span>
+        <span class="state-pill sp-green">post_checkout</span>
+      </div>
+
+      <h3>State transitions</h3>
+      <ul>
+        <li><b>pre_checkin</b> → from booking creation until check-in date approaches (1 day before)</li>
+        <li><b>arrival_day</b> → today is check-in date AND <code>checkin_status</code> is still <code>PENDING</code></li>
+        <li><b>in_house</b> → <code>checkin_status = CHECKED_IN</code></li>
+        <li><b>departure_day</b> → today is check-out date AND not yet checked out</li>
+        <li><b>post_checkout</b> → <code>checkin_status = CHECKED_OUT</code> (window: 7 days)</li>
+      </ul>
+
+      <h3>Features enabled per state</h3>
+      <table class="enable">
+        <thead>
+          <tr>
+            <th>Sub-flow</th>
+            <th>pre_checkin</th>
+            <th>arrival_day</th>
+            <th>in_house</th>
+            <th>departure_day</th>
+            <th>post_checkout</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Welcome / stay info</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Breakfast pre-order</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><td>Request: F&amp;B</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Request: Mini-shop</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Request: Housekeeping items</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Cleaning preferences</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><td>Request: Cleaning</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="no">—</td><td class="no">—</td></tr>
+          <tr><td>Request: Maintenance</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Request: Transport</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Request: Concierge</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>Request: Booking action</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">—</td></tr>
+          <tr><td>View charges / folio</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>Leave feedback</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── Master portal landing ─── -->
+    <section class="section" id="master-portal">
+      <h2>Master <em>portal landing</em> · what guest sees</h2>
+      <p class="lede">The first screen after the code resolves. Cards visible depend on stay state. Each card is a route to a sub-flow.</p>
+
+      <h3>Visual mockup (in_house state)</h3>
+      <div class="master-mock">
+        <div class="mock-hdr">Hello, <em>Marutani</em></div>
+        <div class="mock-meta">Room G06 · Hamsun FSL · checkout Sun 27 Apr</div>
+
+        <div class="mock-card live">
+          <span class="icon">🥐</span>
+          <div class="info"><div class="name">Pre-order tomorrow's breakfast</div><div class="desc">Closes at 10pm tonight</div></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="mock-card">
+          <span class="icon">🛎</span>
+          <div class="info"><div class="name">Make a request</div><div class="desc">Towels · F&amp;B · transport · maintenance · more</div></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="mock-card">
+          <span class="icon">🧹</span>
+          <div class="info"><div class="name">Cleaning preferences</div><div class="desc">Daily cleaning: ON · 10am</div></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="mock-card">
+          <span class="icon">🛒</span>
+          <div class="info"><div class="name">Mini-shop</div><div class="desc">Snacks, drinks, toiletries — order to your room</div></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="mock-card">
+          <span class="icon">📋</span>
+          <div class="info"><div class="name">My charges</div><div class="desc">Folio total: PKR 87,500 · 8 items</div></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="mock-card dim">
+          <span class="icon">⭐</span>
+          <div class="info"><div class="name">Leave feedback</div><div class="desc">Available after checkout</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Sub-flows ─── -->
+    <section class="section" id="subflows">
+      <h2>Sub-flows · <em>8 portals under one roof</em></h2>
+      <p class="lede">Each sub-flow has its own URL, its own backend table(s), and its own state machine. Wiring is consistent across all of them — same auth via <code>PortalContext</code>, same notification topology, same audit trail.</p>
+
+      <div class="subflow-grid">
+
+        <!-- 1: Breakfast -->
+        <div class="subflow-card spec">
+          <div class="subflow-head">
+            <span class="icon">🥐</span>
+            <h3>1. Breakfast pre-order</h3>
+            <span class="status-badge spec">Spec'd · awaits backend</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/breakfast</code> — opens to time slot picker</span>
+              <span class="lbl">Frontend</span>
+              <span class="val">Lives in <code>hamsun-portal</code> repo · prototype at <a href="../breakfast-prototype/" target="_blank">breakfast-prototype</a></span>
+              <span class="lbl">Backend tables</span>
+              <span class="val"><code>service_menus.menus</code> · <code>time_slots</code> · <code>menu_items</code> · <code>choice_groups</code> · <code>sides</code> · <code>drinks</code> · <code>sessions</code> · <code>orders</code> · <code>order_items</code></span>
+              <span class="lbl">Edge functions</span>
+              <span class="val"><code>get-menu-context</code> · <code>submit-menu-order</code> · <code>lock-menu-orders</code> (cron)</span>
+              <span class="lbl">On submit</span>
+              <span class="val">Charges post via <code>post-charge</code> edge fn with <code>category='room_service'</code> · KOT to kitchen Slack · WhatsApp ack to guest</span>
+              <span class="lbl">Lock window</span>
+              <span class="val">Per menu config <code>lock_minutes_before</code> (default 40 min before slot)</span>
+              <span class="lbl">Depends on</span>
+              <span class="val">Menu admin backend wiring (Phase 5 of <a href="../menu-admin/DESIGN_LOCK.md">menu-admin</a>)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2: Request - F&B / kitchen -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🍳</span>
+            <h3>2. Request · F&amp;B (ad-hoc kitchen orders)</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/kitchen_fnb</code></span>
+              <span class="lbl">Backend</span>
+              <span class="val"><code>portal.requests</code> with <code>type_slug='kitchen_fnb'</code> · catalog from <code>portal.catalog_items</code></span>
+              <span class="lbl">Edge function</span>
+              <span class="val"><code>portal-submit-request</code></span>
+              <span class="lbl">Workflow</span>
+              <span class="val"><code>new → confirmed → preparing → ready → delivered</code> (charge posted on delivery)</span>
+              <span class="lbl">Notifications</span>
+              <span class="val">Slack to kitchen channel on submit · WhatsApp ack to guest</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: Mini-shop -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🛒</span>
+            <h3>3. Request · Mini-shop / Sundries</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/mini_shop</code></span>
+              <span class="lbl">Frontend</span>
+              <span class="val">Live at hamsun-portal · prototype at <a href="../portal-mockup/" target="_blank">portal-mockup</a></span>
+              <span class="lbl">Backend</span>
+              <span class="val"><code>portal.requests</code> with <code>type_slug='mini_shop'</code> · stock decrements via <code>portal_adjust_catalog_stock</code> RPC</span>
+              <span class="lbl">Catalog</span>
+              <span class="val">7 categories (drinks, munchies, otc_meds, phone, toiletries, packing) — comp items free, others priced</span>
+              <span class="lbl">Charge category</span>
+              <span class="val"><code>grocery</code></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: Housekeeping items -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🧺</span>
+            <h3>4. Request · Housekeeping items</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/housekeeping</code></span>
+              <span class="lbl">What it does</span>
+              <span class="val">Towels, linen, toiletries refill, slippers, kettle, hairdryer, robe, baby cot, ironing board, extra pillow</span>
+              <span class="lbl">Backend</span>
+              <span class="val"><code>portal.requests</code> with <code>type_slug='housekeeping'</code> · subtypes: towels, linen, amenities, laundry_pickup</span>
+              <span class="lbl">Workflow</span>
+              <span class="val"><code>new → acknowledged → assigned → in_progress → done</code> (free, no charge)</span>
+              <span class="lbl">Notifications</span>
+              <span class="val">Slack to housekeeping team · WhatsApp ack + done-confirmation to guest</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5: Cleaning -->
+        <div class="subflow-card spec">
+          <div class="subflow-head">
+            <span class="icon">🧹</span>
+            <h3>5. Request · Cleaning + Cleaning preferences</h3>
+            <span class="status-badge spec">Spec'd</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URLs</span>
+              <span class="val"><code>/portal/request/cleaning</code> (one-off) · <code>/portal/cleaning</code> (preferences toggle)</span>
+              <span class="lbl">Spec</span>
+              <span class="val"><a href="../housekeeping-module/" target="_blank">housekeeping-module</a> — full flow doc with 8 open Qs</span>
+              <span class="lbl">Backend (new)</span>
+              <span class="val">5 booking columns + new <code>cleaning</code> request_type + <code>housekeeping.daily_cron_log</code> + 2 source enum values</span>
+              <span class="lbl">Auto sources</span>
+              <span class="val">Daily cron (opted-in bookings) · post-checkout DB trigger</span>
+              <span class="lbl">Manual sources</span>
+              <span class="val">Guest taps "Request cleaning" · reception PMS manual entry</span>
+              <span class="lbl">Auto-daily opt-in</span>
+              <span class="val">Portal toggle · WhatsApp reply (DAILY/STOP/SKIP) · PMS booking edit</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6: Maintenance -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🔧</span>
+            <h3>6. Request · Maintenance</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/maintenance</code></span>
+              <span class="lbl">Subtypes</span>
+              <span class="val">ac_heating, plumbing, electrical, wifi_tv, furniture, appliance, other</span>
+              <span class="lbl">Severity</span>
+              <span class="val">urgent / normal / low (guest-selectable)</span>
+              <span class="lbl">Workflow</span>
+              <span class="val"><code>new → triaged → assigned → in_progress → done</code> (or waiting_parts / cannot_resolve)</span>
+              <span class="lbl">Notifications</span>
+              <span class="val">Slack to maintenance team · technician notified on assignment · guest gets resolution WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7: Transport -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🚗</span>
+            <h3>7. Request · Transport</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/airport_transport</code></span>
+              <span class="lbl">Subtypes</span>
+              <span class="val">airport_pickup, airport_drop, city_drop, city_tour</span>
+              <span class="lbl">Workflow</span>
+              <span class="val"><code>new → scheduled → driver_assigned → in_transit → completed</code> (charge on completion)</span>
+              <span class="lbl">Required field</span>
+              <span class="val">Schedule action requires <code>scheduled_for</code> (date+time)</span>
+              <span class="lbl">Charge category</span>
+              <span class="val"><code>airport_transfer</code></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8: Concierge -->
+        <div class="subflow-card live">
+          <div class="subflow-head">
+            <span class="icon">🛎</span>
+            <h3>8. Request · Concierge / general</h3>
+            <span class="status-badge live">Live</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/concierge</code></span>
+              <span class="lbl">Subtypes</span>
+              <span class="val">wake_up_call, lost_and_found, info_request, feedback, complaint, recommendation</span>
+              <span class="lbl">Note</span>
+              <span class="val">Wake-up call, complaint, lost-and-found may split into own request_types in future (per workflow review)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9: Booking action -->
+        <div class="subflow-card partial">
+          <div class="subflow-head">
+            <span class="icon">📅</span>
+            <h3>9. Request · Booking action (late checkout, extension)</h3>
+            <span class="status-badge partial">Partial</span>
+          </div>
+          <div class="subflow-body">
+            <div class="meta-grid">
+              <span class="lbl">URL</span>
+              <span class="val"><code>/portal/request/booking_action</code></span>
+              <span class="lbl">Subtypes</span>
+              <span class="val">late_checkout, early_checkin, extend_stay, shorten_stay, room_change, special_occasion</span>
+              <span class="lbl">Approval flow</span>
+              <span class="val"><code>new → pending_approval → approved/rejected → completed</code> · approve action requires <code>manager</code> role</span>
+              <span class="lbl">Open issues</span>
+              <span class="val">Approve action lacks amount-capture field · role enforcement not yet wired in PMS · subtypes mix flows that should be split</span>
+              <span class="lbl">Charge</span>
+              <span class="val">Posts on completion · amount calculated per subtype (e.g., late checkout = 50% × nightly rate)</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─── Data model ─── -->
+    <section class="section" id="data-model">
+      <h2>Data <em>model</em> · who owns what</h2>
+      <p class="lede">Each table has a single source-of-truth role. Cross-table joins are explicit. No data lives in two places.</p>
+
+      <h3>Tables</h3>
+      <table class="data">
+        <thead>
+          <tr><th>Table</th><th>Owns</th><th>Read by</th><th>Written by</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="first"><code>public.bookings</code></td>
+            <td>Stay record · guest preferences (incl. <code>auto_daily_cleaning</code>, <code>cleaning_pref_time</code>)</td>
+            <td>All sub-flows · PMS · Beds24 sync</td>
+            <td>PMS · Beds24 webhook · WhatsApp parser (preferences only)</td>
+          </tr>
+          <tr>
+            <td class="first"><code>portal.request_types</code></td>
+            <td>Workflow JSONB per category (statuses, actions, transitions, flags)</td>
+            <td>Portal · PMS reception inbox · workflow engine</td>
+            <td>Workflows admin (or SQL migration)</td>
+          </tr>
+          <tr>
+            <td class="first"><code>portal.requests</code></td>
+            <td>Every guest request across all categories (one row per request)</td>
+            <td>Portal status checks · PMS reception inbox</td>
+            <td><code>portal-submit-request</code> · <code>portal-update-request-status</code> · DB trigger (post-checkout) · cron (daily-cleaning)</td>
+          </tr>
+          <tr>
+            <td class="first"><code>portal.catalog_items</code></td>
+            <td>Item library (mini-shop, F&amp;B, etc.) — pricing, stock, lifecycle states</td>
+            <td>Portal request flows</td>
+            <td>Catalog admin in PMS</td>
+          </tr>
+          <tr>
+            <td class="first"><code>service_menus.menus</code></td>
+            <td>Menu config (breakfast/lunch/dinner) — pricing mode, time slots</td>
+            <td>Breakfast portal · breakfast-prototype</td>
+            <td>Menu admin</td>
+          </tr>
+          <tr>
+            <td class="first"><code>service_menus.orders</code></td>
+            <td>Submitted menu orders (e.g. breakfast pre-orders)</td>
+            <td>Kitchen Slack · PMS</td>
+            <td><code>submit-menu-order</code> edge fn</td>
+          </tr>
+          <tr>
+            <td class="first"><code>charges</code></td>
+            <td>Folio line items — every charge that hits a guest's bill</td>
+            <td>PMS · invoicing</td>
+            <td><code>post-charge</code> edge fn (called by sub-flows on terminal action)</td>
+          </tr>
+          <tr>
+            <td class="first"><code>portal.request_status_history</code></td>
+            <td>Audit trail of every status change</td>
+            <td>PMS detail drawer · audit log</td>
+            <td><code>portal-update-request-status</code> (auto-inserted on status change)</td>
+          </tr>
+          <tr>
+            <td class="first"><code>notification_log</code></td>
+            <td>Record of every WhatsApp/email/Slack sent</td>
+            <td>PMS · debugging</td>
+            <td>All notification edge fns</td>
+          </tr>
+          <tr>
+            <td class="first"><code>audit_log</code></td>
+            <td>Trigger-based change log on critical tables</td>
+            <td>Integrity Center</td>
+            <td>DB triggers</td>
+          </tr>
+          <tr>
+            <td class="first"><code>housekeeping.daily_cron_log</code></td>
+            <td>Per-booking-per-day record of cleaning cron decision</td>
+            <td>Housekeeping team · debugging</td>
+            <td><code>daily-cleaning-cron</code> edge fn (planned)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── Edge functions ─── -->
+    <section class="section" id="edge-fns">
+      <h2>Edge function <em>topology</em></h2>
+      <p class="lede">Four categories of edge functions. Inbound (portal calls), outbound (notify 3rd party), triggers (DB → side effect), cron (scheduled work).</p>
+
+      <h3>Inbound · guest portal → backend</h3>
+      <table class="data">
+        <thead><tr><th>Function</th><th>Called by</th><th>Effect</th></tr></thead>
+        <tbody>
+          <tr><td class="first"><code>portal-submit-request</code></td><td>All "Request" sub-flows</td><td>Inserts <code>portal.requests</code> row · fires <code>request_received</code> WhatsApp + Slack</td></tr>
+          <tr><td class="first"><code>submit-menu-order</code></td><td>Breakfast portal (planned)</td><td>Validates choices · computes folio · posts charges · KOT to kitchen Slack</td></tr>
+          <tr><td class="first"><code>portal_resolve_code</code> (RPC)</td><td>Master portal landing</td><td>Resolves portal code → booking + state</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Outbound · backend → 3rd party</h3>
+      <table class="data">
+        <thead><tr><th>Function</th><th>Triggers when</th><th>Sends to</th></tr></thead>
+        <tbody>
+          <tr><td class="first"><code>send-whatsapp</code></td><td>Request received · status changes (<code>notify_guest_on_action</code>) · cleaning opt-in confirmations</td><td>WaSender API → guest WhatsApp number (currently expired; whapi.cloud migration planned)</td></tr>
+          <tr><td class="first"><code>send-slack</code></td><td>Request received · approvals needed · escalations · KOT</td><td>Slack channel C099X389C7Q (per-team channels possible)</td></tr>
+          <tr><td class="first"><code>send-email</code></td><td>Booking confirmations · invoices · receipts</td><td>Resend.com → guest email</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Triggers · database event → side effect</h3>
+      <table class="data">
+        <thead><tr><th>Trigger</th><th>Fires on</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td class="first">post-checkout cleaning <em>(planned)</em></td><td><code>UPDATE bookings.checkin_status</code> → <code>CHECKED_OUT</code></td><td>Inserts <code>cleaning</code> request with <code>subtype='post_checkout'</code></td></tr>
+          <tr><td class="first">audit_log trigger</td><td>Modifications on tracked tables (~17)</td><td>Inserts <code>audit_log</code> row with old/new diff</td></tr>
+          <tr><td class="first">request status history</td><td><code>UPDATE portal.requests.status</code></td><td>Inserts <code>portal.request_status_history</code> row</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Cron · scheduled work</h3>
+      <table class="data">
+        <thead><tr><th>Job</th><th>Schedule</th><th>Does</th></tr></thead>
+        <tbody>
+          <tr><td class="first"><code>daily-cleaning-cron</code> <em>(planned)</em></td><td>09:00 PKT daily</td><td>Generates <code>daily_clean</code> tasks for opted-in CHECKED_IN bookings (with skip rules)</td></tr>
+          <tr><td class="first">DND reset</td><td>23:59 PKT daily</td><td>Resets <code>cleaning_dnd_today = false</code> on all bookings</td></tr>
+          <tr><td class="first"><code>lock-menu-orders</code></td><td>Every 5 min</td><td>Locks menu sessions whose slots are within <code>lock_minutes_before</code></td></tr>
+          <tr><td class="first"><code>send-menu-form</code></td><td>Per menu config</td><td>WhatsApp pre-order link to guests</td></tr>
+          <tr><td class="first"><code>send-menu-reminder</code></td><td>Per menu config</td><td>Morning-of reminder for unfilled orders</td></tr>
+          <tr><td class="first"><code>daily-menu-summary</code></td><td>Per menu config (e.g. 06:30)</td><td>Slack KOT summary by slot</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ─── Notifications ─── -->
+    <section class="section" id="notifications">
+      <h2>Notification <em>topology</em></h2>
+      <p class="lede">Who hears about what, when. Three channels: WhatsApp (guest), Slack (staff), email (formal records).</p>
+
+      <table class="data">
+        <thead><tr><th>Event</th><th>WhatsApp</th><th>Slack</th><th>Email</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="first">Booking confirmed</td>
+            <td>Welcome + portal link</td>
+            <td>—</td>
+            <td>Confirmation receipt</td>
+          </tr>
+          <tr>
+            <td class="first">Check-in</td>
+            <td>Welcome at property + auto-cleaning opt-in offer</td>
+            <td>Reception channel ack</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Request received (any type)</td>
+            <td><code>request_received</code> ack to guest</td>
+            <td>Per-team channel — e.g. kitchen Slack on F&amp;B</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Request status change</td>
+            <td>Only if action has <code>notify_guest_on_action=true</code></td>
+            <td>Optional escalation messages (e.g. "stuck >SLA")</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Request done (terminal success)</td>
+            <td><code>request_done</code> auto-fires (set by <code>SUCCESS_TERMINAL_STATUSES</code>)</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Charge posted to folio</td>
+            <td>Receipt with running balance</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Manager approval needed</td>
+            <td>—</td>
+            <td>Approval channel with action buttons (existing <code>approve-payment-slack</code> pattern)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Cleaning opt-in toggle</td>
+            <td>Confirmation reply (DAILY / STOP / SKIP)</td>
+            <td>—</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="first">Checkout</td>
+            <td>Folio summary + feedback link (post 24h)</td>
+            <td>—</td>
+            <td>Final invoice if requested</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>WhatsApp template inventory</h3>
+      <p>Once we migrate from WaSender (expired) to a Meta-approved BSP, every notification message becomes a pre-approved template. Templates needed:</p>
+      <ul>
+        <li><code>welcome_with_portal</code> — at booking confirmation</li>
+        <li><code>checkin_welcome_cleaning_opt_in</code> — at check-in, includes daily-cleaning prompt</li>
+        <li><code>request_received</code> — generic ack</li>
+        <li><code>request_done</code> — generic completion</li>
+        <li><code>request_cancelled</code> — generic cancel/explanation</li>
+        <li><code>cleaning_done</code> — specific to cleaning module</li>
+        <li><code>cleaning_skip_confirmed</code> — DND ack</li>
+        <li><code>cleaning_pref_changed</code> — toggle ack</li>
+        <li><code>folio_charge_posted</code> — receipt</li>
+        <li><code>checkout_summary</code> — final folio</li>
+        <li><code>feedback_request</code> — post 24h</li>
+      </ul>
+    </section>
+
+    <!-- ─── Build sequence ─── -->
+    <section class="section" id="build-seq">
+      <h2>Build <em>sequence</em> · what depends on what</h2>
+      <p class="lede">Order of operations to build modules without breaking each other. Dependencies are real — building out of order causes rework.</p>
+
+      <div class="seq-list">
+        <div class="seq-item">
+          <span class="num done">✓</span>
+          <div class="body">
+            <div class="head">Master portal landing — already lives in <code>hamsun-portal</code></div>
+            <div class="deps">No new dependencies. Stay state already determined via <code>portal_resolve_code</code>.</div>
+          </div>
+          <span class="effort">done</span>
+        </div>
+        <div class="seq-item">
+          <span class="num done">✓</span>
+          <div class="body">
+            <div class="head">Portal.requests + workflow engine</div>
+            <div class="deps">7 request types seeded · <code>WorkflowActionBar.tsx</code> renders dynamic buttons.</div>
+          </div>
+          <span class="effort">done</span>
+        </div>
+        <div class="seq-item">
+          <span class="num next">1</span>
+          <div class="body">
+            <div class="head">Workflow vocabulary cleanup (Slice 1)</div>
+            <div class="deps">Operator edits in workflows-admin → SQL migration applied. <b>Blocks:</b> nothing strictly, but better-labeled buttons benefit every flow.</div>
+          </div>
+          <span class="effort">~2 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">2</span>
+          <div class="body">
+            <div class="head">Cleaning sub-flow (housekeeping module)</div>
+            <div class="deps">DB cols on bookings + <code>cleaning</code> request_type + post-checkout trigger + cron + WhatsApp parser + portal preferences page. <b>Depends on:</b> Q1–Q8 answered.</div>
+          </div>
+          <span class="effort">~32 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">3</span>
+          <div class="body">
+            <div class="head">Reception inbox v2 (React rebuild)</div>
+            <div class="deps">Replaces <code>RequestsPage.tsx</code> with command-center layout, undo, peek cards. <b>Depends on:</b> housekeeping live (so peek cards have real data).</div>
+          </div>
+          <span class="effort">~34 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">4</span>
+          <div class="body">
+            <div class="head">Workflows admin (React in PMS)</div>
+            <div class="deps">Replaces standalone HTML editor with real Settings page. <b>Depends on:</b> vocabulary stable from Slice 1.</div>
+          </div>
+          <span class="effort">~12 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">5</span>
+          <div class="body">
+            <div class="head">Menu admin backend (breakfast first)</div>
+            <div class="deps">All of menu-admin's Phase 1–9 (~24 hr). <b>Depends on:</b> nothing in this list — independent track.</div>
+          </div>
+          <span class="effort">~24 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">6</span>
+          <div class="body">
+            <div class="head">Breakfast portal wired to menu backend</div>
+            <div class="deps"><b>Depends on:</b> step 5.</div>
+          </div>
+          <span class="effort">~8 hr</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">7</span>
+          <div class="body">
+            <div class="head">WhatsApp BSP migration (whapi.cloud + Meta Cloud API)</div>
+            <div class="deps">Replaces expired WaSender · template approval · adapter layer in <code>manage-whatsapp-group</code>. <b>Depends on:</b> nothing technically; blocks live notifications today.</div>
+          </div>
+          <span class="effort">~16 hr (+ template approval lead time)</span>
+        </div>
+        <div class="seq-item">
+          <span class="num">8</span>
+          <div class="body">
+            <div class="head">Concierge subtype split-out (wake-up call, complaint, lost-and-found)</div>
+            <div class="deps">Each becomes own request_type if needed. <b>Depends on:</b> step 4 (admin UI exists to add new types easily).</div>
+          </div>
+          <span class="effort">~8 hr</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── Invariants ─── -->
+    <section class="section" id="invariants">
+      <h2>Critical <em>invariants</em> · what never to break</h2>
+      <p class="lede">Things that must remain true across all module builds. Violating one causes silent data corruption or production breakage.</p>
+
+      <div class="inv-list">
+
+        <div class="inv-card">
+          <span class="icon">🛑</span>
+          <div class="body">
+            <div class="title">Every request goes through portal.requests</div>
+            <div class="desc">No new tables for "cleaning tasks" or "transport requests". Every guest-initiated request — and every staff-initiated task — is a row in <code>portal.requests</code>. The category is <code>type_slug</code>, the lifecycle is <code>workflow.status</code>. This guarantees consistent reporting, audit, and reception inbox surfacing.</div>
+          </div>
+        </div>
+
+        <div class="inv-card">
+          <span class="icon">🛑</span>
+          <div class="body">
+            <div class="title">Charges always go through post-charge edge fn</div>
+            <div class="desc">No direct INSERT into <code>charges</code> from any portal flow. The action that has <code>posts_charge: true</code> calls <code>post-charge</code> which handles tax mode, currency, audit log, Beds24 backup posting. Bypassing this breaks the folio.</div>
+          </div>
+        </div>
+
+        <div class="inv-card">
+          <span class="icon">🛑</span>
+          <div class="body">
+            <div class="title">No secrets in the prototypes repo</div>
+            <div class="desc">This repo is public. Don't paste API keys, booking IDs, guest names, phone numbers, or production data into HTML files or DESIGN.md docs. Mockup data uses fake names (Marutani, Mohsin, etc.) — keep it that way.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Portal code must resolve to exactly one booking</div>
+            <div class="desc">If <code>portal_resolve_code</code> ever returns multiple bookings or null when a code is valid, every downstream flow breaks. Add tests; don't change the resolution function casually.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Workflow status keys are immutable once seeded</div>
+            <div class="desc">Workflows admin lets you rename labels but the underlying status <code>key</code> is referenced by <code>portal.requests.status</code>, <code>portal.request_status_history.from_status/to_status</code>, and notification template names. Renaming a key requires data migration on every reference.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Stay state derives from booking, never stored on portal.requests</div>
+            <div class="desc">The state (<code>pre_checkin</code> / <code>in_house</code> / etc.) is computed from <code>bookings.check_in</code> + <code>checkin_status</code> + <code>check_out</code>. Don't denormalise it onto requests; if booking dates change, stale state on requests would lie.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Notifications must be idempotent</div>
+            <div class="desc">Edge functions like <code>sendRequestNotification(requestId, eventKey)</code> dedupe internally. Calling them twice for the same event must not send two messages. Notification logic must be in the edge fn, not the React caller.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Cleaning module reuses portal.requests — no parallel schema</div>
+            <div class="desc">When building housekeeping module, do NOT create a <code>housekeeping.cleaning_tasks</code> table. Use <code>portal.requests</code> with <code>type_slug='cleaning'</code>. The bookkeeping log (<code>housekeeping.daily_cron_log</code>) is fine — it's a side log, not a parallel store.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Every status change must log to history</div>
+            <div class="desc">The <code>portal_update_request_status</code> RPC inserts into <code>portal.request_status_history</code> automatically. If a future code path mutates <code>requests.status</code> directly via a SQL UPDATE, the audit trail breaks. Always go through the RPC.</div>
+          </div>
+        </div>
+
+        <div class="inv-card warn">
+          <span class="icon">⚠</span>
+          <div class="body">
+            <div class="title">Per-property differences live in app_settings or property_id columns, not in code</div>
+            <div class="desc">Hamsun has 3 properties (CLF, FSL, EXT). Don't hardcode "9am cron for FSL only" in edge functions. Store the schedule in <code>app_settings</code> or per-property config tables. Otherwise expanding to a 4th property requires code changes.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>

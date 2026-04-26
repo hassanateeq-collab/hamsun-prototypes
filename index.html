@@ -122,6 +122,9 @@ a { color: inherit; text-decoration: none; }
 .badge.locked   { background: var(--moss-mist);  color: var(--moss); }
 .badge.iter     { background: var(--amber-mist); color: var(--amber); }
 .badge.spec     { background: var(--gold-mist);  color: var(--gold-dark); }
+.badge.spine    { background: var(--ink); color: white; }
+.card.spine     { border: 1.5px solid var(--ink); background: linear-gradient(135deg, var(--paper), var(--cream)); }
+.card.spine:hover { border-color: var(--gold-dark); }
 .card .desc { font-size: 13px; color: var(--ink-3); line-height: 1.5; }
 .card .actions {
   margin-top: 10px; display: flex; gap: 6px; padding-top: 10px;
@@ -187,10 +190,27 @@ a { color: inherit; text-decoration: none; }
       <p>Design-stage mockups and locked specs for every Hamsun PMS module — guest-facing portals, staff tools, configuration UIs. Each module has an interactive prototype and a paired <code>DESIGN.md</code> ready for backend handoff. Production code lives in <code>hamsun-guest-manager</code>.</p>
     </div>
     <div class="hero-stat">
-      <div class="num">6</div>
+      <div class="num">7</div>
       <div class="lbl">Modules</div>
     </div>
   </section>
+
+  <div class="section-title">Architecture spine</div>
+
+  <div class="grid" style="grid-template-columns: 1fr; margin-bottom: 28px;">
+    <div class="card spine" onclick="window.location.href='./master-flow/'">
+      <div class="head">
+        <span class="icon">🌐</span>
+        <span class="name">Master Portal <em>Architecture</em></span>
+        <span class="badge spine">Spine · read first</span>
+      </div>
+      <p class="desc">How the master guest portal ties every module together — entry point, stay state machine, 8 sub-flows, data model ownership, edge function topology, notification topology, build sequence, and the 10 critical invariants every module must respect. Read this before any module spec.</p>
+      <div class="actions">
+        <a class="open" href="./master-flow/">Open architecture doc →</a>
+        <a class="spec" href="./master-flow/DESIGN.md">Spec</a>
+      </div>
+    </div>
+  </div>
 
   <div class="section-title">Modules</div>
 
