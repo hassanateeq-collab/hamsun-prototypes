@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 15px; line-height: 1.55;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+}
+a { color: inherit; text-decoration: none; }
+
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--edge);
+  padding: 14px 32px;
+  display: flex; align-items: center; gap: 18px;
+}
+.brand { font-family: var(--f-display); font-size: 19px; font-weight: 500; }
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--ink-4); padding-left: 14px; border-left: 1px solid var(--edge);
+}
+.spacer { flex: 1; }
+.topbar a.nav {
+  font-size: 12.5px; font-weight: 500; color: var(--ink-3);
+  padding: 7px 14px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge); background: var(--paper);
+  transition: all 0.15s var(--spring);
+}
+.topbar a.nav:hover { background: var(--edge-soft); color: var(--ink); }
+
+.page {
+  max-width: 1100px; margin: 0 auto; padding: 56px 32px 80px;
+}
+
+.hero {
+  margin-bottom: 56px;
+  display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end;
+}
+.hero h1 {
+  font-family: var(--f-display); font-size: 56px; font-weight: 400;
+  letter-spacing: -0.025em; line-height: 1.05; margin-bottom: 14px;
+}
+.hero h1 em { color: var(--gold-dark); }
+.hero p {
+  font-size: 15px; color: var(--ink-3); max-width: 640px; line-height: 1.6;
+}
+.hero p code {
+  font-family: var(--f-mono); font-size: 13px;
+  background: var(--paper); padding: 1px 8px; border-radius: 4px;
+  border: 1px solid var(--edge);
+}
+.hero-stat {
+  text-align: right; padding: 10px 16px; min-width: 110px;
+}
+.hero-stat .num {
+  font-family: var(--f-display); font-size: 38px; font-weight: 500;
+  letter-spacing: -0.02em; color: var(--ink); line-height: 1;
+}
+.hero-stat .lbl {
+  font-size: 10.5px; font-weight: 700; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-top: 6px;
+}
+
+.section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.16em; color: var(--ink-4); margin-bottom: 18px;
+}
+
+.grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px; margin-bottom: 56px;
+}
+.card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 22px 24px;
+  transition: all 0.2s var(--spring);
+  display: flex; flex-direction: column; gap: 10px;
+  cursor: pointer;
+}
+.card:hover {
+  border-color: var(--gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(158,127,67,0.08);
+}
+.card .head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 4px;
+}
+.card .icon { font-size: 22px; }
+.card .name {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+  letter-spacing: -0.012em;
+}
+.card .name em { color: var(--gold-dark); }
+.card .badge {
+  margin-left: auto; font-size: 9.5px; font-weight: 700;
+  padding: 3px 8px; border-radius: var(--r-pill);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.badge.locked   { background: var(--moss-mist);  color: var(--moss); }
+.badge.iter     { background: var(--amber-mist); color: var(--amber); }
+.badge.spec     { background: var(--gold-mist);  color: var(--gold-dark); }
+.card .desc { font-size: 13px; color: var(--ink-3); line-height: 1.5; }
+.card .actions {
+  margin-top: 10px; display: flex; gap: 6px; padding-top: 10px;
+  border-top: 1px solid var(--edge-soft);
+}
+.card .actions a {
+  font-size: 11.5px; font-weight: 500; padding: 6px 12px;
+  border-radius: var(--r-sm); transition: all 0.15s var(--spring);
+}
+.card .actions a.open {
+  background: var(--ink); color: var(--paper); flex: 1; text-align: center;
+}
+.card .actions a.open:hover { background: var(--ink-2); }
+.card .actions a.spec {
+  background: var(--paper); color: var(--ink); border: 1px solid var(--edge);
+}
+.card .actions a.spec:hover { background: var(--edge-soft); }
+
+.footer-block {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-lg); padding: 24px 28px; margin-top: 24px;
+}
+.footer-block h3 {
+  font-family: var(--f-display); font-size: 16px; font-weight: 500;
+  letter-spacing: -0.005em; margin-bottom: 8px;
+}
+.footer-block p { font-size: 13px; color: var(--ink-3); line-height: 1.6; }
+.footer-block code {
+  font-family: var(--f-mono); font-size: 12px;
+  background: var(--cream); padding: 1px 6px; border-radius: 4px;
+}
+.footer-block .pre {
+  background: var(--ink); color: #d4ddd0;
+  font-family: var(--f-mono); font-size: 12px; line-height: 1.65;
+  padding: 12px 16px; border-radius: var(--r-md);
+  margin-top: 10px;
+}
+
+@media (max-width: 720px) {
+  .page { padding: 32px 18px 60px; }
+  .hero { grid-template-columns: 1fr; gap: 18px; }
+  .hero h1 { font-size: 40px; }
+  .hero-stat { text-align: left; padding: 0; }
+  .topbar { padding: 12px 16px; }
+  .brand-sub { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Prototypes</span>
+  <span class="spacer"></span>
+  <a class="nav" href="https://github.com/hassanateeq-collab/hamsun-prototypes" target="_blank">GitHub ↗</a>
+</header>
+
+<main class="page">
+
+  <section class="hero">
+    <div>
+      <h1>Hamsun <em>Prototypes</em></h1>
+      <p>Design-stage mockups and locked specs for every Hamsun PMS module — guest-facing portals, staff tools, configuration UIs. Each module has an interactive prototype and a paired <code>DESIGN.md</code> ready for backend handoff. Production code lives in <code>hamsun-guest-manager</code>.</p>
+    </div>
+    <div class="hero-stat">
+      <div class="num">6</div>
+      <div class="lbl">Modules</div>
+    </div>
+  </section>
+
+  <div class="section-title">Modules</div>
+
+  <div class="grid">
+
+    <div class="card" onclick="window.location.href='./menu-admin/'">
+      <div class="head">
+        <span class="icon">🍽</span>
+        <span class="name"><em>Menu</em> Admin</span>
+        <span class="badge locked">Locked</span>
+      </div>
+      <p class="desc">Multi-menu admin — pricing modes, time slots, choice groups, KOT config. Manages breakfast / lunch / dinner / snacks etc.</p>
+      <div class="actions">
+        <a class="open" href="./menu-admin/">Open prototype →</a>
+        <a class="spec" href="./menu-admin/DESIGN_LOCK.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./breakfast-prototype/'">
+      <div class="head">
+        <span class="icon">🥐</span>
+        <span class="name">Breakfast <em>Portal</em></span>
+        <span class="badge locked">Locked</span>
+      </div>
+      <p class="desc">Guest-facing breakfast pre-order portal. Time slot picker, mains with choice groups, drinks, folio breakdown. Linked from WhatsApp.</p>
+      <div class="actions">
+        <a class="open" href="./breakfast-prototype/">Open prototype →</a>
+        <a class="spec" href="./breakfast-prototype/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./portal-mockup/'">
+      <div class="head">
+        <span class="icon">🛒</span>
+        <span class="name">Mini-shop <em>Catalog</em></span>
+        <span class="badge locked">Locked</span>
+      </div>
+      <p class="desc">Mini-shop / sundries item picker — drinks, snacks, OTC meds, phone accessories, toiletries. 7 categories, 20 seeded items.</p>
+      <div class="actions">
+        <a class="open" href="./portal-mockup/">Open prototype →</a>
+        <a class="spec" href="./portal-mockup/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./reception-inbox/'">
+      <div class="head">
+        <span class="icon">📋</span>
+        <span class="name">Reception <em>Inbox</em></span>
+        <span class="badge iter">Iterating</span>
+      </div>
+      <p class="desc">Reception command center — 4-tab inbox with cross-team peek cards, overdue alerts, undo toasts. Replaces the current PMS RequestsPage.</p>
+      <div class="actions">
+        <a class="open" href="./reception-inbox/">Open prototype →</a>
+        <a class="spec" href="./reception-inbox/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./workflows-admin/'">
+      <div class="head">
+        <span class="icon">⚙</span>
+        <span class="name">Workflows <em>Admin</em></span>
+        <span class="badge iter">Iterating</span>
+      </div>
+      <p class="desc">Editor for per-category workflows (statuses, actions, charge points, flags). Generates SQL migration directly from edits.</p>
+      <div class="actions">
+        <a class="open" href="./workflows-admin/">Open prototype →</a>
+        <a class="spec" href="./workflows-admin/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./housekeeping-module/'">
+      <div class="head">
+        <span class="icon">🧹</span>
+        <span class="name">Housekeeping <em>Module</em></span>
+        <span class="badge spec">Spec'd</span>
+      </div>
+      <p class="desc">Auto-cleaning module — daily cron, post-checkout trigger, WhatsApp opt-in, guest portal toggle. Q1–Q8 awaiting operator decisions.</p>
+      <div class="actions">
+        <a class="open" href="./housekeeping-module/">Open prototype →</a>
+        <a class="spec" href="./housekeeping-module/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="section-title">Running locally</div>
+  <div class="footer-block">
+    <h3>Single command to serve everything</h3>
+    <p>Clone the repo, then start a single static server at the umbrella root. All modules are accessible at relative paths matching the GitHub Pages URL structure — same dev experience locally as deployed.</p>
+    <div class="pre">cd hamsun-prototypes
+python3 -m http.server 4320
+# now open http://localhost:4320</div>
+  </div>
+
+</main>
+
+</body>
+</html>
