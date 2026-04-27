@@ -879,7 +879,7 @@ table.data td.first { font-weight: 600; }
       <table class="data">
         <thead><tr><th>Function</th><th>Triggers when</th><th>Sends to</th></tr></thead>
         <tbody>
-          <tr><td class="first"><code>send-whatsapp</code></td><td>Request received · status changes (<code>notify_guest_on_action</code>) · cleaning opt-in confirmations</td><td>WaSender API → guest WhatsApp number (currently expired; whapi.cloud migration planned)</td></tr>
+          <tr><td class="first"><code>send-whatsapp</code></td><td>Request received · status changes (<code>notify_guest_on_action</code>) · cleaning opt-in confirmations</td><td>WhatsApp API → guest WhatsApp number</td></tr>
           <tr><td class="first"><code>send-slack</code></td><td>Request received · approvals needed · escalations · KOT</td><td>Slack channel C099X389C7Q (per-team channels possible)</td></tr>
           <tr><td class="first"><code>send-email</code></td><td>Booking confirmations · invoices · receipts</td><td>Resend.com → guest email</td></tr>
         </tbody>
@@ -975,7 +975,7 @@ table.data td.first { font-weight: 600; }
       </table>
 
       <h3>WhatsApp template inventory</h3>
-      <p>Once we migrate from WaSender (expired) to a Meta-approved BSP, every notification message becomes a pre-approved template. Templates needed:</p>
+      <p>Every notification message uses a pre-approved WhatsApp template. Templates needed:</p>
       <ul>
         <li><code>welcome_with_portal</code> — at booking confirmation</li>
         <li><code>checkin_welcome_cleaning_opt_in</code> — at check-in, includes daily-cleaning prompt</li>
@@ -1064,8 +1064,8 @@ table.data td.first { font-weight: 600; }
         <div class="seq-item">
           <span class="num">7</span>
           <div class="body">
-            <div class="head">WhatsApp BSP migration (whapi.cloud + Meta Cloud API)</div>
-            <div class="deps">Replaces expired WaSender · template approval · adapter layer in <code>manage-whatsapp-group</code>. <b>Depends on:</b> nothing technically; blocks live notifications today.</div>
+            <div class="head">WhatsApp template approvals + adapter layer polish</div>
+            <div class="deps">Get all required templates approved by the WhatsApp provider · clean up adapter layer in <code>manage-whatsapp-group</code> for future provider swaps. <b>Depends on:</b> nothing technically; gates which notifications can fire.</div>
           </div>
           <span class="effort">~16 hr (+ template approval lead time)</span>
         </div>

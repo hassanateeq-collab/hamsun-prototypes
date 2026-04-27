@@ -1044,7 +1044,7 @@ button { font-family: inherit; cursor: pointer; border: 0; background: transpare
             <span class="when">on incoming message</span>
           </div>
           <div class="body">
-            Extends existing <code>wasender-webhook</code> edge function. Parses guest replies for <code>DAILY</code>, <code>STOP</code>, <code>SKIP</code>, <code>CLEAN NOW</code>, <code>CHANGE TIME hh:mm</code>. Updates <code>bookings.auto_daily_cleaning</code> / <code>cleaning_dnd_today</code> / <code>cleaning_pref_time</code> via the booking inferred from sender's WhatsApp number. Sends confirmation reply.
+            Extends the existing WhatsApp inbound webhook edge function. Parses guest replies for <code>DAILY</code>, <code>STOP</code>, <code>SKIP</code>, <code>CLEAN NOW</code>, <code>CHANGE TIME hh:mm</code>. Updates <code>bookings.auto_daily_cleaning</code> / <code>cleaning_dnd_today</code> / <code>cleaning_pref_time</code> via the booking inferred from sender's WhatsApp number. Sends confirmation reply.
           </div>
         </div>
 

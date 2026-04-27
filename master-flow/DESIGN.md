@@ -168,7 +168,7 @@ Each lives at its own URL, writes to specific backend tables, follows a typed st
 
 ### Outbound (backend → 3rd party)
 
-- `send-whatsapp` — guest notifications (WaSender → migrating to whapi.cloud / Meta BSP)
+- `send-whatsapp` — guest notifications (current WhatsApp provider)
 - `send-slack` — staff notifications
 - `send-email` — booking confirmations, invoices, receipts
 
@@ -203,7 +203,7 @@ Each lives at its own URL, writes to specific backend tables, follows a typed st
 
 ### WhatsApp templates needed
 
-Once we migrate from WaSender (expired) to a Meta-approved BSP, every notification message becomes a pre-approved template:
+Every notification message uses a pre-approved WhatsApp template. Templates needed:
 
 - `welcome_with_portal`
 - `checkin_welcome_cleaning_opt_in`

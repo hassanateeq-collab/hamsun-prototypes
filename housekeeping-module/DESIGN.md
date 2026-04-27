@@ -32,7 +32,7 @@ A separate operational module for **cleaning and deep-cleaning tasks**. The clea
 Booking-level boolean column: `bookings.auto_daily_cleaning`. Three entry points all write to the same column:
 
 - **Guest portal** — toggle in `/portal/preferences`
-- **WhatsApp reply** — guest replies `DAILY` / `STOP` (parsed by `wasender-webhook`)
+- **WhatsApp reply** — guest replies `DAILY` / `STOP` (parsed by the WhatsApp inbound webhook)
 - **Reception PMS** — checkbox on booking edit form
 
 Default for new bookings: **off** (opt-in via WhatsApp at check-in). See Q2.
@@ -172,7 +172,7 @@ CREATE TABLE housekeeping.daily_cron_log (
 |---|---|---|---|
 | 1 | Postgres trigger on `bookings.checkin_status` → `CHECKED_OUT` inserts a `cleaning` request with `subtype='post_checkout'`, `source='checkout_trigger'`, `scheduled_for=now()` | On row update | DB trigger |
 | 2 | Daily cron — loops opted-in CHECKED_IN bookings, applies skip rules, inserts `daily_clean` tasks, logs every booking checked into `daily_cron_log` | 09:00 PKT daily (Q1) | Edge function `daily-cleaning-cron` |
-| 3 | WhatsApp inbound parser — extends `wasender-webhook` to recognise DAILY / STOP / SKIP / CLEAN NOW / CHANGE TIME and update the booking flags + send confirm reply | On every WhatsApp inbound message | Edge function (existing, extended) |
+| 3 | WhatsApp inbound parser — extends the WhatsApp inbound webhook to recognise DAILY / STOP / SKIP / CLEAN NOW / CHANGE TIME and update the booking flags + send confirm reply | On every WhatsApp inbound message | Edge function (existing, extended) |
 | 4 | Daily DND reset — `UPDATE bookings SET cleaning_dnd_today = false WHERE cleaning_dnd_today = true` | 23:59 PKT daily | SQL cron / pg_cron |
 
 ---
@@ -185,7 +185,7 @@ CREATE TABLE housekeeping.daily_cron_log (
 | 2 | Postgres trigger for post-checkout cleaning task | 1 hr |
 | 3 | Edge function `daily-cleaning-cron` with full skip-rule logic | 4 hr |
 | 4 | Schedule the cron (Supabase pg_cron or external scheduler) at chosen time | 30 min |
-| 5 | Extend `wasender-webhook` for DAILY/STOP/SKIP/CLEAN NOW/CHANGE TIME parsing | 3 hr |
+| 5 | Extend the WhatsApp inbound webhook for DAILY/STOP/SKIP/CLEAN NOW/CHANGE TIME parsing | 3 hr |
 | 6 | Guest portal — Cleaning preferences section in stay portal | 4 hr |
 | 7 | Guest portal — "Request cleaning" item in request flow with subtype picker | 2 hr |
 | 8 | PMS — booking edit form: add `auto_daily_cleaning` checkbox + special notes field | 2 hr |
