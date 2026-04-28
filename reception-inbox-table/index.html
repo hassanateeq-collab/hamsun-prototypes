@@ -255,6 +255,23 @@ table.req-table tbody tr.items-row td {
   font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
   text-transform: uppercase; margin-right: 4px;
 }
+.items-detail .actions-row {
+  margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--edge);
+  display: flex; gap: 6px; justify-content: flex-end;
+}
+.copy-btn {
+  background: var(--paper); color: var(--ink); border: 1px solid var(--edge);
+  padding: 6px 12px; border-radius: var(--r-sm);
+  font-size: 11.5px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 5px;
+  cursor: pointer; transition: all 0.15s var(--spring);
+}
+.copy-btn:hover { background: var(--cream); border-color: var(--ink-4); }
+.copy-btn:active { transform: scale(0.96); }
+.copy-btn.copied {
+  background: var(--moss-mist); color: var(--moss); border-color: var(--moss);
+}
+.copy-btn.copied::before { content: '✓ '; }
 
 /* Column-specific styles */
 .col-expand {
@@ -454,6 +471,47 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
   font-variant-numeric: tabular-nums;
 }
 .peek-row.overdue .timer { color: var(--ember); }
+
+.subtype-tag {
+  display: inline-block;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 1px 5px; border-radius: 3px;
+  margin-right: 5px; vertical-align: middle;
+}
+.tag-items { background: var(--blue-mist); color: var(--blue); }
+.tag-clean { background: var(--violet-mist); color: var(--violet); }
+.tag-served { background: var(--moss-mist); color: var(--moss); }
+.tag-late { background: var(--ember); color: white; }
+.tag-prep { background: var(--indigo-mist); color: var(--indigo); }
+.tag-upcoming { background: var(--gray-mist); color: var(--ink-4); }
+
+/* Slot row for kitchen */
+.slot-row {
+  padding: 9px 14px;
+  display: grid; grid-template-columns: 64px 1fr auto;
+  gap: 8px; align-items: center; font-size: 12.5px;
+  border-top: 1px solid var(--edge-soft);
+}
+.slot-row.late { background: rgba(198,40,40,0.08); border-left: 3px solid var(--ember); }
+.slot-row.current { background: rgba(64,81,181,0.04); border-left: 3px solid var(--indigo); }
+.slot-row .slot-time {
+  font-family: var(--f-display); font-size: 14px; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.slot-row.late .slot-time { color: var(--ember); }
+.slot-row.current .slot-time { color: var(--indigo); }
+.slot-row .slot-text {
+  font-size: 12px; color: var(--ink-2); min-width: 0;
+}
+.slot-row .slot-text .sub { color: var(--ink-4); font-size: 11px; display: block; }
+.slot-row .slot-status {
+  font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; padding: 3px 8px; border-radius: var(--r-pill);
+}
+.slot-row.late .slot-status { background: var(--ember); color: white; }
+.slot-row.current .slot-status { background: var(--indigo); color: white; }
+.slot-row.served .slot-status { background: var(--moss-mist); color: var(--moss); }
+.slot-row.upcoming .slot-status { background: var(--gray-mist); color: var(--ink-4); }
 .peek-foot {
   padding: 8px 10px; display: flex; gap: 6px;
   border-top: 1px solid var(--edge-soft); background: var(--cream);
@@ -544,8 +602,7 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
     <span class="tab-count">8</span>
   </button>
   <button class="tab"><span class="tab-icon">🍳</span><span>Kitchen</span><span class="tab-count">6/18</span></button>
-  <button class="tab"><span class="tab-icon">🧺</span><span>Housekeeping</span><span class="tab-count">3</span></button>
-  <button class="tab"><span class="tab-icon">🧹</span><span>Cleaning</span><span class="tab-count">2</span></button>
+  <button class="tab"><span class="tab-icon">🧺</span><span>Housekeeping</span><span class="tab-count">5</span></button>
 </nav>
 
 <main class="dashboard">
@@ -682,6 +739,9 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
                 <span class="total-lbl">Folio charge</span>
                 <span class="total-amount">PKR 6,000</span>
               </div>
+              <div class="actions-row">
+                <button class="copy-btn" data-copy="Hamsun FSL · Late checkout approval&#10;RG09 — Khurram Hassan&#10;11:55&#10;&#10;1× Late checkout (until 6pm) — PKR 6,000&#10;Calculation: 50% × PKR 12,000 (nightly rate)&#10;&#10;Folio charge: PKR 6,000">📋 Copy for records</button>
+              </div>
             </div>
           </td>
         </tr>
@@ -760,6 +820,9 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
                     <span class="vendor-tag">Kitchen</span>
                     Order goes to in-house kitchen · est prep 20 min
                   </div>
+                  <div class="actions-row">
+                    <button class="copy-btn" data-copy="Hamsun FSL · Kitchen order&#10;R110 — Muhammad Mohsin&#10;12:25&#10;&#10;2× Mutton Biryani — PKR 1,700&#10;1× Mango Lassi — PKR 250&#10;&#10;Total: PKR 1,950">📋 Copy for kitchen WhatsApp</button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -821,6 +884,9 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
                     <span class="vendor-tag">Shelf</span>
                     Pick from reception drawer · stock auto-decrements on delivery
                   </div>
+                  <div class="actions-row">
+                    <button class="copy-btn" data-copy="Hamsun FSL · Mini-shop pickup&#10;RG06 — Marutani Katsuhisa&#10;12:08&#10;&#10;2× ENO Sachet — PKR 500&#10;1× Panadol Strip — PKR 150&#10;2× Mineral water (large) — PKR 300&#10;1× Lighter — PKR 250&#10;&#10;Total: PKR 1,200">📋 Copy pickup list</button>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -864,6 +930,9 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
                   <div class="totals">
                     <span class="total-lbl">Folio +</span>
                     <span class="total-amount">PKR 350</span>
+                  </div>
+                  <div class="actions-row">
+                    <button class="copy-btn" data-copy="Hamsun FSL · Order delivered&#10;R208 — Rubina Nasir&#10;11:30&#10;&#10;1× Coke 500ml — PKR 150&#10;2× Lays Classic — PKR 200&#10;&#10;Total: PKR 350 · charged to folio">📋 Copy receipt</button>
                   </div>
                 </div>
               </td>
@@ -999,69 +1068,46 @@ tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
         <!-- Content swapped by JS based on time selector -->
       </div>
 
-      <!-- Housekeeping peek -->
+      <!-- Housekeeping peek (merged: items + cleaning) -->
       <div class="peek-card has-overdue">
         <div class="peek-head">
           <span class="icon">🧺</span>
           <span class="label">Housekeeping</span>
-          <span class="summary">3 new · 0 in progress</span>
+          <span class="summary">items + cleaning</span>
         </div>
         <div class="peek-stats">
-          <div class="stat warn"><div class="num">3</div><div class="lbl">new</div></div>
-          <div class="stat"><div class="num">0</div><div class="lbl">in progress</div></div>
-          <div class="stat"><div class="num">6</div><div class="lbl">done</div></div>
+          <div class="stat warn"><div class="num">4</div><div class="lbl">new</div></div>
+          <div class="stat"><div class="num">1</div><div class="lbl">in progress</div></div>
+          <div class="stat success"><div class="num">11</div><div class="lbl">done</div></div>
         </div>
         <div class="peek-row overdue">
           <div class="room">R110</div>
-          <div class="text">Extra towels (4 bath)<span class="sub">Mohsin</span></div>
+          <div class="text"><span class="subtype-tag tag-items">Items</span>Extra towels (4 bath)<span class="sub">Mohsin · 50m</span></div>
           <div class="timer">⏱ 50m</div>
         </div>
         <div class="peek-row overdue">
           <div class="room">RG06</div>
-          <div class="text">Linen change<span class="sub">Marutani</span></div>
+          <div class="text"><span class="subtype-tag tag-items">Items</span>Linen change<span class="sub">Marutani · 32m</span></div>
           <div class="timer">⏱ 32m</div>
         </div>
         <div class="peek-row">
           <div class="room">R208</div>
-          <div class="text">Toiletries refill<span class="sub">Rubina Nasir</span></div>
-          <div class="timer">⏱ 10m</div>
-        </div>
-        <div class="peek-foot">
-          <button class="btn btn-secondary">📞 Nudge HK</button>
-          <button class="btn btn-secondary">Open HK →</button>
-        </div>
-      </div>
-
-      <!-- Cleaning peek -->
-      <div class="peek-card">
-        <div class="peek-head">
-          <span class="icon">🧹</span>
-          <span class="label">Cleaning</span>
-          <span class="summary">1 new · 1 in progress</span>
-        </div>
-        <div class="peek-stats">
-          <div class="stat warn"><div class="num">1</div><div class="lbl">new</div></div>
-          <div class="stat"><div class="num">1</div><div class="lbl">in progress</div></div>
-          <div class="stat success"><div class="num">5</div><div class="lbl">done</div></div>
+          <div class="text"><span class="subtype-tag tag-items">Items</span>Toiletries refill<span class="sub">Rubina · 10m</span></div>
+          <div class="timer">10m</div>
         </div>
         <div class="peek-row">
           <div class="room">R211</div>
-          <div class="text">Deep clean · queued<span class="sub">Memon</span></div>
+          <div class="text"><span class="subtype-tag tag-clean">Deep clean</span>Queued<span class="sub">Memon · 6m</span></div>
           <div class="timer">6m</div>
         </div>
         <div class="peek-row">
           <div class="room">R105</div>
-          <div class="text">Daily · in progress<span class="sub">Wataru Nakano</span></div>
+          <div class="text"><span class="subtype-tag tag-clean">Daily</span>In progress<span class="sub">Wataru · started 12m</span></div>
           <div class="timer">12m</div>
         </div>
-        <div class="peek-row done">
-          <div class="room">R102</div>
-          <div class="text">Daily · done<span class="sub">Ibrahim Ahmed</span></div>
-          <div class="timer">11:30</div>
-        </div>
         <div class="peek-foot">
-          <button class="btn btn-secondary">📞 Nudge cleaning</button>
-          <button class="btn btn-secondary">Open cleaning →</button>
+          <button class="btn btn-secondary">📞 Nudge team</button>
+          <button class="btn btn-secondary">Open Housekeeping →</button>
         </div>
       </div>
 
@@ -1102,21 +1148,47 @@ document.querySelectorAll('#done-block .block-head').forEach(head => {
 // ════════════════════════════════════════════════════════════════
 const KITCHEN_STATES = {
   morning: {
-    classes: '',
+    classes: 'has-overdue',
     label: 'Kitchen · Today\'s breakfast',
     metaTag: 'today',
     metaText: 'IN SERVICE',
-    summary: '14/18 served',
+    summary: 'Now: 8:35 AM · slot 8:00 LATE',
     stats: [
-      { num: '14', lbl: 'served', kind: 'success' },
-      { num: '3', lbl: 'preparing', kind: 'warn' },
-      { num: '1', lbl: 'no reply', kind: 'alert' }
+      { num: '11', lbl: 'served', kind: 'success' },
+      { num: '1', lbl: 'late', kind: 'alert' },
+      { num: '1', lbl: 'preparing', kind: '' }
     ],
-    rows: [
-      { time: '8:30am', text: '<b>Last slot</b> · 1 ordered<span class="sub">RG09 Khurram Hassan</span>', timer: '✓' },
-      { time: '8:00am', text: '1 served · <b>1 no reply</b><span class="sub">R209 Abdul Basit</span>', timer: '⚠', overdue: true }
+    slots: [
+      {
+        time: '7:30',
+        kind: 'served',
+        text: '3 served · slot closed',
+        sub: 'R102 · R110 · RG06',
+        status: 'Served'
+      },
+      {
+        time: '8:00',
+        kind: 'late',
+        text: '<b>1 LATE</b> · R209 ordered, not delivered',
+        sub: 'R209 Abdul Basit · slot ended 5m ago',
+        status: 'LATE'
+      },
+      {
+        time: '8:30',
+        kind: 'current',
+        text: '<b>Preparing</b> · 1 in kitchen now',
+        sub: 'RG09 Khurram Hassan · ETA 5 min',
+        status: 'NOW'
+      },
+      {
+        time: '9:00',
+        kind: 'upcoming',
+        text: 'Upcoming slot · 0 ordered',
+        sub: 'Opens in 25 min',
+        status: 'Queued'
+      }
     ],
-    footL: '📨 Remind 1',
+    footL: '⚠ Mark R209 no-show',
     footR: 'Open kitchen →'
   },
   midday: {
@@ -1178,7 +1250,18 @@ function renderKitchenPeek(timeKey) {
 
   if (state.completeMsg) {
     html += `<div class="peek-empty"><span class="check">✓</span>${state.completeMsg.replace('✓ ', '')}</div>`;
-  } else if (state.rows.length > 0) {
+  } else if (state.slots && state.slots.length > 0) {
+    // Slot-by-slot view (morning state)
+    state.slots.forEach(s => {
+      html += `
+        <div class="slot-row ${s.kind}">
+          <div class="slot-time">${s.time}</div>
+          <div class="slot-text">${s.text}<span class="sub">${s.sub}</span></div>
+          <div class="slot-status">${s.status}</div>
+        </div>
+      `;
+    });
+  } else if (state.rows && state.rows.length > 0) {
     state.rows.forEach(r => {
       html += `
         <div class="peek-row ${r.overdue ? 'overdue' : ''}">
@@ -1203,6 +1286,30 @@ function renderKitchenPeek(timeKey) {
 
   card.innerHTML = html;
 }
+
+// ════════════════════════════════════════════════════════════════
+// 4. Copy item lists to clipboard (for vendor WhatsApp)
+// ════════════════════════════════════════════════════════════════
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.copy-btn');
+  if (!btn) return;
+  e.stopPropagation();
+  const text = btn.dataset.copy;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.classList.add('copied');
+    btn.textContent = 'Copied — paste in WhatsApp';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = orig;
+    }, 2200);
+  }).catch(err => {
+    console.error('Copy failed:', err);
+    btn.textContent = '✕ Copy failed';
+    setTimeout(() => btn.textContent = '📋 Copy', 1500);
+  });
+});
 
 // Time selector wiring
 document.querySelectorAll('#time-group button').forEach(btn => {
