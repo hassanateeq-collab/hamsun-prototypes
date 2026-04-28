@@ -190,7 +190,7 @@ a { color: inherit; text-decoration: none; }
       <p>Design-stage mockups and locked specs for every Hamsun PMS module — guest-facing portals, staff tools, configuration UIs. Each module has an interactive prototype and a paired <code>DESIGN.md</code> ready for backend handoff. Production code lives in <code>hamsun-guest-manager</code>.</p>
     </div>
     <div class="hero-stat">
-      <div class="num">7</div>
+      <div class="num">8</div>
       <div class="lbl">Modules</div>
     </div>
   </section>
@@ -258,13 +258,26 @@ a { color: inherit; text-decoration: none; }
     <div class="card" onclick="window.location.href='./reception-inbox/'">
       <div class="head">
         <span class="icon">📋</span>
-        <span class="name">Reception <em>Inbox</em></span>
+        <span class="name">Reception <em>Inbox</em> · Cards</span>
         <span class="badge iter">Iterating</span>
       </div>
-      <p class="desc">Reception command center — 4-tab inbox with cross-team peek cards, overdue alerts, undo toasts. Replaces the current PMS RequestsPage.</p>
+      <p class="desc">Reception command center — 4-tab inbox with cross-team peek cards, overdue alerts, undo toasts. Card-style rows (multi-line, narrative meta).</p>
       <div class="actions">
         <a class="open" href="./reception-inbox/">Open prototype →</a>
         <a class="spec" href="./reception-inbox/DESIGN.md">Spec</a>
+      </div>
+    </div>
+
+    <div class="card" onclick="window.location.href='./reception-inbox-table/'">
+      <div class="head">
+        <span class="icon">📋</span>
+        <span class="name">Reception <em>Inbox</em> · Table</span>
+        <span class="badge iter">A/B compare</span>
+      </div>
+      <p class="desc">Same inbox, table-style rows. Single-line per row, fixed columns, header labels — denser scanning. Sibling of Cards version for direct comparison.</p>
+      <div class="actions">
+        <a class="open" href="./reception-inbox-table/">Open prototype →</a>
+        <a class="spec" href="./reception-inbox-table/DESIGN.md">Spec</a>
       </div>
     </div>
 

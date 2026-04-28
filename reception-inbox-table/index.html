@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Reception Inbox · Table Style</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --gold-tint: #FAEFD3;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+  --spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-family: var(--f-text); font-size: 14px; line-height: 1.5;
+  color: var(--ink); background: var(--cream); min-height: 100vh;
+}
+button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
+
+/* Topbar */
+.topbar {
+  position: sticky; top: 0; z-index: 30;
+  background: rgba(250,248,244,0.94);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-bottom: 1px solid var(--edge);
+  padding: 10px 22px;
+  display: flex; align-items: center; gap: 14px;
+}
+.brand {
+  font-family: var(--f-display); font-size: 17px; font-weight: 500;
+}
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub {
+  font-size: 10.5px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.16em; color: var(--ink-4);
+  margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--edge);
+}
+.style-tag {
+  background: var(--ink); color: white; padding: 3px 10px; border-radius: var(--r-pill);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+}
+.spacer { flex: 1; }
+.topbar-prop {
+  padding: 6px 12px; border-radius: var(--r-pill); border: 1px solid var(--edge);
+  background: var(--paper); font-size: 12px; font-weight: 500;
+}
+.topbar-link {
+  font-size: 11.5px; font-weight: 500; color: var(--ink-3);
+  text-decoration: none; padding: 6px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--edge); background: var(--paper);
+}
+.topbar-link:hover { background: var(--edge-soft); }
+
+/* Compare banner */
+.compare-banner {
+  background: var(--gold-tint); border-bottom: 1px solid var(--gold);
+  padding: 8px 22px;
+  font-size: 12px; color: var(--gold-dark);
+  display: flex; align-items: center; gap: 12px; justify-content: center;
+}
+.compare-banner b { color: var(--ink); }
+.compare-banner a { color: var(--gold-dark); font-weight: 600; }
+
+/* Tab bar (visual only) */
+.tab-bar {
+  background: var(--paper); border-bottom: 1px solid var(--edge);
+  padding: 0 22px; display: flex; gap: 4px;
+  position: sticky; top: 51px; z-index: 25;
+}
+.tab {
+  position: relative; padding: 12px 16px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink-3);
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tab.active { color: var(--ink); font-weight: 600; border-bottom-color: var(--gold-dark); }
+.tab-icon { font-size: 14px; }
+.tab-count {
+  background: var(--edge); color: var(--ink-3);
+  font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: var(--r-pill);
+  letter-spacing: 0.04em; margin-left: 2px;
+}
+.tab.active .tab-count { background: var(--gold-mist); color: var(--gold-dark); }
+.tab.has-urgent .tab-count {
+  background: var(--ember); color: white;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+/* Container */
+.dashboard {
+  max-width: 1320px; margin: 0 auto; padding: 16px 22px 80px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* Section block (table containers) */
+.block {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.block-head {
+  padding: 9px 14px; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--edge);
+  background: var(--cream);
+  font-size: 12.5px;
+}
+.block-head h3 {
+  font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.block-head .pulse-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--ember);
+  position: relative; flex-shrink: 0;
+}
+.block-head .pulse-dot::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  background: var(--ember); opacity: 0.4; animation: pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.6); opacity: 0; }
+}
+.block-head .count {
+  margin-left: auto; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-4);
+}
+.block-head .count-badge {
+  font-size: 10.5px; font-weight: 600;
+  background: var(--edge); color: var(--ink-3);
+  padding: 2px 7px; border-radius: var(--r-pill);
+  letter-spacing: 0.04em; margin-left: auto;
+}
+.block-head em { color: var(--ember); font-style: normal; }
+
+.block.urgent { border-color: var(--ember); }
+.block.urgent .block-head {
+  background: linear-gradient(to right, rgba(198,40,40,0.06), transparent);
+}
+
+/* ════ THE TABLE — table-style row layout ════ */
+table.req-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px;
+}
+table.req-table thead th {
+  font-family: var(--f-text); font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);
+  padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--edge);
+  background: var(--cream); white-space: nowrap;
+}
+table.req-table tbody td {
+  padding: 11px 12px; border-bottom: 1px solid var(--edge-soft);
+  vertical-align: middle; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+table.req-table tbody tr:last-child td { border-bottom: 0; }
+table.req-table tbody tr {
+  transition: background 0.15s;
+  cursor: pointer;
+}
+table.req-table tbody tr:hover td { background: var(--edge-soft); }
+table.req-table tbody tr.urgent td   { background: rgba(216,89,0,0.04); }
+table.req-table tbody tr.overdue td  { background: rgba(198,40,40,0.04); }
+table.req-table tbody tr.done td     { opacity: 0.65; }
+
+/* Column-specific styles */
+.col-time {
+  font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-4);
+  font-variant-numeric: tabular-nums; width: 56px;
+}
+.col-room {
+  font-family: var(--f-display); font-size: 14.5px; font-weight: 600;
+  letter-spacing: -0.01em; width: 64px;
+}
+.col-req {
+  font-weight: 500; max-width: 320px;
+}
+.col-req .emoji { margin-right: 4px; }
+.col-req .price { color: var(--gold-dark); font-weight: 600; margin-left: 6px; font-size: 12px; }
+.col-guest { color: var(--ink-3); font-size: 12px; max-width: 160px; }
+.col-meta {
+  color: var(--ink-4); font-size: 11.5px;
+  max-width: 180px;
+}
+.col-meta .age-overdue { color: var(--ember); font-weight: 700; }
+.col-meta .age-warn { color: var(--amber); font-weight: 600; }
+.col-status { width: 100px; }
+.col-actions { width: 1px; text-align: right; }
+.col-actions .btn-row {
+  display: inline-flex; gap: 4px;
+}
+
+/* Pills */
+.pill {
+  display: inline-block; padding: 3px 9px; border-radius: var(--r-pill);
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; line-height: 1.2;
+  white-space: nowrap;
+}
+.pill-new       { background: var(--amber-mist); color: var(--amber); }
+.pill-pending   { background: var(--amber-mist); color: var(--amber); }
+.pill-confirmed { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-scheduled { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-progress  { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-overdue   { background: var(--ember-mist); color: var(--ember); }
+.pill-immediate { background: var(--orange-mist); color: var(--orange); }
+.pill-approval  { background: var(--amber-mist); color: var(--amber); }
+.pill-delivered { background: var(--moss-mist); color: var(--moss); }
+.pill-done      { background: var(--moss-mist); color: var(--moss); }
+.pill-resolved  { background: var(--moss-mist); color: var(--moss); }
+.pill-approved  { background: var(--moss-mist); color: var(--moss); }
+.pill-rejected  { background: var(--ember-mist); color: var(--ember); }
+
+/* Buttons */
+.btn {
+  padding: 5px 10px; border-radius: var(--r-sm);
+  font-size: 11.5px; font-weight: 500; line-height: 1.2;
+  display: inline-flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+  transition: all 0.15s var(--spring);
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--ink); color: var(--paper); }
+.btn-primary:hover { background: var(--ink-2); }
+.btn-secondary {
+  background: var(--paper); color: var(--ink); border: 1px solid var(--edge);
+}
+.btn-secondary:hover { background: var(--edge-soft); }
+.btn-danger {
+  background: var(--paper); color: var(--ember); border: 1px solid var(--ember-mist);
+}
+.btn-danger:hover { background: var(--ember-mist); }
+.btn-more {
+  background: transparent; color: var(--ink-3); padding: 5px 7px;
+  font-size: 14px; line-height: 1; border-radius: var(--r-sm);
+}
+.btn-more:hover { background: var(--edge-soft); }
+
+/* Recep grid */
+.recep-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px;
+  align-items: start;
+}
+@media (max-width: 1100px) { .recep-grid { grid-template-columns: 1fr; } }
+.recep-left { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.team-peek-stack {
+  display: flex; flex-direction: column; gap: 14px;
+  position: sticky; top: 110px;
+}
+
+/* Peek card (same as original) */
+.peek-card {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); overflow: hidden;
+}
+.peek-card.has-overdue { border-color: var(--ember); }
+.peek-head {
+  padding: 11px 14px; background: var(--cream);
+  border-bottom: 1px solid var(--edge);
+  display: flex; align-items: center; gap: 9px;
+}
+.peek-card.has-overdue .peek-head { background: var(--ember-mist); border-bottom-color: var(--ember); }
+.peek-head .icon { font-size: 16px; }
+.peek-head .label {
+  font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.peek-head .summary {
+  margin-left: auto; font-size: 11px; color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+.peek-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--edge-soft);
+}
+.peek-stats .stat {
+  padding: 10px 12px; text-align: center;
+  border-right: 1px solid var(--edge-soft);
+}
+.peek-stats .stat:last-child { border-right: 0; }
+.peek-stats .stat .num {
+  font-family: var(--f-display); font-size: 22px; font-weight: 500;
+  letter-spacing: -0.015em; color: var(--ink); line-height: 1;
+}
+.peek-stats .stat.alert .num { color: var(--ember); }
+.peek-stats .stat.warn .num { color: var(--amber); }
+.peek-stats .stat .lbl {
+  font-size: 10px; font-weight: 600; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
+}
+.peek-row {
+  padding: 9px 14px;
+  display: grid; grid-template-columns: 50px minmax(0,1fr) auto;
+  gap: 8px; align-items: center; font-size: 12.5px;
+  border-top: 1px solid var(--edge-soft);
+}
+.peek-row.overdue { background: rgba(198,40,40,0.04); }
+.peek-row .room {
+  font-family: var(--f-display); font-size: 14px; font-weight: 600;
+}
+.peek-row .text {
+  color: var(--ink-2); min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.peek-row .text .sub { color: var(--ink-4); font-size: 11px; display: block; }
+.peek-row .timer {
+  font-size: 10.5px; font-weight: 700; color: var(--ink-4);
+  font-variant-numeric: tabular-nums;
+}
+.peek-row.overdue .timer { color: var(--ember); }
+.peek-foot {
+  padding: 8px 10px; display: flex; gap: 6px;
+  border-top: 1px solid var(--edge-soft); background: var(--cream);
+}
+.peek-foot .btn { flex: 1; justify-content: center; padding: 7px 8px; font-size: 11.5px; }
+
+/* Overdue strip */
+.overdue-strip {
+  background: var(--paper); border: 1px solid var(--ember);
+  border-radius: var(--r-md); overflow: hidden;
+  box-shadow: 0 2px 8px rgba(198,40,40,0.10);
+}
+.overdue-strip-head {
+  padding: 9px 14px; background: var(--ember); color: white;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; font-weight: 600;
+}
+.overdue-strip-head em { color: white; font-weight: 700; padding: 0 4px; font-style: normal; }
+
+/* Collapse handle */
+.collapsed .req-table thead, .collapsed .req-table tbody { display: none; }
+.toggle-arrow { font-size: 11px; color: var(--ink-4); margin-left: 6px; cursor: pointer; }
+
+@media (max-width: 760px) {
+  .dashboard { padding: 12px 14px 80px; gap: 10px; }
+  table.req-table thead { display: none; }
+  table.req-table, table.req-table tbody, table.req-table tr, table.req-table td {
+    display: block; width: 100%;
+  }
+  table.req-table tbody tr {
+    padding: 8px 12px; border-bottom: 1px solid var(--edge-soft);
+  }
+  table.req-table tbody td {
+    padding: 2px 0; border: 0; white-space: normal;
+  }
+  .col-room::before { content: 'Room: '; color: var(--ink-4); font-family: var(--f-text); font-size: 11px; font-weight: 400; margin-right: 4px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Topbar -->
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Reception · Inbox</span>
+  <span class="style-tag">TABLE STYLE</span>
+  <span class="spacer"></span>
+  <button class="topbar-prop">🏨 Hamsun FSL ▾</button>
+  <a class="topbar-link" href="../reception-inbox/" target="_blank">↔ Compare with Cards style</a>
+</header>
+
+<div class="compare-banner">
+  📐 <b>Table-style alternate</b> — same data, different row layout. Compare with the
+  <a href="../reception-inbox/" target="_blank">card-style version →</a> · the only thing that differs is how each request row is rendered.
+</div>
+
+<!-- Tab bar -->
+<nav class="tab-bar">
+  <button class="tab active has-urgent">
+    <span class="tab-icon">📋</span><span>Reception</span>
+    <span class="tab-count">8</span>
+  </button>
+  <button class="tab"><span class="tab-icon">🍳</span><span>Kitchen</span><span class="tab-count">6/18</span></button>
+  <button class="tab"><span class="tab-icon">🧺</span><span>Housekeeping</span><span class="tab-count">3</span></button>
+  <button class="tab"><span class="tab-icon">🧹</span><span>Cleaning</span><span class="tab-count">2</span></button>
+</nav>
+
+<main class="dashboard">
+
+  <!-- Cross-team overdue strip -->
+  <div class="overdue-strip">
+    <div class="overdue-strip-head">
+      <span style="font-size: 14px;">⚠</span>
+      <span><em>2</em> overdue across teams — needs immediate action</span>
+    </div>
+    <table class="req-table">
+      <thead>
+        <tr>
+          <th style="width: 110px;">Team</th>
+          <th style="width: 64px;">Room</th>
+          <th>Request</th>
+          <th>Guest</th>
+          <th>Time overdue</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="overdue">
+          <td><span class="pill" style="background: var(--ember-mist); color: var(--ember);">📋 Reception</span></td>
+          <td class="col-room">R503</td>
+          <td>🔧 AC not cooling</td>
+          <td class="col-guest">Ali Hasnain</td>
+          <td><span class="age-overdue">⏱ 12m</span></td>
+          <td class="col-actions"><button class="btn btn-danger" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Reception →</button></td>
+        </tr>
+        <tr class="overdue">
+          <td><span class="pill" style="background: var(--ember-mist); color: var(--ember);">🧺 Housekeeping</span></td>
+          <td class="col-room">RG06</td>
+          <td>🧺 Linen change</td>
+          <td class="col-guest">Marutani</td>
+          <td><span class="age-overdue">⏱ 32m waiting</span></td>
+          <td class="col-actions"><button class="btn btn-danger" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Housekeeping →</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Needs Now -->
+  <div class="block urgent">
+    <div class="block-head">
+      <span class="pulse-dot"></span>
+      <h3><em>Needs your attention</em> now</h3>
+      <span class="count">3 items</span>
+    </div>
+    <table class="req-table">
+      <thead>
+        <tr>
+          <th class="col-time">Time</th>
+          <th class="col-room">Room</th>
+          <th>Request</th>
+          <th>Guest</th>
+          <th>Source · Age</th>
+          <th class="col-status">Status</th>
+          <th class="col-actions"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="overdue">
+          <td class="col-time">11:48</td>
+          <td class="col-room">R503</td>
+          <td class="col-req"><span class="emoji">🔧</span>AC not cooling</td>
+          <td class="col-guest">Ali Hasnain</td>
+          <td class="col-meta">Phone · <span class="age-overdue">12m overdue</span></td>
+          <td class="col-status"><span class="pill pill-overdue">Overdue</span></td>
+          <td class="col-actions"><div class="btn-row">
+            <button class="btn btn-primary">✓ Triage</button>
+            <button class="btn btn-secondary">→ Tech</button>
+            <button class="btn btn-secondary">📞</button>
+          </div></td>
+        </tr>
+        <tr class="urgent">
+          <td class="col-time">12:02</td>
+          <td class="col-room">R208</td>
+          <td class="col-req"><span class="emoji">🔧</span>TV remote not working</td>
+          <td class="col-guest">Rubina Nasir</td>
+          <td class="col-meta">Portal · 4m ago</td>
+          <td class="col-status"><span class="pill pill-immediate">Immediate</span></td>
+          <td class="col-actions"><div class="btn-row">
+            <button class="btn btn-primary">✓ Triage</button>
+            <button class="btn btn-secondary">→ Tech</button>
+          </div></td>
+        </tr>
+        <tr>
+          <td class="col-time">11:55</td>
+          <td class="col-room">RG09</td>
+          <td class="col-req"><span class="emoji">📅</span>Late checkout — 6pm <span class="price">PKR 6,000</span></td>
+          <td class="col-guest">Khurram Hassan</td>
+          <td class="col-meta">50% × 12,000 · waiting approval</td>
+          <td class="col-status"><span class="pill pill-approval">Approval</span></td>
+          <td class="col-actions"><div class="btn-row">
+            <button class="btn btn-primary">✓ Approve PKR 6,000</button>
+            <button class="btn btn-danger">✕ Reject</button>
+          </div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 2-column grid: left = main list (table), right = peek cards -->
+  <div class="recep-grid">
+
+    <div class="recep-left">
+
+      <!-- Today's reception requests (Active) -->
+      <div class="block">
+        <div class="block-head">
+          <h3>Today's reception requests</h3>
+          <span class="count-badge">5 active</span>
+        </div>
+        <table class="req-table">
+          <thead>
+            <tr>
+              <th class="col-time">Time</th>
+              <th class="col-room">Room</th>
+              <th>Request</th>
+              <th>Guest</th>
+              <th>Source · Age</th>
+              <th class="col-status">Status</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-time">12:25</td>
+              <td class="col-room">R110</td>
+              <td class="col-req"><span class="emoji">🍳</span>2× Biryani <span class="price">PKR 1,700</span></td>
+              <td class="col-guest">Muhammad Mohsin</td>
+              <td class="col-meta">Portal · 8m ago</td>
+              <td class="col-status"><span class="pill pill-pending">Pending</span></td>
+              <td class="col-actions"><div class="btn-row">
+                <button class="btn btn-primary">✓ Confirm</button>
+                <button class="btn btn-danger">✕ Reject</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td class="col-time">12:08</td>
+              <td class="col-room">RG06</td>
+              <td class="col-req"><span class="emoji">🛒</span>ENO + Panadol <span class="price">PKR 1,200</span></td>
+              <td class="col-guest">Marutani Katsuhisa</td>
+              <td class="col-meta">Reception · 25m ago</td>
+              <td class="col-status"><span class="pill pill-pending">Pending</span></td>
+              <td class="col-actions"><div class="btn-row">
+                <button class="btn btn-primary">✓ Delivered</button>
+                <button class="btn btn-danger">✕ Cancel</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td class="col-time">11:30</td>
+              <td class="col-room">R208</td>
+              <td class="col-req"><span class="emoji">🍳</span>Coke + chips <span class="price">PKR 350</span></td>
+              <td class="col-guest">Rubina Nasir</td>
+              <td class="col-meta">Posted to folio</td>
+              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
+              <td class="col-actions"><div class="btn-row">
+                <button class="btn btn-secondary">↩ Undo</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td class="col-time">11:08</td>
+              <td class="col-room">R208</td>
+              <td class="col-req"><span class="emoji">🚗</span>Airport pickup</td>
+              <td class="col-guest">Rubina Nasir</td>
+              <td class="col-meta">Tomorrow 2pm · Imran (Corolla)</td>
+              <td class="col-status"><span class="pill pill-scheduled">Scheduled</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+            <tr>
+              <td class="col-time">10:54</td>
+              <td class="col-room">R107</td>
+              <td class="col-req"><span class="emoji">🛎</span>Wake-up call</td>
+              <td class="col-guest">Bilal Habib</td>
+              <td class="col-meta">Tomorrow 6:30am · WA confirmed</td>
+              <td class="col-status"><span class="pill pill-confirmed">Confirmed</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Done today (collapsed) -->
+      <div class="block">
+        <div class="block-head" style="cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
+          <h3>Done today</h3>
+          <span class="count-badge">8</span>
+          <span class="toggle-arrow">▾</span>
+        </div>
+        <table class="req-table">
+          <thead>
+            <tr>
+              <th class="col-time">Time</th>
+              <th class="col-room">Room</th>
+              <th>Request</th>
+              <th>Guest</th>
+              <th>Outcome</th>
+              <th class="col-status">Status</th>
+              <th class="col-actions"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="done">
+              <td class="col-time">10:31</td>
+              <td class="col-room">RG06</td>
+              <td class="col-req"><span class="emoji">🛒</span>USB cable <span class="price">PKR 850</span></td>
+              <td class="col-guest">Marutani</td>
+              <td class="col-meta">Folio +850</td>
+              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+            <tr class="done">
+              <td class="col-time">10:15</td>
+              <td class="col-room">R211</td>
+              <td class="col-req"><span class="emoji">🔧</span>Wifi slow</td>
+              <td class="col-guest">Memon</td>
+              <td class="col-meta">Router rebooted</td>
+              <td class="col-status"><span class="pill pill-resolved">Resolved</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+            <tr class="done">
+              <td class="col-time">09:48</td>
+              <td class="col-room">RG10</td>
+              <td class="col-req"><span class="emoji">📅</span>Extend stay +2 nights <span class="price">PKR 18,000</span></td>
+              <td class="col-guest">Steve Rhee</td>
+              <td class="col-meta">Charges posted</td>
+              <td class="col-status"><span class="pill pill-approved">Approved</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+            <tr class="done">
+              <td class="col-time">09:30</td>
+              <td class="col-room">R102</td>
+              <td class="col-req"><span class="emoji">🛎</span>Restaurant info</td>
+              <td class="col-guest">Ibrahim Ahmed</td>
+              <td class="col-meta">Recommended Kolachi</td>
+              <td class="col-status"><span class="pill pill-done">Done</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+            <tr class="done">
+              <td class="col-time">09:15</td>
+              <td class="col-room">RG06</td>
+              <td class="col-req"><span class="emoji">🍳</span>Tea & juice <span class="price">PKR 650</span></td>
+              <td class="col-guest">Marutani</td>
+              <td class="col-meta">Folio +650</td>
+              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
+              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Right: Peek cards (unchanged from card style — same component) -->
+    <aside class="team-peek-stack">
+
+      <div class="peek-card has-overdue">
+        <div class="peek-head">
+          <span class="icon">🍳</span>
+          <span class="label">Kitchen · Tomorrow's breakfast</span>
+          <span class="summary">6/18 ordered</span>
+        </div>
+        <div class="peek-stats">
+          <div class="stat"><div class="num">6</div><div class="lbl">ordered</div></div>
+          <div class="stat warn"><div class="num">12</div><div class="lbl">no order</div></div>
+          <div class="stat alert"><div class="num">1</div><div class="lbl">no reply</div></div>
+        </div>
+        <div class="peek-row overdue">
+          <div class="room">8:00am</div>
+          <div class="text">1 ordered · <b>1 no reply</b><span class="sub">R209</span></div>
+          <div class="timer">⚠</div>
+        </div>
+        <div class="peek-foot">
+          <button class="btn btn-secondary">📨 Remind 12</button>
+          <button class="btn btn-secondary">Open kitchen →</button>
+        </div>
+      </div>
+
+      <div class="peek-card has-overdue">
+        <div class="peek-head">
+          <span class="icon">🧺</span>
+          <span class="label">Housekeeping</span>
+          <span class="summary">3 new · 0 in progress</span>
+        </div>
+        <div class="peek-stats">
+          <div class="stat warn"><div class="num">3</div><div class="lbl">new</div></div>
+          <div class="stat"><div class="num">0</div><div class="lbl">in progress</div></div>
+          <div class="stat"><div class="num">6</div><div class="lbl">done</div></div>
+        </div>
+        <div class="peek-row overdue">
+          <div class="room">R110</div>
+          <div class="text">Extra towels (4 bath)<span class="sub">Mohsin</span></div>
+          <div class="timer">⏱ 50m</div>
+        </div>
+        <div class="peek-row overdue">
+          <div class="room">RG06</div>
+          <div class="text">Linen change<span class="sub">Marutani</span></div>
+          <div class="timer">⏱ 32m</div>
+        </div>
+        <div class="peek-row">
+          <div class="room">R208</div>
+          <div class="text">Toiletries refill<span class="sub">Rubina Nasir</span></div>
+          <div class="timer">⏱ 10m</div>
+        </div>
+        <div class="peek-foot">
+          <button class="btn btn-secondary">📞 Nudge HK</button>
+          <button class="btn btn-secondary">Open HK →</button>
+        </div>
+      </div>
+
+      <div class="peek-card">
+        <div class="peek-head">
+          <span class="icon">🧹</span>
+          <span class="label">Cleaning</span>
+          <span class="summary">1 new · 1 in progress</span>
+        </div>
+        <div class="peek-stats">
+          <div class="stat warn"><div class="num">1</div><div class="lbl">new</div></div>
+          <div class="stat"><div class="num">1</div><div class="lbl">in progress</div></div>
+          <div class="stat"><div class="num">5</div><div class="lbl">done</div></div>
+        </div>
+        <div class="peek-row">
+          <div class="room">R211</div>
+          <div class="text">Deep clean · queued<span class="sub">Memon</span></div>
+          <div class="timer">6m</div>
+        </div>
+        <div class="peek-row">
+          <div class="room">R105</div>
+          <div class="text">Daily · in progress<span class="sub">Wataru Nakano</span></div>
+          <div class="timer">12m</div>
+        </div>
+        <div class="peek-foot">
+          <button class="btn btn-secondary">📞 Nudge cleaning</button>
+          <button class="btn btn-secondary">Open cleaning →</button>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+</main>
+
+</body>
+</html>

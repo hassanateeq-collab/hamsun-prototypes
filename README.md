@@ -33,7 +33,8 @@ Open on phone, desktop, share with a designer, demo to anyone. Auto-redeploys on
 | [`menu-admin/`](./menu-admin) | Multi-menu admin (breakfast / lunch / dinner / snacks) — pricing modes, time slots, choice groups, KOT config | Locked | [`DESIGN_LOCK.md`](./menu-admin/DESIGN_LOCK.md) |
 | [`breakfast-prototype/`](./breakfast-prototype) | Guest-facing breakfast pre-order portal (linked via WhatsApp) | Locked | [`DESIGN.md`](./breakfast-prototype/DESIGN.md) |
 | [`portal-mockup/`](./portal-mockup) | Mini-shop / sundries item picker (referenced by guest portal request flow) | Locked | [`DESIGN.md`](./portal-mockup/DESIGN.md) |
-| [`reception-inbox/`](./reception-inbox) | Reception command center — 4-tab inbox with cross-team peek cards, undo toasts | Iterating | [`DESIGN.md`](./reception-inbox/DESIGN.md) |
+| [`reception-inbox/`](./reception-inbox) | Reception command center — 4-tab inbox with cross-team peek cards, undo toasts (**card-style rows**) | Iterating | [`DESIGN.md`](./reception-inbox/DESIGN.md) |
+| [`reception-inbox-table/`](./reception-inbox-table) | Same inbox, **table-style rows** for direct A/B comparison with the cards variant | A/B compare | [`DESIGN.md`](./reception-inbox-table/DESIGN.md) |
 | [`workflows-admin/`](./workflows-admin) | Editor for `portal.request_types.workflow` — statuses, actions, charge points, flags. Generates SQL migration | Iterating | [`DESIGN.md`](./workflows-admin/DESIGN.md) |
 | [`housekeeping-module/`](./housekeeping-module) | Auto-cleaning module — daily cron, post-checkout trigger, WhatsApp opt-in, guest portal toggle | Spec'd, awaiting Q1–Q8 | [`DESIGN.md`](./housekeeping-module/DESIGN.md) |
 
@@ -63,6 +64,7 @@ The landing page at `:4320/` has cards linking to each module. Cross-links betwe
 | `workflows-admin` | `:4325` |
 | `housekeeping-module` | `:4326` |
 | `master-flow` | `:4327` |
+| `reception-inbox-table` | `:4328` |
 
 Each folder has a `.claude/launch.json` configured for its dedicated port. Run `python3 -m http.server <port>` from inside the module folder.
 
