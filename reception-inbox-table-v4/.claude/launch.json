@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "reception-inbox-table-v4",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4329"],
+      "port": 4329
+    }
+  ]
+}

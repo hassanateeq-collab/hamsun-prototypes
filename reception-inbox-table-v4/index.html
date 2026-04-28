@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Hamsun · Reception Inbox · Layout v4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #1A1A1A; --ink-2: #2C2C2C; --ink-3: #5A5A5A; --ink-4: #8B8B8B;
+  --gold: #C8A45E; --gold-mist: #F5E6C3; --gold-dark: #9E7F43;
+  --cream: #FAF8F4; --paper: #FFFFFF; --edge: #EBE6DD; --edge-soft: #F2EEE8;
+  --moss: #2D8F4E; --moss-mist: #E5F1E9;
+  --ember: #C62828; --ember-mist: #FCE9E9;
+  --amber: #C77A18; --amber-mist: #FBEFCD;
+  --orange: #D85900; --orange-mist: #FCE0CC;
+  --indigo: #4051B5; --indigo-mist: #E2E5F4;
+  --violet: #6B4FA0; --violet-mist: #ECE4F4;
+  --blue: #1F6FB2; --blue-mist: #E0EEF7;
+  --f-display: 'Fraunces', Georgia, serif;
+  --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono: 'JetBrains Mono', Menlo, monospace;
+  --r-sm: 6px; --r-md: 10px; --r-lg: 14px; --r-pill: 999px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: var(--f-text); font-size: 14px; line-height: 1.5; color: var(--ink); background: var(--cream); padding-bottom: 60px; }
+button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
+
+.topbar { background: rgba(250,248,244,0.94); backdrop-filter: blur(20px); border-bottom: 1px solid var(--edge); padding: 12px 22px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 30; }
+.brand { font-family: var(--f-display); font-size: 17px; font-weight: 500; }
+.brand em { font-style: italic; color: var(--gold-dark); }
+.brand-sub { font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.16em; color: var(--ink-4); margin-left: 12px; padding-left: 12px; border-left: 1px solid var(--edge); }
+.style-tag { background: var(--ink); color: white; padding: 3px 10px; border-radius: var(--r-pill); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; }
+.spacer { flex: 1; }
+
+.compare-banner { background: var(--gold-mist); border-bottom: 1px solid var(--gold); padding: 8px 22px; font-size: 12px; color: var(--gold-dark); text-align: center; }
+.compare-banner b { color: var(--ink); }
+.compare-banner a { color: var(--gold-dark); font-weight: 600; }
+
+.dashboard { max-width: 1320px; margin: 0 auto; padding: 16px 22px 80px; display: flex; flex-direction: column; gap: 14px; }
+
+.block { background: var(--paper); border: 1px solid var(--edge); border-radius: var(--r-md); overflow: hidden; }
+.block-head { padding: 11px 14px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--edge); background: var(--cream); }
+.block-head h3 { font-family: var(--f-display); font-size: 14px; font-weight: 500; letter-spacing: -0.005em; }
+.block-head .count-badge { font-size: 11px; font-weight: 600; background: var(--edge); color: var(--ink-3); padding: 3px 8px; border-radius: var(--r-pill); margin-left: auto; }
+
+/* ════ THE NEW TABLE LAYOUT (v4) ════
+   3 visible columns + status + actions
+   Row 1: emoji · request name · price tag (if any)
+   Row 2 (subtitle): guest name · source · age · subtype
+   Status column: full-text pill + progress dots
+   Actions column: workflow-aware inline buttons (no truncation)
+*/
+table.req-v4 { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.req-v4 thead th {
+  font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--ink-4); padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--edge); background: var(--cream);
+  white-space: nowrap;
+}
+table.req-v4 tbody tr.row {
+  cursor: pointer; transition: background 0.12s;
+  border-bottom: 1px solid var(--edge-soft);
+}
+table.req-v4 tbody tr.row:hover { background: var(--edge-soft); }
+table.req-v4 tbody tr.row.urgent { background: rgba(216,89,0,0.04); }
+table.req-v4 tbody tr.row.overdue { background: rgba(198,40,40,0.04); }
+table.req-v4 tbody tr.row.urgent:hover { background: rgba(216,89,0,0.10); }
+table.req-v4 tbody tr.row.overdue:hover { background: rgba(198,40,40,0.10); }
+
+.col-time { width: 60px; padding: 13px 0 13px 14px; vertical-align: top; }
+.col-time .time { font-family: var(--f-mono); font-size: 12px; color: var(--ink-4); font-variant-numeric: tabular-nums; }
+.col-room { width: 70px; padding: 13px 0; vertical-align: top; }
+.col-room .room { font-family: var(--f-display); font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+.col-req { padding: 13px 14px; vertical-align: top; min-width: 0; }
+.col-req .head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.col-req .emoji { font-size: 14px; }
+.col-req .req-text { font-size: 14px; font-weight: 500; }
+.col-req .price-tag {
+  font-family: var(--f-mono); font-size: 11.5px; font-weight: 600;
+  color: var(--gold-dark); background: var(--gold-mist);
+  padding: 2px 7px; border-radius: 4px;
+}
+.col-req .price-tag.large { font-size: 12.5px; padding: 3px 9px; }
+.col-req .item-count { font-size: 12px; color: var(--ink-4); }
+.col-req .subtitle {
+  margin-top: 3px; font-size: 11.5px; color: var(--ink-4);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.col-req .subtitle b { color: var(--ink-3); font-weight: 500; }
+.col-req .subtitle .age-overdue { color: var(--ember); font-weight: 700; }
+.col-req .subtitle .age-warn { color: var(--amber); font-weight: 600; }
+
+.col-status { width: 150px; padding: 13px 14px; vertical-align: top; }
+.pill {
+  display: inline-block; padding: 4px 10px; border-radius: var(--r-pill);
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; line-height: 1.2;
+  white-space: nowrap;
+}
+.pill-new { background: var(--amber-mist); color: var(--amber); }
+.pill-acknowledged { background: var(--blue-mist); color: var(--blue); }
+.pill-confirmed { background: var(--blue-mist); color: var(--blue); }
+.pill-scheduled { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-driver-assigned { background: var(--violet-mist); color: var(--violet); }
+.pill-in-progress { background: var(--indigo-mist); color: var(--indigo); }
+.pill-overdue { background: var(--ember-mist); color: var(--ember); }
+.pill-done { background: var(--moss-mist); color: var(--moss); }
+.pill-delivered { background: var(--moss-mist); color: var(--moss); }
+.progress { margin-top: 6px; display: flex; align-items: center; gap: 5px; }
+.progress-dots { display: inline-flex; gap: 3px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--edge); display: inline-block; }
+.dot.done { background: var(--moss); }
+.dot.current { background: var(--ink); }
+.step-text { font-family: var(--f-mono); font-size: 9.5px; color: var(--ink-4); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.col-actions { padding: 11px 14px; vertical-align: top; text-align: right; white-space: nowrap; }
+.col-actions .btn-row { display: inline-flex; gap: 5px; }
+.btn {
+  padding: 8px 12px; border-radius: var(--r-sm);
+  font-size: 12.5px; font-weight: 500; line-height: 1.2;
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  border: 1px solid transparent; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--ink); color: white; border-color: var(--ink); }
+.btn-primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
+.btn-success { background: var(--moss); color: white; border-color: var(--moss); }
+.btn-success:hover { background: #226d3b; border-color: #226d3b; }
+.btn-secondary { background: var(--paper); color: var(--ink); border-color: var(--edge); }
+.btn-secondary:hover { background: var(--edge-soft); border-color: var(--ink-4); }
+.btn-danger { background: var(--paper); color: var(--ember); border-color: var(--ember-mist); }
+.btn-danger:hover { background: var(--ember-mist); border-color: var(--ember); }
+.btn-more {
+  background: transparent; color: var(--ink-3); padding: 8px 9px;
+  font-size: 16px; line-height: 1; border-radius: var(--r-sm); border-color: transparent;
+  font-weight: 700;
+}
+.btn-more:hover { background: var(--edge-soft); }
+
+/* Side-by-side: old vs new (split view for visual comparison) */
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.split > div > h2 {
+  font-family: var(--f-display); font-size: 18px; font-weight: 500;
+  letter-spacing: -0.01em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.split .lbl-old { color: var(--ember); font-size: 10.5px; font-weight: 700; padding: 3px 8px; background: var(--ember-mist); border-radius: 4px; letter-spacing: 0.08em; }
+.split .lbl-new { color: var(--moss); font-size: 10.5px; font-weight: 700; padding: 3px 8px; background: var(--moss-mist); border-radius: 4px; letter-spacing: 0.08em; }
+
+/* OLD layout sample (just for visual comparison) */
+.old-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+.old-table th, .old-table td { padding: 8px 6px; border-bottom: 1px solid var(--edge-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.old-table th { font-size: 9.5px; font-weight: 700; text-transform: uppercase; color: var(--ink-4); }
+.old-table .truncated { color: var(--ember); font-weight: 700; }
+.old-table .cut-off::after { content: ' ▌'; color: var(--ember); }
+
+@media (max-width: 1200px) {
+  .split { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  table.req-v4 thead { display: none; }
+  table.req-v4, table.req-v4 tbody, table.req-v4 tr, table.req-v4 td {
+    display: block; width: 100%;
+  }
+  table.req-v4 tr.row { padding: 10px 14px; }
+  table.req-v4 td { padding: 4px 0; border: 0; }
+  .col-actions .btn-row { flex-wrap: wrap; }
+  .col-actions .btn { flex: 1; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="brand">Hamsun<em>.</em></span>
+  <span class="brand-sub">Reception · Inbox</span>
+  <span class="style-tag">LAYOUT v4</span>
+  <span class="spacer"></span>
+  <a href="../reception-inbox-table/" target="_blank" style="font-size: 12px; color: var(--ink-3); text-decoration: none; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--edge); background: var(--paper);">↔ See v3 (current live)</a>
+</header>
+
+<div class="compare-banner">
+  📐 <b>Layout v4 mockup</b> — fewer columns, always-visible action buttons, full-text status pills, workflow-aware inline actions. <b>Compare with the broken layout below.</b>
+</div>
+
+<main class="dashboard">
+
+  <!-- ════════ OLD LAYOUT (broken — what's currently live) ════════ -->
+  <div>
+    <h2 style="margin-bottom:6px;font-family:var(--f-display);font-size:16px;font-weight:500;color:var(--ember);"><span class="lbl-old">CURRENT</span> &nbsp; What you have now (broken)</h2>
+    <p style="font-size:12px;color:var(--ink-4);margin-bottom:10px;">Action buttons hidden behind right column · Status pills truncate ("ACKNOWLEDC") · Source/Age column wastes space.</p>
+    <div class="block">
+      <div class="block-head"><h3>Today's reception requests</h3><span class="count-badge">5 active</span></div>
+      <table class="old-table">
+        <thead>
+          <tr><th>TIME</th><th>ROOM</th><th>REQUEST</th><th>GUEST</th><th>SOURCE · AGE</th><th>STATUS · STEP</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr><td>12:48</td><td><b>RG10</b></td><td>🚗 Airport / Tra…</td><td>Hazik Ah…</td><td>portal · 2h</td><td><span class="pill pill-new">NEW</span><div style="font-size:9px;color:var(--ink-4);">●○○○ 1/4 · New</div></td><td class="cut-off truncated">cut</td></tr>
+          <tr><td>12:00</td><td><b>R106A</b></td><td>🧺 Housekeepi…</td><td>Muhammad…</td><td>portal · 2h</td><td><span class="pill pill-acknowledged">ACKNOWLEDC</span><div style="font-size:9px;color:var(--ink-4);">●●○○ 2/4 · Acknowled</div></td><td class="cut-off truncated">cut</td></tr>
+          <tr><td>06:24</td><td><b>RG07</b></td><td>🚗 Airport / Tra…</td><td>Early ch…</td><td>staff · 2d</td><td><span class="pill pill-driver-assigned">DRIVER ASSIG</span><div style="font-size:9px;color:var(--ink-4);">●●●○ 3/4 · Driver as</div></td><td class="cut-off truncated">cut</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════════ NEW LAYOUT (v4) ════════ -->
+  <div>
+    <h2 style="margin-bottom:6px;font-family:var(--f-display);font-size:16px;font-weight:500;color:var(--moss);"><span class="lbl-new">PROPOSED</span> &nbsp; New layout v4</h2>
+    <p style="font-size:12px;color:var(--ink-4);margin-bottom:10px;">Subtitle line absorbs guest+source+age · Action buttons inline + visible · Status pills full-text · Click row to open detail.</p>
+    <div class="block">
+      <div class="block-head"><h3>Today's reception requests</h3><span class="count-badge">5 active</span></div>
+      <table class="req-v4">
+        <thead>
+          <tr>
+            <th class="col-time">Time</th>
+            <th class="col-room">Room</th>
+            <th>Request</th>
+            <th class="col-status">Status · Step</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="row overdue">
+            <td class="col-time"><span class="time">12:48</span></td>
+            <td class="col-room"><span class="room">RG10</span></td>
+            <td class="col-req">
+              <div class="head">
+                <span class="emoji">🚗</span>
+                <span class="req-text">Airport pickup</span>
+                <span class="price-tag">PKR 2,500</span>
+                <span class="item-count">· 1 item</span>
+              </div>
+              <div class="subtitle">
+                <b>Hazik Ahmed</b>
+                <span>· guest portal</span>
+                <span class="age-overdue">· 2h overdue</span>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="pill pill-new">New</span>
+              <div class="progress">
+                <div class="progress-dots"><span class="dot current"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+                <span class="step-text">1/4 · New</span>
+              </div>
+            </td>
+            <td class="col-actions">
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="alert('Schedule pickup')">✓ Schedule pickup</button>
+                <button class="btn btn-more" onclick="alert('More options')">⋯</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="row overdue">
+            <td class="col-time"><span class="time">12:26</span></td>
+            <td class="col-room"><span class="room">RG02</span></td>
+            <td class="col-req">
+              <div class="head">
+                <span class="emoji">🛒</span>
+                <span class="req-text">Mini-shop</span>
+                <span class="price-tag">PKR 80</span>
+                <span class="item-count">· 1 item</span>
+              </div>
+              <div class="subtitle">
+                <b>Anwar Hashim</b>
+                <span>· guest portal</span>
+                <span class="age-overdue">· 2h overdue</span>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="pill pill-new">New</span>
+              <div class="progress">
+                <div class="progress-dots"><span class="dot current"></span><span class="dot"></span><span class="dot"></span></div>
+                <span class="step-text">1/3 · New</span>
+              </div>
+            </td>
+            <td class="col-actions">
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="alert('Approve')">✓ Approve</button>
+                <button class="btn btn-danger" onclick="alert('Reject')">✕</button>
+                <button class="btn btn-more" onclick="alert('More')">⋯</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="row overdue">
+            <td class="col-time"><span class="time">12:00</span></td>
+            <td class="col-room"><span class="room">R106A</span></td>
+            <td class="col-req">
+              <div class="head">
+                <span class="emoji">🧺</span>
+                <span class="req-text">Housekeeping</span>
+                <span class="item-count">· 1 item</span>
+              </div>
+              <div class="subtitle">
+                <b>Muhammad Iqbal Ashraf</b>
+                <span>· guest portal</span>
+                <span class="age-overdue">· 2h overdue</span>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="pill pill-acknowledged">Acknowledged</span>
+              <div class="progress">
+                <div class="progress-dots"><span class="dot done"></span><span class="dot current"></span><span class="dot"></span><span class="dot"></span></div>
+                <span class="step-text">2/4 · Acknowledged</span>
+              </div>
+            </td>
+            <td class="col-actions">
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="alert('Assign to staff')">→ Assign</button>
+                <button class="btn btn-success" onclick="alert('Mark done')">✓ Done</button>
+                <button class="btn btn-more" onclick="alert('More')">⋯</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="row overdue">
+            <td class="col-time"><span class="time">23:57</span></td>
+            <td class="col-room"><span class="room">R110</span></td>
+            <td class="col-req">
+              <div class="head">
+                <span class="emoji">🧺</span>
+                <span class="req-text">Housekeeping</span>
+                <span class="item-count">· 1 item</span>
+              </div>
+              <div class="subtitle">
+                <b>Muhammad Mohsin</b>
+                <span>· guest portal</span>
+                <span class="age-overdue">· 2 days overdue</span>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="pill pill-acknowledged">Acknowledged</span>
+              <div class="progress">
+                <div class="progress-dots"><span class="dot done"></span><span class="dot current"></span><span class="dot"></span><span class="dot"></span></div>
+                <span class="step-text">2/4 · Acknowledged</span>
+              </div>
+            </td>
+            <td class="col-actions">
+              <div class="btn-row">
+                <button class="btn btn-primary" onclick="alert('Assign')">→ Assign</button>
+                <button class="btn btn-success" onclick="alert('Done')">✓ Done</button>
+                <button class="btn btn-more" onclick="alert('More')">⋯</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="row">
+            <td class="col-time"><span class="time">06:24</span></td>
+            <td class="col-room"><span class="room">RG07</span></td>
+            <td class="col-req">
+              <div class="head">
+                <span class="emoji">🚗</span>
+                <span class="req-text">Airport / Transport</span>
+                <span class="price-tag">PKR 2,500</span>
+                <span class="item-count">· 1 item</span>
+              </div>
+              <div class="subtitle">
+                <b>Early checkin</b>
+                <span>· staff manual</span>
+                <span class="age-warn">· 2 days ago</span>
+              </div>
+            </td>
+            <td class="col-status">
+              <span class="pill pill-driver-assigned">Driver assigned</span>
+              <div class="progress">
+                <div class="progress-dots"><span class="dot done"></span><span class="dot done"></span><span class="dot current"></span><span class="dot"></span></div>
+                <span class="step-text">3/4 · Driver assigned</span>
+              </div>
+            </td>
+            <td class="col-actions">
+              <div class="btn-row">
+                <button class="btn btn-success" onclick="alert('Mark in transit')">✓ Mark in transit</button>
+                <button class="btn btn-more" onclick="alert('More')">⋯</button>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:18px;padding:14px;background:rgba(45,143,78,0.06);border:1px solid var(--moss);border-radius:10px;font-size:12.5px;color:var(--ink-2);">
+      <strong style="color:var(--moss);">What changed structurally:</strong>
+      <ul style="margin:8px 0 0 20px;line-height:1.7;">
+        <li><b>Dropped 2 columns</b> — Guest and Source/Age moved into the subtitle line under each request. Saves ~280px of horizontal space.</li>
+        <li><b>Status column always full-text</b> — "Acknowledged" not "ACKNOWLEDC". Progress dots + step text below the pill.</li>
+        <li><b>Action column always visible</b> — never clipped. Buttons are workflow-aware:
+          <ul style="margin:4px 0 0 18px;">
+            <li><code>new</code> Airport → <span style="font-family:var(--f-mono);">"✓ Schedule pickup"</span></li>
+            <li><code>new</code> Mini-shop → <span style="font-family:var(--f-mono);">"✓ Approve" "✕"</span></li>
+            <li><code>acknowledged</code> Housekeeping → <span style="font-family:var(--f-mono);">"→ Assign" "✓ Done"</span></li>
+            <li><code>driver_assigned</code> Transport → <span style="font-family:var(--f-mono);">"✓ Mark in transit"</span></li>
+          </ul>
+        </li>
+        <li><b>Click anywhere on a row</b> still opens the detail drawer. Action buttons don't trigger that — they fire the workflow transition directly.</li>
+        <li><b>Touch-friendly buttons</b> — 32px tall, easy to tap on mobile or tablet at reception.</li>
+      </ul>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>
