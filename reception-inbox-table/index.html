@@ -17,6 +17,9 @@
   --amber: #C77A18; --amber-mist: #FBEFCD;
   --orange: #D85900; --orange-mist: #FCE0CC;
   --gold-tint: #FAEFD3;
+  --indigo: #4051B5; --indigo-mist: #E2E5F4;
+  --violet: #6B4FA0; --violet-mist: #ECE4F4;
+  --blue: #1F6FB2; --blue-mist: #E0EEF7;
   --f-display: 'Fraunces', Georgia, serif;
   --f-text: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --f-mono: 'JetBrains Mono', Menlo, monospace;
@@ -31,18 +34,16 @@ body {
 }
 button { font-family: inherit; cursor: pointer; border: 0; background: transparent; color: inherit; }
 
-/* Topbar */
+/* ───── Topbar ───── */
 .topbar {
   position: sticky; top: 0; z-index: 30;
   background: rgba(250,248,244,0.94);
   backdrop-filter: blur(20px) saturate(1.4);
   border-bottom: 1px solid var(--edge);
   padding: 10px 22px;
-  display: flex; align-items: center; gap: 14px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
 }
-.brand {
-  font-family: var(--f-display); font-size: 17px; font-weight: 500;
-}
+.brand { font-family: var(--f-display); font-size: 17px; font-weight: 500; }
 .brand em { font-style: italic; color: var(--gold-dark); }
 .brand-sub {
   font-size: 10.5px; font-weight: 600; text-transform: uppercase;
@@ -65,17 +66,37 @@ button { font-family: inherit; cursor: pointer; border: 0; background: transpare
 }
 .topbar-link:hover { background: var(--edge-soft); }
 
-/* Compare banner */
-.compare-banner {
-  background: var(--gold-tint); border-bottom: 1px solid var(--gold);
+/* ───── Time-of-day demo selector ───── */
+.time-demo {
+  background: var(--gold-mist); border-bottom: 1px solid var(--gold);
   padding: 8px 22px;
+  display: flex; align-items: center; gap: 12px;
   font-size: 12px; color: var(--gold-dark);
+}
+.time-demo .lbl { font-weight: 600; }
+.time-demo .group { display: inline-flex; gap: 0; border-radius: var(--r-pill); border: 1px solid var(--gold-dark); overflow: hidden; }
+.time-demo .group button {
+  padding: 5px 12px; font-size: 11px; font-weight: 500;
+  background: transparent; color: var(--gold-dark);
+  cursor: pointer;
+}
+.time-demo .group button:not(:last-child) { border-right: 1px solid var(--gold-dark); }
+.time-demo .group button.active {
+  background: var(--gold-dark); color: white; font-weight: 600;
+}
+.time-demo .help { color: var(--ink-3); margin-left: auto; font-size: 11px; }
+
+/* ───── Compare banner ───── */
+.compare-banner {
+  background: var(--cream); border-bottom: 1px solid var(--edge);
+  padding: 7px 22px;
+  font-size: 11.5px; color: var(--ink-3);
   display: flex; align-items: center; gap: 12px; justify-content: center;
 }
 .compare-banner b { color: var(--ink); }
 .compare-banner a { color: var(--gold-dark); font-weight: 600; }
 
-/* Tab bar (visual only) */
+/* ───── Tab bar ───── */
 .tab-bar {
   background: var(--paper); border-bottom: 1px solid var(--edge);
   padding: 0 22px; display: flex; gap: 4px;
@@ -102,19 +123,19 @@ button { font-family: inherit; cursor: pointer; border: 0; background: transpare
 }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
-/* Container */
+/* ───── Container ───── */
 .dashboard {
   max-width: 1320px; margin: 0 auto; padding: 16px 22px 80px;
   display: flex; flex-direction: column; gap: 14px;
 }
 
-/* Section block (table containers) */
+/* ───── Section block ───── */
 .block {
   background: var(--paper); border: 1px solid var(--edge);
   border-radius: var(--r-md); overflow: hidden;
 }
 .block-head {
-  padding: 9px 14px; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; display: flex; align-items: center; gap: 10px;
   border-bottom: 1px solid var(--edge);
   background: var(--cream);
   font-size: 12.5px;
@@ -146,13 +167,12 @@ button { font-family: inherit; cursor: pointer; border: 0; background: transpare
   letter-spacing: 0.04em; margin-left: auto;
 }
 .block-head em { color: var(--ember); font-style: normal; }
-
 .block.urgent { border-color: var(--ember); }
 .block.urgent .block-head {
   background: linear-gradient(to right, rgba(198,40,40,0.06), transparent);
 }
 
-/* ════ THE TABLE — table-style row layout ════ */
+/* ════ TABLE — table-style row layout ════ */
 table.req-table {
   width: 100%; border-collapse: collapse;
   font-size: 13px;
@@ -160,7 +180,7 @@ table.req-table {
 table.req-table thead th {
   font-family: var(--f-text); font-size: 10px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-4);
-  padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--edge);
+  padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--edge);
   background: var(--cream); white-space: nowrap;
 }
 table.req-table tbody td {
@@ -168,17 +188,84 @@ table.req-table tbody td {
   vertical-align: middle; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
-table.req-table tbody tr:last-child td { border-bottom: 0; }
-table.req-table tbody tr {
+table.req-table tbody tr.parent {
   transition: background 0.15s;
   cursor: pointer;
 }
-table.req-table tbody tr:hover td { background: var(--edge-soft); }
-table.req-table tbody tr.urgent td   { background: rgba(216,89,0,0.04); }
-table.req-table tbody tr.overdue td  { background: rgba(198,40,40,0.04); }
-table.req-table tbody tr.done td     { opacity: 0.65; }
+table.req-table tbody tr.parent:hover td { background: var(--edge-soft); }
+table.req-table tbody tr.parent.urgent td   { background: rgba(216,89,0,0.04); }
+table.req-table tbody tr.parent.overdue td  { background: rgba(198,40,40,0.04); }
+table.req-table tbody tr.parent.done td     { opacity: 0.65; }
+table.req-table tbody tr.parent.expanded td { background: var(--cream); border-bottom: 0; }
+
+/* Items detail row (revealed on expand) */
+table.req-table tbody tr.items-row {
+  display: none;
+}
+table.req-table tbody tr.items-row.shown {
+  display: table-row;
+}
+table.req-table tbody tr.items-row td {
+  padding: 0 0 10px 60px; background: var(--cream);
+  border-bottom: 1px solid var(--edge-soft);
+}
+.items-detail {
+  background: var(--paper); border: 1px solid var(--edge);
+  border-radius: var(--r-md); padding: 10px 14px;
+  max-width: 600px;
+}
+.items-detail .items-head {
+  font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--ink-4); margin-bottom: 6px;
+}
+.items-detail .item {
+  display: grid; grid-template-columns: 1fr 50px 90px 90px;
+  gap: 8px; padding: 5px 0;
+  font-size: 12.5px; align-items: center;
+}
+.items-detail .item + .item { border-top: 1px dashed var(--edge-soft); }
+.items-detail .item .name { font-weight: 500; }
+.items-detail .item .qty { font-family: var(--f-mono); color: var(--ink-3); text-align: right; }
+.items-detail .item .unit { font-family: var(--f-mono); color: var(--ink-4); text-align: right; font-size: 11.5px; }
+.items-detail .item .line {
+  font-family: var(--f-mono); color: var(--ink-2); text-align: right;
+  font-weight: 600;
+}
+.items-detail .totals {
+  margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--edge);
+  display: flex; justify-content: flex-end; gap: 12px;
+  font-size: 13px;
+}
+.items-detail .totals .total-lbl {
+  font-size: 10.5px; font-weight: 700; color: var(--ink-4);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  align-self: center;
+}
+.items-detail .totals .total-amount {
+  font-family: var(--f-display); font-size: 16px; font-weight: 600;
+  color: var(--gold-dark);
+  letter-spacing: -0.01em;
+}
+.items-detail .vendor-line {
+  font-size: 11px; color: var(--ink-4); margin-top: 6px;
+}
+.items-detail .vendor-line .vendor-tag {
+  background: var(--blue-mist); color: var(--blue);
+  padding: 2px 7px; border-radius: var(--r-pill);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; margin-right: 4px;
+}
 
 /* Column-specific styles */
+.col-expand {
+  width: 24px; text-align: center; padding-right: 0 !important;
+  color: var(--ink-4); font-size: 11px;
+  transition: transform 0.2s var(--spring);
+}
+.col-expand.has-items { color: var(--gold-dark); }
+tr.expanded .col-expand { transform: rotate(0deg); }
+.col-expand .arrow { display: inline-block; transition: transform 0.2s var(--spring); }
+tr.parent.expanded .col-expand .arrow { transform: rotate(90deg); }
 .col-time {
   font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-4);
   font-variant-numeric: tabular-nums; width: 56px;
@@ -191,7 +278,12 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
   font-weight: 500; max-width: 320px;
 }
 .col-req .emoji { margin-right: 4px; }
-.col-req .price { color: var(--gold-dark); font-weight: 600; margin-left: 6px; font-size: 12px; }
+.col-req .summary {
+  color: var(--ink-4); font-size: 11.5px; margin-left: 8px; font-weight: 400;
+}
+.col-req .summary .price {
+  font-family: var(--f-mono); color: var(--gold-dark); font-weight: 600;
+}
 .col-guest { color: var(--ink-3); font-size: 12px; max-width: 160px; }
 .col-meta {
   color: var(--ink-4); font-size: 11.5px;
@@ -199,8 +291,26 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 }
 .col-meta .age-overdue { color: var(--ember); font-weight: 700; }
 .col-meta .age-warn { color: var(--amber); font-weight: 600; }
-.col-status { width: 100px; }
-.col-actions { width: 1px; text-align: right; }
+.col-status { width: 130px; min-width: 130px; }
+.col-status .pill { display: inline-block; }
+.col-status .progress {
+  margin-top: 4px; display: flex; align-items: center; gap: 4px;
+  font-size: 9.5px; color: var(--ink-4); font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.col-status .progress-dots {
+  display: inline-flex; gap: 2px;
+}
+.col-status .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--edge);
+}
+.col-status .dot.done { background: var(--moss); }
+.col-status .dot.current { background: var(--ink); }
+.col-status .step-text {
+  font-family: var(--f-mono); font-size: 9px;
+}
+.col-actions { text-align: right; white-space: nowrap; }
 .col-actions .btn-row {
   display: inline-flex; gap: 4px;
 }
@@ -214,9 +324,11 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 }
 .pill-new       { background: var(--amber-mist); color: var(--amber); }
 .pill-pending   { background: var(--amber-mist); color: var(--amber); }
-.pill-confirmed { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-confirmed { background: var(--blue-mist); color: var(--blue); }
+.pill-preparing { background: var(--violet-mist); color: var(--violet); }
+.pill-ready     { background: var(--indigo-mist); color: var(--indigo); }
 .pill-scheduled { background: var(--gold-mist); color: var(--gold-dark); }
-.pill-progress  { background: var(--gold-mist); color: var(--gold-dark); }
+.pill-progress  { background: var(--indigo-mist); color: var(--indigo); }
 .pill-overdue   { background: var(--ember-mist); color: var(--ember); }
 .pill-immediate { background: var(--orange-mist); color: var(--orange); }
 .pill-approval  { background: var(--amber-mist); color: var(--amber); }
@@ -226,32 +338,40 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 .pill-approved  { background: var(--moss-mist); color: var(--moss); }
 .pill-rejected  { background: var(--ember-mist); color: var(--ember); }
 
-/* Buttons */
+/* Standardized buttons */
 .btn {
-  padding: 5px 10px; border-radius: var(--r-sm);
+  padding: 6px 10px; border-radius: var(--r-sm);
   font-size: 11.5px; font-weight: 500; line-height: 1.2;
   display: inline-flex; align-items: center; gap: 4px;
   white-space: nowrap;
   transition: all 0.15s var(--spring);
+  border: 1px solid transparent;
 }
 .btn:active { transform: scale(0.96); }
-.btn-primary { background: var(--ink); color: var(--paper); }
-.btn-primary:hover { background: var(--ink-2); }
+.btn-primary {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+.btn-primary:hover { background: var(--ink-2); border-color: var(--ink-2); }
 .btn-secondary {
-  background: var(--paper); color: var(--ink); border: 1px solid var(--edge);
+  background: var(--paper); color: var(--ink); border-color: var(--edge);
 }
-.btn-secondary:hover { background: var(--edge-soft); }
+.btn-secondary:hover { background: var(--edge-soft); border-color: var(--ink-4); }
+.btn-success {
+  background: var(--moss); color: white; border-color: var(--moss);
+}
+.btn-success:hover { background: #226d3b; border-color: #226d3b; }
 .btn-danger {
-  background: var(--paper); color: var(--ember); border: 1px solid var(--ember-mist);
+  background: var(--paper); color: var(--ember); border-color: var(--ember-mist);
 }
-.btn-danger:hover { background: var(--ember-mist); }
+.btn-danger:hover { background: var(--ember-mist); border-color: var(--ember); }
 .btn-more {
-  background: transparent; color: var(--ink-3); padding: 5px 7px;
+  background: transparent; color: var(--ink-3); padding: 6px 8px;
   font-size: 14px; line-height: 1; border-radius: var(--r-sm);
+  border-color: transparent;
 }
 .btn-more:hover { background: var(--edge-soft); }
 
-/* Recep grid */
+/* ───── Recep grid ───── */
 .recep-grid {
   display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 14px;
   align-items: start;
@@ -263,27 +383,36 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
   position: sticky; top: 110px;
 }
 
-/* Peek card (same as original) */
+/* Peek cards */
 .peek-card {
   background: var(--paper); border: 1px solid var(--edge);
   border-radius: var(--r-md); overflow: hidden;
 }
 .peek-card.has-overdue { border-color: var(--ember); }
+.peek-card.complete { border-color: var(--moss); }
 .peek-head {
   padding: 11px 14px; background: var(--cream);
   border-bottom: 1px solid var(--edge);
   display: flex; align-items: center; gap: 9px;
 }
 .peek-card.has-overdue .peek-head { background: var(--ember-mist); border-bottom-color: var(--ember); }
+.peek-card.complete .peek-head { background: var(--moss-mist); border-bottom-color: var(--moss); }
 .peek-head .icon { font-size: 16px; }
 .peek-head .label {
   font-family: var(--f-display); font-size: 13.5px; font-weight: 500;
-  letter-spacing: -0.005em;
 }
 .peek-head .summary {
   margin-left: auto; font-size: 11px; color: var(--ink-3);
   font-variant-numeric: tabular-nums;
 }
+.peek-head .meta-tag {
+  font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: var(--r-pill);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.peek-head .meta-tag.today { background: var(--moss-mist); color: var(--moss); }
+.peek-head .meta-tag.tomorrow { background: var(--gold-mist); color: var(--gold-dark); }
+.peek-head .meta-tag.locked { background: var(--gray-mist); color: var(--ink-4); }
+
 .peek-stats {
   display: grid; grid-template-columns: repeat(3, 1fr);
   border-bottom: 1px solid var(--edge-soft);
@@ -299,6 +428,7 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 }
 .peek-stats .stat.alert .num { color: var(--ember); }
 .peek-stats .stat.warn .num { color: var(--amber); }
+.peek-stats .stat.success .num { color: var(--moss); }
 .peek-stats .stat .lbl {
   font-size: 10px; font-weight: 600; color: var(--ink-4);
   text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px;
@@ -310,6 +440,7 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
   border-top: 1px solid var(--edge-soft);
 }
 .peek-row.overdue { background: rgba(198,40,40,0.04); }
+.peek-row.done { opacity: 0.6; }
 .peek-row .room {
   font-family: var(--f-display); font-size: 14px; font-weight: 600;
 }
@@ -329,6 +460,23 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 }
 .peek-foot .btn { flex: 1; justify-content: center; padding: 7px 8px; font-size: 11.5px; }
 
+.peek-empty {
+  padding: 18px 14px; text-align: center;
+  color: var(--moss); font-size: 12px;
+  background: var(--moss-mist);
+}
+.peek-empty .check {
+  display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--moss); color: white; font-size: 12px;
+  line-height: 22px; margin-right: 6px;
+}
+.peek-locked {
+  padding: 16px 14px; text-align: center;
+  color: var(--ink-4); font-size: 12px;
+  background: var(--cream);
+}
+.peek-locked b { color: var(--ink-2); }
+
 /* Overdue strip */
 .overdue-strip {
   background: var(--paper); border: 1px solid var(--ember);
@@ -342,21 +490,20 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 }
 .overdue-strip-head em { color: white; font-weight: 700; padding: 0 4px; font-style: normal; }
 
-/* Collapse handle */
-.collapsed .req-table thead, .collapsed .req-table tbody { display: none; }
-.toggle-arrow { font-size: 11px; color: var(--ink-4); margin-left: 6px; cursor: pointer; }
-
 @media (max-width: 760px) {
   .dashboard { padding: 12px 14px 80px; gap: 10px; }
   table.req-table thead { display: none; }
-  table.req-table, table.req-table tbody, table.req-table tr, table.req-table td {
+  table.req-table, table.req-table tbody, table.req-table tr.parent, table.req-table td {
     display: block; width: 100%;
   }
-  table.req-table tbody tr {
+  table.req-table tbody tr.parent {
     padding: 8px 12px; border-bottom: 1px solid var(--edge-soft);
   }
   table.req-table tbody td {
     padding: 2px 0; border: 0; white-space: normal;
+  }
+  table.req-table tr.items-row td {
+    padding: 4px 12px; background: var(--cream);
   }
   .col-room::before { content: 'Room: '; color: var(--ink-4); font-family: var(--f-text); font-size: 11px; font-weight: 400; margin-right: 4px; }
 }
@@ -368,15 +515,26 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 <header class="topbar">
   <span class="brand">Hamsun<em>.</em></span>
   <span class="brand-sub">Reception · Inbox</span>
-  <span class="style-tag">TABLE STYLE</span>
+  <span class="style-tag">TABLE STYLE · v2</span>
   <span class="spacer"></span>
   <button class="topbar-prop">🏨 Hamsun FSL ▾</button>
   <a class="topbar-link" href="../reception-inbox/" target="_blank">↔ Compare with Cards style</a>
 </header>
 
+<!-- Time-of-day demo selector -->
+<div class="time-demo">
+  <span class="lbl">📅 Show as time:</span>
+  <span class="group" id="time-group">
+    <button data-time="morning">🌅 Morning · 9 AM</button>
+    <button data-time="midday" class="active">☀ Midday · 12:30 PM</button>
+    <button data-time="evening">🌆 Evening · 7 PM</button>
+  </span>
+  <span class="help">Demonstrates how kitchen card swaps between today's and tomorrow's breakfast based on time</span>
+</div>
+
+<!-- Compare banner -->
 <div class="compare-banner">
-  📐 <b>Table-style alternate</b> — same data, different row layout. Compare with the
-  <a href="../reception-inbox/" target="_blank">card-style version →</a> · the only thing that differs is how each request row is rendered.
+  Same data as <a href="../reception-inbox/" target="_blank">card-style version →</a> · table layout adds <b>expandable item rows</b>, <b>progress steps</b>, and <b>standardized action buttons</b>
 </div>
 
 <!-- Tab bar -->
@@ -410,21 +568,21 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
         </tr>
       </thead>
       <tbody>
-        <tr class="overdue">
+        <tr class="parent overdue">
           <td><span class="pill" style="background: var(--ember-mist); color: var(--ember);">📋 Reception</span></td>
           <td class="col-room">R503</td>
           <td>🔧 AC not cooling</td>
           <td class="col-guest">Ali Hasnain</td>
-          <td><span class="age-overdue">⏱ 12m</span></td>
-          <td class="col-actions"><button class="btn btn-danger" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Reception →</button></td>
+          <td><span class="age-overdue" style="color: var(--ember); font-weight: 700;">⏱ 12m</span></td>
+          <td class="col-actions"><button class="btn" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Reception →</button></td>
         </tr>
-        <tr class="overdue">
+        <tr class="parent overdue">
           <td><span class="pill" style="background: var(--ember-mist); color: var(--ember);">🧺 Housekeeping</span></td>
           <td class="col-room">RG06</td>
           <td>🧺 Linen change</td>
           <td class="col-guest">Marutani</td>
-          <td><span class="age-overdue">⏱ 32m waiting</span></td>
-          <td class="col-actions"><button class="btn btn-danger" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Housekeeping →</button></td>
+          <td><span class="age-overdue" style="color: var(--ember); font-weight: 700;">⏱ 32m waiting</span></td>
+          <td class="col-actions"><button class="btn" style="background: var(--ember); color: white; border-color: var(--ember);">Go to Housekeeping →</button></td>
         </tr>
       </tbody>
     </table>
@@ -440,52 +598,92 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
     <table class="req-table">
       <thead>
         <tr>
+          <th class="col-expand"></th>
           <th class="col-time">Time</th>
           <th class="col-room">Room</th>
           <th>Request</th>
           <th>Guest</th>
           <th>Source · Age</th>
-          <th class="col-status">Status</th>
-          <th class="col-actions"></th>
+          <th class="col-status">Status · Step</th>
+          <th class="col-actions">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="overdue">
+        <tr class="parent overdue">
+          <td class="col-expand"></td>
           <td class="col-time">11:48</td>
           <td class="col-room">R503</td>
           <td class="col-req"><span class="emoji">🔧</span>AC not cooling</td>
           <td class="col-guest">Ali Hasnain</td>
           <td class="col-meta">Phone · <span class="age-overdue">12m overdue</span></td>
-          <td class="col-status"><span class="pill pill-overdue">Overdue</span></td>
+          <td class="col-status">
+            <span class="pill pill-overdue">Overdue</span>
+            <div class="progress">
+              <span class="progress-dots"><span class="dot current"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="step-text">1/5 · New</span>
+            </div>
+          </td>
           <td class="col-actions"><div class="btn-row">
             <button class="btn btn-primary">✓ Triage</button>
             <button class="btn btn-secondary">→ Tech</button>
-            <button class="btn btn-secondary">📞</button>
+            <button class="btn btn-more">⋯</button>
           </div></td>
         </tr>
-        <tr class="urgent">
+        <tr class="parent urgent">
+          <td class="col-expand"></td>
           <td class="col-time">12:02</td>
           <td class="col-room">R208</td>
           <td class="col-req"><span class="emoji">🔧</span>TV remote not working</td>
           <td class="col-guest">Rubina Nasir</td>
           <td class="col-meta">Portal · 4m ago</td>
-          <td class="col-status"><span class="pill pill-immediate">Immediate</span></td>
+          <td class="col-status">
+            <span class="pill pill-immediate">Immediate</span>
+            <div class="progress">
+              <span class="progress-dots"><span class="dot current"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="step-text">1/5 · New</span>
+            </div>
+          </td>
           <td class="col-actions"><div class="btn-row">
             <button class="btn btn-primary">✓ Triage</button>
             <button class="btn btn-secondary">→ Tech</button>
+            <button class="btn btn-more">⋯</button>
           </div></td>
         </tr>
-        <tr>
+        <tr class="parent" data-items="late-checkout">
+          <td class="col-expand has-items"><span class="arrow">▸</span></td>
           <td class="col-time">11:55</td>
           <td class="col-room">RG09</td>
-          <td class="col-req"><span class="emoji">📅</span>Late checkout — 6pm <span class="price">PKR 6,000</span></td>
+          <td class="col-req"><span class="emoji">📅</span>Late checkout — 6pm <span class="summary">1 item · <span class="price">PKR 6,000</span></span></td>
           <td class="col-guest">Khurram Hassan</td>
-          <td class="col-meta">50% × 12,000 · waiting approval</td>
-          <td class="col-status"><span class="pill pill-approval">Approval</span></td>
+          <td class="col-meta">Pending approval · 8m</td>
+          <td class="col-status">
+            <span class="pill pill-approval">Approval</span>
+            <div class="progress">
+              <span class="progress-dots"><span class="dot done"></span><span class="dot current"></span><span class="dot"></span><span class="dot"></span></span>
+              <span class="step-text">2/4 · Pending</span>
+            </div>
+          </td>
           <td class="col-actions"><div class="btn-row">
-            <button class="btn btn-primary">✓ Approve PKR 6,000</button>
+            <button class="btn btn-success">✓ Approve PKR 6,000</button>
             <button class="btn btn-danger">✕ Reject</button>
           </div></td>
+        </tr>
+        <tr class="items-row" data-parent="late-checkout">
+          <td colspan="8">
+            <div class="items-detail">
+              <div class="items-head">Charge breakdown</div>
+              <div class="item">
+                <span class="name">Late checkout (until 6pm)</span>
+                <span class="qty">×1</span>
+                <span class="unit">@ 50% × 12,000</span>
+                <span class="line">PKR 6,000</span>
+              </div>
+              <div class="totals">
+                <span class="total-lbl">Folio charge</span>
+                <span class="total-amount">PKR 6,000</span>
+              </div>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -505,169 +703,303 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
         <table class="req-table">
           <thead>
             <tr>
+              <th class="col-expand"></th>
               <th class="col-time">Time</th>
               <th class="col-room">Room</th>
               <th>Request</th>
               <th>Guest</th>
               <th>Source · Age</th>
-              <th class="col-status">Status</th>
-              <th class="col-actions"></th>
+              <th class="col-status">Status · Step</th>
+              <th class="col-actions">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
+
+            <!-- F&B order with multiple items -->
+            <tr class="parent" data-items="fnb-1">
+              <td class="col-expand has-items"><span class="arrow">▸</span></td>
               <td class="col-time">12:25</td>
               <td class="col-room">R110</td>
-              <td class="col-req"><span class="emoji">🍳</span>2× Biryani <span class="price">PKR 1,700</span></td>
+              <td class="col-req"><span class="emoji">🍳</span>F&amp;B order <span class="summary">3 items · <span class="price">PKR 1,950</span></span></td>
               <td class="col-guest">Muhammad Mohsin</td>
-              <td class="col-meta">Portal · 8m ago</td>
-              <td class="col-status"><span class="pill pill-pending">Pending</span></td>
+              <td class="col-meta">Portal · 8m</td>
+              <td class="col-status">
+                <span class="pill pill-pending">Pending</span>
+                <div class="progress">
+                  <span class="progress-dots"><span class="dot current"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+                  <span class="step-text">1/5 · New</span>
+                </div>
+              </td>
               <td class="col-actions"><div class="btn-row">
-                <button class="btn btn-primary">✓ Confirm</button>
+                <button class="btn btn-primary">✓ Confirm order</button>
                 <button class="btn btn-danger">✕ Reject</button>
+                <button class="btn btn-more">⋯</button>
               </div></td>
             </tr>
-            <tr>
+            <tr class="items-row" data-parent="fnb-1">
+              <td colspan="8">
+                <div class="items-detail">
+                  <div class="items-head">Order items</div>
+                  <div class="item">
+                    <span class="name">Mutton Biryani</span>
+                    <span class="qty">×2</span>
+                    <span class="unit">@ PKR 850</span>
+                    <span class="line">PKR 1,700</span>
+                  </div>
+                  <div class="item">
+                    <span class="name">Mango Lassi</span>
+                    <span class="qty">×1</span>
+                    <span class="unit">@ PKR 250</span>
+                    <span class="line">PKR 250</span>
+                  </div>
+                  <div class="totals">
+                    <span class="total-lbl">Total · folio when delivered</span>
+                    <span class="total-amount">PKR 1,950</span>
+                  </div>
+                  <div class="vendor-line">
+                    <span class="vendor-tag">Kitchen</span>
+                    Order goes to in-house kitchen · est prep 20 min
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Mini-shop with multiple items -->
+            <tr class="parent" data-items="ms-1">
+              <td class="col-expand has-items"><span class="arrow">▸</span></td>
               <td class="col-time">12:08</td>
               <td class="col-room">RG06</td>
-              <td class="col-req"><span class="emoji">🛒</span>ENO + Panadol <span class="price">PKR 1,200</span></td>
+              <td class="col-req"><span class="emoji">🛒</span>Mini-shop <span class="summary">4 items · <span class="price">PKR 1,200</span></span></td>
               <td class="col-guest">Marutani Katsuhisa</td>
-              <td class="col-meta">Reception · 25m ago</td>
-              <td class="col-status"><span class="pill pill-pending">Pending</span></td>
+              <td class="col-meta">Reception · 25m</td>
+              <td class="col-status">
+                <span class="pill pill-confirmed">Confirmed</span>
+                <div class="progress">
+                  <span class="progress-dots"><span class="dot done"></span><span class="dot current"></span><span class="dot"></span><span class="dot"></span></span>
+                  <span class="step-text">2/4 · Confirmed</span>
+                </div>
+              </td>
               <td class="col-actions"><div class="btn-row">
-                <button class="btn btn-primary">✓ Delivered</button>
+                <button class="btn btn-primary">✓ Mark delivered</button>
                 <button class="btn btn-danger">✕ Cancel</button>
+                <button class="btn btn-more">⋯</button>
               </div></td>
             </tr>
-            <tr>
+            <tr class="items-row" data-parent="ms-1">
+              <td colspan="8">
+                <div class="items-detail">
+                  <div class="items-head">Order items</div>
+                  <div class="item">
+                    <span class="name">ENO Sachet</span>
+                    <span class="qty">×2</span>
+                    <span class="unit">@ PKR 250</span>
+                    <span class="line">PKR 500</span>
+                  </div>
+                  <div class="item">
+                    <span class="name">Panadol Strip</span>
+                    <span class="qty">×1</span>
+                    <span class="unit">@ PKR 150</span>
+                    <span class="line">PKR 150</span>
+                  </div>
+                  <div class="item">
+                    <span class="name">Mineral water (large)</span>
+                    <span class="qty">×2</span>
+                    <span class="unit">@ PKR 150</span>
+                    <span class="line">PKR 300</span>
+                  </div>
+                  <div class="item">
+                    <span class="name">Lighter</span>
+                    <span class="qty">×1</span>
+                    <span class="unit">@ PKR 250</span>
+                    <span class="line">PKR 250</span>
+                  </div>
+                  <div class="totals">
+                    <span class="total-lbl">Total · folio when delivered</span>
+                    <span class="total-amount">PKR 1,200</span>
+                  </div>
+                  <div class="vendor-line">
+                    <span class="vendor-tag">Shelf</span>
+                    Pick from reception drawer · stock auto-decrements on delivery
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Single-item F&B (already delivered) -->
+            <tr class="parent done" data-items="fnb-2">
+              <td class="col-expand has-items"><span class="arrow">▸</span></td>
               <td class="col-time">11:30</td>
               <td class="col-room">R208</td>
-              <td class="col-req"><span class="emoji">🍳</span>Coke + chips <span class="price">PKR 350</span></td>
+              <td class="col-req"><span class="emoji">🍳</span>Snacks <span class="summary">2 items · <span class="price">PKR 350</span></span></td>
               <td class="col-guest">Rubina Nasir</td>
               <td class="col-meta">Posted to folio</td>
-              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
+              <td class="col-status">
+                <span class="pill pill-delivered">Delivered</span>
+                <div class="progress">
+                  <span class="progress-dots"><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span><span class="dot done"></span></span>
+                  <span class="step-text">5/5 · Delivered</span>
+                </div>
+              </td>
               <td class="col-actions"><div class="btn-row">
                 <button class="btn btn-secondary">↩ Undo</button>
+                <button class="btn btn-more">⋯</button>
               </div></td>
             </tr>
-            <tr>
+            <tr class="items-row" data-parent="fnb-2">
+              <td colspan="8">
+                <div class="items-detail">
+                  <div class="items-head">Order items · delivered</div>
+                  <div class="item">
+                    <span class="name">Coke 500ml</span>
+                    <span class="qty">×1</span>
+                    <span class="unit">@ PKR 150</span>
+                    <span class="line">PKR 150</span>
+                  </div>
+                  <div class="item">
+                    <span class="name">Lays Classic</span>
+                    <span class="qty">×2</span>
+                    <span class="unit">@ PKR 100</span>
+                    <span class="line">PKR 200</span>
+                  </div>
+                  <div class="totals">
+                    <span class="total-lbl">Folio +</span>
+                    <span class="total-amount">PKR 350</span>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Transport (no items, single-line request) -->
+            <tr class="parent">
+              <td class="col-expand"></td>
               <td class="col-time">11:08</td>
               <td class="col-room">R208</td>
               <td class="col-req"><span class="emoji">🚗</span>Airport pickup</td>
               <td class="col-guest">Rubina Nasir</td>
               <td class="col-meta">Tomorrow 2pm · Imran (Corolla)</td>
-              <td class="col-status"><span class="pill pill-scheduled">Scheduled</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              <td class="col-status">
+                <span class="pill pill-scheduled">Scheduled</span>
+                <div class="progress">
+                  <span class="progress-dots"><span class="dot done"></span><span class="dot done"></span><span class="dot current"></span><span class="dot"></span><span class="dot"></span></span>
+                  <span class="step-text">3/5 · Driver assigned</span>
+                </div>
+              </td>
+              <td class="col-actions"><div class="btn-row">
+                <button class="btn btn-secondary">📞 Call driver</button>
+                <button class="btn btn-more">⋯</button>
+              </div></td>
             </tr>
-            <tr>
+
+            <!-- Wake-up call (no items) -->
+            <tr class="parent">
+              <td class="col-expand"></td>
               <td class="col-time">10:54</td>
               <td class="col-room">R107</td>
-              <td class="col-req"><span class="emoji">🛎</span>Wake-up call</td>
+              <td class="col-req"><span class="emoji">🛎</span>Wake-up call · Tomorrow 6:30am</td>
               <td class="col-guest">Bilal Habib</td>
-              <td class="col-meta">Tomorrow 6:30am · WA confirmed</td>
-              <td class="col-status"><span class="pill pill-confirmed">Confirmed</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              <td class="col-meta">WA confirmed</td>
+              <td class="col-status">
+                <span class="pill pill-confirmed">Confirmed</span>
+                <div class="progress">
+                  <span class="progress-dots"><span class="dot done"></span><span class="dot current"></span><span class="dot"></span></span>
+                  <span class="step-text">2/3 · Scheduled</span>
+                </div>
+              </td>
+              <td class="col-actions"><div class="btn-row">
+                <button class="btn btn-more">⋯</button>
+              </div></td>
             </tr>
+
           </tbody>
         </table>
       </div>
 
       <!-- Done today (collapsed) -->
-      <div class="block">
-        <div class="block-head" style="cursor: pointer;" onclick="this.parentElement.classList.toggle('collapsed')">
+      <div class="block collapsed" id="done-block">
+        <div class="block-head" style="cursor: pointer;" onclick="document.getElementById('done-block').classList.toggle('collapsed')">
           <h3>Done today</h3>
           <span class="count-badge">8</span>
-          <span class="toggle-arrow">▾</span>
+          <span style="margin-left: auto; font-size: 11px; color: var(--ink-4);">▾</span>
         </div>
-        <table class="req-table">
-          <thead>
-            <tr>
-              <th class="col-time">Time</th>
-              <th class="col-room">Room</th>
-              <th>Request</th>
-              <th>Guest</th>
-              <th>Outcome</th>
-              <th class="col-status">Status</th>
-              <th class="col-actions"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="done">
-              <td class="col-time">10:31</td>
-              <td class="col-room">RG06</td>
-              <td class="col-req"><span class="emoji">🛒</span>USB cable <span class="price">PKR 850</span></td>
-              <td class="col-guest">Marutani</td>
-              <td class="col-meta">Folio +850</td>
-              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
-            </tr>
-            <tr class="done">
-              <td class="col-time">10:15</td>
-              <td class="col-room">R211</td>
-              <td class="col-req"><span class="emoji">🔧</span>Wifi slow</td>
-              <td class="col-guest">Memon</td>
-              <td class="col-meta">Router rebooted</td>
-              <td class="col-status"><span class="pill pill-resolved">Resolved</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
-            </tr>
-            <tr class="done">
-              <td class="col-time">09:48</td>
-              <td class="col-room">RG10</td>
-              <td class="col-req"><span class="emoji">📅</span>Extend stay +2 nights <span class="price">PKR 18,000</span></td>
-              <td class="col-guest">Steve Rhee</td>
-              <td class="col-meta">Charges posted</td>
-              <td class="col-status"><span class="pill pill-approved">Approved</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
-            </tr>
-            <tr class="done">
-              <td class="col-time">09:30</td>
-              <td class="col-room">R102</td>
-              <td class="col-req"><span class="emoji">🛎</span>Restaurant info</td>
-              <td class="col-guest">Ibrahim Ahmed</td>
-              <td class="col-meta">Recommended Kolachi</td>
-              <td class="col-status"><span class="pill pill-done">Done</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
-            </tr>
-            <tr class="done">
-              <td class="col-time">09:15</td>
-              <td class="col-room">RG06</td>
-              <td class="col-req"><span class="emoji">🍳</span>Tea & juice <span class="price">PKR 650</span></td>
-              <td class="col-guest">Marutani</td>
-              <td class="col-meta">Folio +650</td>
-              <td class="col-status"><span class="pill pill-delivered">Delivered</span></td>
-              <td class="col-actions"><button class="btn btn-more">⋯</button></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="block-body" style="display: none;">
+          <table class="req-table">
+            <thead>
+              <tr>
+                <th class="col-expand"></th>
+                <th class="col-time">Time</th>
+                <th class="col-room">Room</th>
+                <th>Request</th>
+                <th>Guest</th>
+                <th>Outcome</th>
+                <th class="col-status">Final status</th>
+                <th class="col-actions"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="parent done">
+                <td class="col-expand"></td>
+                <td class="col-time">10:31</td>
+                <td class="col-room">RG06</td>
+                <td class="col-req"><span class="emoji">🛒</span>USB cable <span class="summary"><span class="price">PKR 850</span></span></td>
+                <td class="col-guest">Marutani</td>
+                <td class="col-meta">Folio +850</td>
+                <td class="col-status">
+                  <span class="pill pill-delivered">Delivered</span>
+                </td>
+                <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              </tr>
+              <tr class="parent done">
+                <td class="col-expand"></td>
+                <td class="col-time">10:15</td>
+                <td class="col-room">R211</td>
+                <td class="col-req"><span class="emoji">🔧</span>Wifi slow</td>
+                <td class="col-guest">Memon</td>
+                <td class="col-meta">Router rebooted</td>
+                <td class="col-status">
+                  <span class="pill pill-resolved">Resolved</span>
+                </td>
+                <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              </tr>
+              <tr class="parent done">
+                <td class="col-expand"></td>
+                <td class="col-time">09:48</td>
+                <td class="col-room">RG10</td>
+                <td class="col-req"><span class="emoji">📅</span>Extend stay +2 nights <span class="summary"><span class="price">PKR 18,000</span></span></td>
+                <td class="col-guest">Steve Rhee</td>
+                <td class="col-meta">Charges posted</td>
+                <td class="col-status">
+                  <span class="pill pill-approved">Approved</span>
+                </td>
+                <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              </tr>
+              <tr class="parent done">
+                <td class="col-expand"></td>
+                <td class="col-time">09:30</td>
+                <td class="col-room">R102</td>
+                <td class="col-req"><span class="emoji">🛎</span>Restaurant info</td>
+                <td class="col-guest">Ibrahim Ahmed</td>
+                <td class="col-meta">Recommended Kolachi</td>
+                <td class="col-status">
+                  <span class="pill pill-done">Done</span>
+                </td>
+                <td class="col-actions"><button class="btn btn-more">⋯</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
 
-    <!-- Right: Peek cards (unchanged from card style — same component) -->
+    <!-- Right: Peek cards -->
     <aside class="team-peek-stack">
 
-      <div class="peek-card has-overdue">
-        <div class="peek-head">
-          <span class="icon">🍳</span>
-          <span class="label">Kitchen · Tomorrow's breakfast</span>
-          <span class="summary">6/18 ordered</span>
-        </div>
-        <div class="peek-stats">
-          <div class="stat"><div class="num">6</div><div class="lbl">ordered</div></div>
-          <div class="stat warn"><div class="num">12</div><div class="lbl">no order</div></div>
-          <div class="stat alert"><div class="num">1</div><div class="lbl">no reply</div></div>
-        </div>
-        <div class="peek-row overdue">
-          <div class="room">8:00am</div>
-          <div class="text">1 ordered · <b>1 no reply</b><span class="sub">R209</span></div>
-          <div class="timer">⚠</div>
-        </div>
-        <div class="peek-foot">
-          <button class="btn btn-secondary">📨 Remind 12</button>
-          <button class="btn btn-secondary">Open kitchen →</button>
-        </div>
+      <!-- Kitchen peek - time-aware -->
+      <div class="peek-card" id="peek-kitchen">
+        <!-- Content swapped by JS based on time selector -->
       </div>
 
+      <!-- Housekeeping peek -->
       <div class="peek-card has-overdue">
         <div class="peek-head">
           <span class="icon">🧺</span>
@@ -700,6 +1032,7 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
         </div>
       </div>
 
+      <!-- Cleaning peek -->
       <div class="peek-card">
         <div class="peek-head">
           <span class="icon">🧹</span>
@@ -709,7 +1042,7 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
         <div class="peek-stats">
           <div class="stat warn"><div class="num">1</div><div class="lbl">new</div></div>
           <div class="stat"><div class="num">1</div><div class="lbl">in progress</div></div>
-          <div class="stat"><div class="num">5</div><div class="lbl">done</div></div>
+          <div class="stat success"><div class="num">5</div><div class="lbl">done</div></div>
         </div>
         <div class="peek-row">
           <div class="room">R211</div>
@@ -720,6 +1053,11 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
           <div class="room">R105</div>
           <div class="text">Daily · in progress<span class="sub">Wataru Nakano</span></div>
           <div class="timer">12m</div>
+        </div>
+        <div class="peek-row done">
+          <div class="room">R102</div>
+          <div class="text">Daily · done<span class="sub">Ibrahim Ahmed</span></div>
+          <div class="timer">11:30</div>
         </div>
         <div class="peek-foot">
           <button class="btn btn-secondary">📞 Nudge cleaning</button>
@@ -732,5 +1070,151 @@ table.req-table tbody tr.done td     { opacity: 0.65; }
 
 </main>
 
+<script>
+// ════════════════════════════════════════════════════════════════
+// 1. Expandable rows for items breakdown
+// ════════════════════════════════════════════════════════════════
+document.querySelectorAll('tr.parent[data-items]').forEach(row => {
+  row.addEventListener('click', e => {
+    if (e.target.closest('button')) return; // don't toggle on button click
+    const itemsKey = row.dataset.items;
+    const itemsRow = document.querySelector(`tr.items-row[data-parent="${itemsKey}"]`);
+    if (!itemsRow) return;
+    row.classList.toggle('expanded');
+    itemsRow.classList.toggle('shown');
+  });
+});
+
+// ════════════════════════════════════════════════════════════════
+// 2. Done block toggle
+// ════════════════════════════════════════════════════════════════
+document.querySelectorAll('#done-block .block-head').forEach(head => {
+  head.addEventListener('click', () => {
+    const block = document.getElementById('done-block');
+    const body = block.querySelector('.block-body');
+    const collapsed = block.classList.toggle('collapsed');
+    body.style.display = collapsed ? 'none' : 'block';
+  });
+});
+
+// ════════════════════════════════════════════════════════════════
+// 3. Time-aware kitchen peek card
+// ════════════════════════════════════════════════════════════════
+const KITCHEN_STATES = {
+  morning: {
+    classes: '',
+    label: 'Kitchen · Today\'s breakfast',
+    metaTag: 'today',
+    metaText: 'IN SERVICE',
+    summary: '14/18 served',
+    stats: [
+      { num: '14', lbl: 'served', kind: 'success' },
+      { num: '3', lbl: 'preparing', kind: 'warn' },
+      { num: '1', lbl: 'no reply', kind: 'alert' }
+    ],
+    rows: [
+      { time: '8:30am', text: '<b>Last slot</b> · 1 ordered<span class="sub">RG09 Khurram Hassan</span>', timer: '✓' },
+      { time: '8:00am', text: '1 served · <b>1 no reply</b><span class="sub">R209 Abdul Basit</span>', timer: '⚠', overdue: true }
+    ],
+    footL: '📨 Remind 1',
+    footR: 'Open kitchen →'
+  },
+  midday: {
+    classes: 'complete',
+    label: 'Kitchen · Today\'s breakfast',
+    metaTag: 'today',
+    metaText: 'COMPLETE',
+    summary: 'Service ended 9 AM',
+    stats: [
+      { num: '14', lbl: 'served', kind: 'success' },
+      { num: '4', lbl: 'no shows', kind: '' },
+      { num: '0', lbl: 'pending', kind: '' }
+    ],
+    rows: [],
+    completeMsg: '✓ Today\'s breakfast service complete · all delivered',
+    footL: 'View receipts',
+    footR: 'Tomorrow\'s prep'
+  },
+  evening: {
+    classes: '',
+    label: 'Kitchen · Tomorrow\'s breakfast',
+    metaTag: 'tomorrow',
+    metaText: 'PRE-ORDER OPEN',
+    summary: '6 ordered · 12 not yet',
+    stats: [
+      { num: '6', lbl: 'ordered', kind: 'success' },
+      { num: '12', lbl: 'no order', kind: 'warn' },
+      { num: '0', lbl: 'no reply', kind: '' }
+    ],
+    rows: [
+      { time: '7:30am', text: '3 ordered<span class="sub">R102 · R110 · RG06</span>', timer: '✓' },
+      { time: '8:00am', text: '2 ordered<span class="sub">R105 · R209</span>', timer: '✓' },
+      { time: '8:30am', text: '1 ordered<span class="sub">RG09</span>', timer: '✓' }
+    ],
+    lockMsg: 'Pre-orders lock at 10pm tonight (40min before first slot)',
+    footL: '📨 Remind 12',
+    footR: 'Open kitchen →'
+  }
+};
+
+function renderKitchenPeek(timeKey) {
+  const state = KITCHEN_STATES[timeKey];
+  const card = document.getElementById('peek-kitchen');
+  card.className = 'peek-card ' + state.classes;
+
+  let html = `
+    <div class="peek-head">
+      <span class="icon">🍳</span>
+      <span class="label">${state.label}</span>
+      <span class="meta-tag ${state.metaTag}">${state.metaText}</span>
+    </div>
+    <div style="padding: 6px 14px; font-size: 11px; color: var(--ink-3); background: var(--cream); border-bottom: 1px solid var(--edge-soft); text-align: center;">
+      ${state.summary}
+    </div>
+    <div class="peek-stats">
+      ${state.stats.map(s => `<div class="stat ${s.kind}"><div class="num">${s.num}</div><div class="lbl">${s.lbl}</div></div>`).join('')}
+    </div>
+  `;
+
+  if (state.completeMsg) {
+    html += `<div class="peek-empty"><span class="check">✓</span>${state.completeMsg.replace('✓ ', '')}</div>`;
+  } else if (state.rows.length > 0) {
+    state.rows.forEach(r => {
+      html += `
+        <div class="peek-row ${r.overdue ? 'overdue' : ''}">
+          <div class="room">${r.time}</div>
+          <div class="text">${r.text}</div>
+          <div class="timer">${r.timer}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (state.lockMsg) {
+    html += `<div class="peek-locked"><b>🔒</b> ${state.lockMsg}</div>`;
+  }
+
+  html += `
+    <div class="peek-foot">
+      <button class="btn btn-secondary">${state.footL}</button>
+      <button class="btn btn-secondary">${state.footR}</button>
+    </div>
+  `;
+
+  card.innerHTML = html;
+}
+
+// Time selector wiring
+document.querySelectorAll('#time-group button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('#time-group button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKitchenPeek(btn.dataset.time);
+  });
+});
+
+// Initial render
+renderKitchenPeek('midday');
+</script>
 </body>
 </html>
